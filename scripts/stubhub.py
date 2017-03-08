@@ -6,7 +6,7 @@ import time
 from static_dictionaries import get_market_cap, get_sport, get_team, get_performer_id
 import xml.etree.ElementTree as ET
 import numpy as np
-from scipy.stats import norm, mode
+#from scipy.stats import norm, mode
 from datetime import timedelta
 import espn
 import traceback
