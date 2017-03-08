@@ -8,7 +8,11 @@ import datetime
 import pdb
 
 
-def get_team_performance(event_id):
+def get_team_performance(event_id, sport, team):
+
+	current_sport = sport
+	full_team_name = team
+
 	sports = ['nba','mlb','nhl','nfl']
 	stats_row_buffer = {'mlb': 13, 'nba': 14, 'nhl': 16, 'nfl': 13}
 	
@@ -73,16 +77,20 @@ def get_team_performance(event_id):
 			sports_losses['nhl'] = losses
 			sports_l_10['nhl'] = l_10
 	
-	sport = static_dictionaries.get_sport(int(event_id))
-	team = static_dictionaries.get_team(int(event_id))
-	full_team_name = static_dictionaries.get_full_team_name(team)
-	sport = static_dictionaries.get_sport(int(event_id))
-	wins = sports_wins[sport][full_team_name]
-	losses = sports_losses[sport][full_team_name]
-	l_10 = str(sports_l_10[sport][full_team_name]).replace("-"," ")
+
+	wins = sports_wins[current_sport][full_team_name]
+	losses = sports_losses[current_sport][full_team_name]
+	l_10 = str(sports_l_10[current_sport][full_team_name]).replace("-"," ")
 	
+	denom = (float(l_10[0])+ float(l_10[-1])) 
 	
-	return wins, losses, l_10
+	l_10_pct = 'NA'
+
+	if denom !=0:
+		l_10_pct = float(l_10[0])/denom
+
+	
+	return wins, losses, l_10_pct
 
 if __name__ == '__main__':
 #get_team_performance(9370813)

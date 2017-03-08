@@ -131,7 +131,7 @@ class Stubhub():
 
     def get_event_inventory(self, event_id, start=0, rows=10000, zonestats=True, sectionstats=True):
         params = {'eventId': event_id, 'start': start, 'rows': rows, 'zonestats' : zonestats, 'sectionstats' : sectionstats}
-        return self.send_req('/search/inventory/v2', token_type='APP', req_type='GET', params=params).text
+        return self.send_req('/search/inventory/v2', token_type='APP', req_type='GET', params=params).json()
 
     def get_listing_data(self, listing_id):
         return self.send_req('/inventory/listings/v1/%s' % (listing_id), token_type='APP')
@@ -179,7 +179,7 @@ class Stubhub():
         else:
             return False
 
-    def get_event_data(self, event_id, new_listings = None):
+    def get_event_data(self, event_id, sport, team, new_listings = None):
         # Get XML of event details
         event_details = self.get_event(event_id=event_id).text
 
@@ -209,12 +209,14 @@ class Stubhub():
         current_time_formatted = now.strftime("%Y-%m-%d %H:%M:%S")
         event_date_formatted = event_date_UTC.strftime("%Y-%m-%d %H:%M:%S")
         metadata = {'event_date':event_date_formatted, 'event_id' : event_id, 'time_difference' : time_difference_in_days, 'current_time':current_time_formatted}
-        
+
 
         if new_listings !=None:
 
             data = new_listings
+
             sections_dict = {section['sectionId'] : section for section in data['section_stats']} 
+
             zones_dict = {zone['zoneId'] : zone for zone in data['zone_stats']}
             listings = data['listing']
             total_tickets = data['totalTickets']
@@ -222,7 +224,7 @@ class Stubhub():
             total_listings = data['totalListings']
             
             # Get team info
-            wins, losses, l_10 = espn.get_team_performance(event_id)
+            wins, losses, l_10 = espn.get_team_performance(event_id, sport, team)
     
             return zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings
         
@@ -251,55 +253,59 @@ if __name__ == '__main__':
           
         #event_list = [9370813, 9370773, 9370849, 9370785, 9370651, 9370664, 9370688, 9370708, 9370659, 9371397, 9371402, 9371410, 9371429, 9371138, 9371158, 9371165, 9371178, 9371146, 9371157, 9371167, 9371186, 9371201, 9341475, 9341486, 9341506, 9341526, 9341540, 9341429, 9341444, 9341472, 9341496, 9341636, 9341669, 9341682, 9341695, 9342365, 9342374, 9342393, 9342407, 9342419, 9342412, 9342418, 9342424, 9342429, 9342434]
         
-        #games = stubhub.get_team_games(9445134)
+        games = stubhub.get_event_inventory(9710889)
+
+        print games
      
         #keys = games['events'][0].keys()
      
-        #pdb.set_trace()
-        url = 'https://cdcde260-6832-446f-955e-28af0193fe6a-bluemix:c22f953dd39391d9e1fe1ebc77835baccce56378ffbb48c3bb7cae936d5785d2@cdcde260-6832-446f-955e-28af0193fe6a-bluemix.cloudant.com/kartees'
-        cloudant_data = requests.get('%s/_all_docs?include_docs=true' %url).json()
-        cloudant_data = cloudant_data['rows']
-        seasons = []
-        for doc in cloudant_data:
-           # print doc
-            if "season" in doc["id"]:
-                seasons.append(doc)
+        # #pdb.set_trace()
 
-        mets = []
-        i = 0
-        for season in seasons:
-            #print i
-            if str(season['doc']['games'][0]['Home_Team']) == "5649":
-                mets.append(season)
-            i+=1
 
-        #print mets[0]['id']
-        dates_dict = {}
-        dates_list = []
-        for game in mets[0]['doc']['games']:
+        # url = 'https://cdcde260-6832-446f-955e-28af0193fe6a-bluemix:c22f953dd39391d9e1fe1ebc77835baccce56378ffbb48c3bb7cae936d5785d2@cdcde260-6832-446f-955e-28af0193fe6a-bluemix.cloudant.com/kartees'
+        # cloudant_data = requests.get('%s/_all_docs?include_docs=true' %url).json()
+        # cloudant_data = cloudant_data['rows']
+        # seasons = []
+        # for doc in cloudant_data:
+        #    # print doc
+        #     if "season" in doc["id"]:
+        #         seasons.append(doc)
 
-            dates_dict[game['Game_Date_Time']] = game['Event_Id']
-            dates_list.append(game['Game_Date_Time'])
-            # if str(game['Game_Date_Time']) == "2016-04-08":
-            #     opener = game
+        # mets = []
+        # i = 0
+        # for season in seasons:
+        #     #print i
+        #     if str(season['doc']['games'][0]['Home_Team']) == "5649":
+        #         mets.append(season)
+        #     i+=1
 
-        dates_list.sort()
+        # #print mets[0]['id']
+        # dates_dict = {}
+        # dates_list = []
+        # for game in mets[0]['doc']['games']:
+
+        #     dates_dict[game['Game_Date_Time']] = game['Event_Id']
+        #     dates_list.append(game['Game_Date_Time'])
+        #     # if str(game['Game_Date_Time']) == "2016-04-08":
+        #     #     opener = game
+
+        # dates_list.sort()
         
-        values = ['Marquee','Classic','Value','Super_Value','Super_Value','Super_Value','Super_Value','Super_Value','Super_Value','Value','Classic','Classic','Super_Value','Super_Value','Super_Value','Value','Value','Value','Classic','Classic','Classic','Classic','Classic','Classic','Value','Value','Value','Value','Value','Value','Classic','Premium','Premium','Classic','Classic','Value','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Premium','Premium','Premium','Marquee','Marquee','Classic','Classic','Classic','Premium','Premium','Premium','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Classic','Classic','Classic','Value','Classic','Classic','Super_Value','Super_Value','Super_Value','Super_Value','Value','Classic','Classic']
+        # values = ['Marquee','Classic','Value','Super_Value','Super_Value','Super_Value','Super_Value','Super_Value','Super_Value','Value','Classic','Classic','Super_Value','Super_Value','Super_Value','Value','Value','Value','Classic','Classic','Classic','Classic','Classic','Classic','Value','Value','Value','Value','Value','Value','Classic','Premium','Premium','Classic','Classic','Value','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Premium','Premium','Premium','Marquee','Marquee','Classic','Classic','Classic','Premium','Premium','Premium','Premium','Premium','Premium','Classic','Classic','Classic','Classic','Classic','Classic','Classic','Value','Classic','Classic','Super_Value','Super_Value','Super_Value','Super_Value','Value','Classic','Classic']
 
-        api_url = 'https://kartees-api.mybluemix.net/api/v3/event'
-        headers = {'token':'login_2@b5e6c878ac62008e3f69329d222041b7',
-                    'Content-Type':'application/json'
+        # api_url = 'https://kartees-api.mybluemix.net/api/v3/event'
+        # headers = {'token':'login_2@b5e6c878ac62008e3f69329d222041b7',
+        #             'Content-Type':'application/json'
 
-        }
-        i = 0
-        for date in dates_list:
-            url = '%s/%s/%s' %(api_url,dates_dict[date] ,values[i].lower())
+        # }
+        # i = 0
+        # for date in dates_list:
+        #     url = '%s/%s/%s' %(api_url,dates_dict[date] ,values[i].lower())
 
-            response = requests.put(url, headers=headers)
+        #     response = requests.put(url, headers=headers)
 
-            print response.text
-            i=i+1
+        #     print response.text
+        #     i=i+1
         # events = [9445120,9445123,9445125,9445126,9445128,9445036,9445134,9445135,9445136,9445137,9445139,9445141,9445143,9445144,9445146,9445039,9445148,9445151,9445152,9445153,9445027,9445156,9445041,9445030,9445093,9445032,9445033,9445164,9445037,9445167,9445169,9445170,9445171,9445044,9445173,9445174,9445175,9445176,9445177,9445178,9445181,9445182,9445055,9445057,9445059,9445061,9445062,9445063,9445065,9445047,9445068,9445069,9445071,9445074,9445155,9445077,9445049,9445080,9445028,9445084,9445085,9445086,9445087,9445088,9445089,9445090,9445091,9445092,9445158,9445094,9445095,9445106,9445075,9445108,9445109,9445111,9445112,9445114,9445172,9445116,9445118]
         # #event = stubhub.get_event_data()
 
