@@ -40,12 +40,21 @@ sys.dont_write_bytecode = True
 SANDBOX_URL = 'https://api.stubhubsandbox.com'
 PROD_URL = 'https://api.stubhub.com'
 
-USERNAME = 'abelabo30@aol.com'
-PASSWORD = 'nyjets'
-BASIC_AUTH_SAND = 'ZjRjSlptUGZ0VExSQklLdDdtaHJiYU5pOW9ZYTpCZnVfbDVyTzZUSklscU9Cbl9MSlpJeXk5Sklh'
-APP_TOKEN_SAND = '6u6p394ZmCk75NfNPUZ0gHR74dMa'
-BASIC_AUTH_PROD = 'TlczU0ZMbVgycXNEenp1S3IzOGdkdExHbnlrYTpBVHhib3pJSjhsS3A5TnJQcVROdXZraGloREVh'
-APP_TOKEN_PROD = 'He3oVj6yqxvkHfSB8Rd7rAL0tvAa'
+# USERNAME = 'abelabo30@aol.com'
+# PASSWORD = 'nyjets'
+# BASIC_AUTH_SAND = 'ZjRjSlptUGZ0VExSQklLdDdtaHJiYU5pOW9ZYTpCZnVfbDVyTzZUSklscU9Cbl9MSlpJeXk5Sklh'
+# APP_TOKEN_SAND = '6u6p394ZmCk75NfNPUZ0gHR74dMa'
+# BASIC_AUTH_PROD = 'TlczU0ZMbVgycXNEenp1S3IzOGdkdExHbnlrYTpBVHhib3pJSjhsS3A5TnJQcVROdXZraGloREVh'
+# APP_TOKEN_PROD = 'He3oVj6yqxvkHfSB8Rd7rAL0tvAa'
+
+USERNAME = 'mgzeitouni@gmail.com'
+PASSWORD = 'morris12'
+
+BASIC_AUTH_PROD = 'QWNSQUNfZjdXenYzQjRZaG1wakpUazFPYjBjYTplSzVxSll0bVYwb2diRDdRRHFtMGhIUENfQ2th'
+APP_TOKEN_PROD = 'sllPgZnDi98izhNL63NMp5oTTTka'
+
+
+
 
 #Specify keys to use - Sandbox or Prod
 BASIC_AUTH = BASIC_AUTH_PROD
@@ -253,6 +262,8 @@ if __name__ == '__main__':
           
         #event_list = [9370813, 9370773, 9370849, 9370785, 9370651, 9370664, 9370688, 9370708, 9370659, 9371397, 9371402, 9371410, 9371429, 9371138, 9371158, 9371165, 9371178, 9371146, 9371157, 9371167, 9371186, 9371201, 9341475, 9341486, 9341506, 9341526, 9341540, 9341429, 9341444, 9341472, 9341496, 9341636, 9341669, 9341682, 9341695, 9342365, 9342374, 9342393, 9342407, 9342419, 9342412, 9342418, 9342424, 9342429, 9342434]
         
+        # event = stubhub.get_event(9710889)
+        # print event.text
         games = stubhub.get_event_inventory(9710889)
 
         print games

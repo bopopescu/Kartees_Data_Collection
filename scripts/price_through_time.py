@@ -68,6 +68,7 @@ def get_status():
                 status[event]=5
 
     current_hour= datetime.datetime.utcnow().strftime("%H")
+ 
     updated = []
     for event in events:
    
@@ -97,8 +98,12 @@ def update_event_data(event_id, date, team, sport):
 
     now = datetime.datetime.utcnow()
 
+    directory = '../price_data/%s_%s_%s' %(now.year, now.month, now.day)
 
-    path = "../price_data/%s/%s.csv"%(team,event_id)
+    if not os.path.exists(directory): os.makedirs(directory)
+
+
+    path = "%s/%s/%s.csv"%(directory,team,event_id)
 
     include_header = False
 
@@ -107,14 +112,15 @@ def update_event_data(event_id, date, team, sport):
         file = open(path, 'a')
 
     else:
-        directory ='../price_data/%s' %team
+        new_team_directory ='%s/%s' %(directory, team)
 
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        if not os.path.exists(new_team_directory):
+            os.makedirs(new_team_directory)
 
         file = open(path, 'wb') 
 
         include_header=True
+
         
     new_listings_request = stubhub.get_event_inventory(event_id)
 
@@ -213,7 +219,6 @@ if __name__ == '__main__':
         user_id = Stubhub.get_user_id(basic_auth=basic_auth, username=username, password=password)
 
         stubhub = Stubhub(app_token=app_token, user_token=user_token, user_id=user_id)
-
     
         get_status()
 
