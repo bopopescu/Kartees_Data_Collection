@@ -16,7 +16,7 @@ def uploadDirectory(path,bucketname, yesterday_dir):
     		
     				local_path = '%s/%s/%s' %(path,team, file)
     				
-		        	s3.upload_file(local_path,bucketname,'%s/%s/%s' %(yesterday_dir,team, file))
+		        	s3.upload_file(local_path,bucketname,'daily/%s/%s/%s' %(yesterday_dir,team, file))
 
 
 if __name__ == '__main__':
