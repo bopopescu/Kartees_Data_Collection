@@ -35,8 +35,15 @@ def add_to_total(day):
 			
 					lines.append(line.replace('\r\n','').split(','))
 
-				
+					total_game_lines = get_total(team,event_id)
 
+def get_total(team, event_id):
+
+	lines = []
+
+	for line in smart_open.smart_open('s3://2017pricedata/total/%s/%s' %(day,team,event_csv)):
+			
+		lines.append(line.replace('\r\n','').split(','))
 
 
     # for root,dirs,files in os.walk(path):

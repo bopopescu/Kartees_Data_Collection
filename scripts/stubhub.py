@@ -40,18 +40,18 @@ sys.dont_write_bytecode = True
 SANDBOX_URL = 'https://api.stubhubsandbox.com'
 PROD_URL = 'https://api.stubhub.com'
 
-# USERNAME = 'abelabo30@aol.com'
-# PASSWORD = 'nyjets'
-# BASIC_AUTH_SAND = 'ZjRjSlptUGZ0VExSQklLdDdtaHJiYU5pOW9ZYTpCZnVfbDVyTzZUSklscU9Cbl9MSlpJeXk5Sklh'
-# APP_TOKEN_SAND = '6u6p394ZmCk75NfNPUZ0gHR74dMa'
-# BASIC_AUTH_PROD = 'TlczU0ZMbVgycXNEenp1S3IzOGdkdExHbnlrYTpBVHhib3pJSjhsS3A5TnJQcVROdXZraGloREVh'
-# APP_TOKEN_PROD = 'He3oVj6yqxvkHfSB8Rd7rAL0tvAa'
+USERNAME = 'abelabo30@aol.com'
+PASSWORD = 'nyjets'
+BASIC_AUTH_SAND = 'ZjRjSlptUGZ0VExSQklLdDdtaHJiYU5pOW9ZYTpCZnVfbDVyTzZUSklscU9Cbl9MSlpJeXk5Sklh'
+APP_TOKEN_SAND = '6u6p394ZmCk75NfNPUZ0gHR74dMa'
+BASIC_AUTH_PROD = 'TlczU0ZMbVgycXNEenp1S3IzOGdkdExHbnlrYTpBVHhib3pJSjhsS3A5TnJQcVROdXZraGloREVh'
+APP_TOKEN_PROD = 'He3oVj6yqxvkHfSB8Rd7rAL0tvAa'
 
-USERNAME = 'mgzeitouni@gmail.com'
-PASSWORD = 'morris12'
+# USERNAME = 'mgzeitouni@gmail.com'
+# PASSWORD = 'morris12'
 
-BASIC_AUTH_PROD = 'QWNSQUNfZjdXenYzQjRZaG1wakpUazFPYjBjYTplSzVxSll0bVYwb2diRDdRRHFtMGhIUENfQ2th'
-APP_TOKEN_PROD = 'sllPgZnDi98izhNL63NMp5oTTTka'
+# BASIC_AUTH_PROD = 'QWNSQUNfZjdXenYzQjRZaG1wakpUazFPYjBjYTplSzVxSll0bVYwb2diRDdRRHFtMGhIUENfQ2th'
+# APP_TOKEN_PROD = 'sllPgZnDi98izhNL63NMp5oTTTka'
 
 
 
