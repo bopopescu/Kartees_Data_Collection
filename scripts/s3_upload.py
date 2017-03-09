@@ -18,6 +18,9 @@ def uploadDirectory(path,bucketname, yesterday_dir):
     				
 		        	s3.upload_file(local_path,bucketname,'daily/%s/%s/%s' %(yesterday_dir,team, file))
 
+def upload_Collection_Logs():
+
+	s3.upload_file('../Collection_Logs.csv','2017pricedata','Collection_Logs.csv')
 
 if __name__ == '__main__':
 
@@ -29,8 +32,10 @@ if __name__ == '__main__':
 
 	path_to_upload = '../price_data/%s' %yesterday_dir
 
-	# Check if this path exists, and upload it
+	# Check if path from yesterday exists, and upload today's
 
 	if os.path.exists(path_to_upload):
 
 		uploadDirectory(path_to_upload, '2017pricedata', yesterday_dir)
+
+	upload_Collection_Logs()
