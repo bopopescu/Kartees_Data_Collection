@@ -7,7 +7,6 @@ import pandas as pd
 import smart_open
 import csv
 
-s3_client= boto3.client('s3')
 s3_resource = boto3.resource('s3')
 
 def add_to_total(day):
@@ -22,7 +21,8 @@ def add_to_total(day):
 		if 'daily' in key and 'csv' in key:
 
 			key_list = key.split('/')
-
+			pdb.set_trace()
+			print key_list
 			file_day = key_list[1]
 			team = key_list[2]
 			event_csv = key_list[3]
@@ -32,17 +32,23 @@ def add_to_total(day):
 				lines = []
 
 				for line in smart_open.smart_open('s3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)):
-			
+					
+
 					lines.append(line.replace('\r\n','').split(','))
 
-					total_game_lines = get_total(team,event_id)
+					append_to_total(event_csv, lines, team, day)
 
-def get_total(team, event_id):
+
+def append_to_total(event_csv, lines, team, day):
 
 	lines = []
 
+	bucket = s3_resource.Bucket('2017pricedata')
+
+
 	for line in smart_open.smart_open('s3://2017pricedata/total/%s/%s' %(day,team,event_csv)):
-			
+		
+
 		lines.append(line.replace('\r\n','').split(','))
 
 
@@ -71,12 +77,6 @@ if __name__ == '__main__':
 		days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))
 
 	for day in days_to_collect:
-
-
-
-
-
-		# print lines
 
 		add_to_total(day)
 

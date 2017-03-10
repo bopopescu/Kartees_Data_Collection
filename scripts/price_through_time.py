@@ -9,8 +9,8 @@ sys.dont_write_bytecode = True
 latest_game_schedules = '2017-03-05_18_29'
 
 
-# 10 UTC = 5 PM EST, 4 PM PT
-# 22 UTC = 5 AM EST, 5 AM PT
+# 10 UTC = 5 PM EST, 4 PM PT, 11 PM CET
+# 22 UTC = 5 AM EST, 5 AM PT, 11 AM CET
 
 status_times = {1: [10,22],
                 2: [10,16,22,4],
