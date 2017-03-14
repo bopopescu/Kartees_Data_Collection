@@ -88,10 +88,10 @@ def get_status(games_distance):
 
     elapsed_minutes = float((end - start).seconds) / 60
 
-    # with open('../Collection_Logs.csv', 'a') as log_file:
+    with open('../Collection_Logs.csv', 'a') as log_file:
 
-    #     writer = csv.writer(log_file)
-    #     writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
+        writer = csv.writer(log_file)
+        writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
 
 
 def update_event_data(event_id, date, team, sport):
