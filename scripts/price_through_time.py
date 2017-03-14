@@ -18,7 +18,7 @@ status_times = {1: [10,22],  # Change to 2, 14
                 4: [11,12,13,14,15,16,17,18,19,20,21,22,23,1,2,3,4,5,6,7,8,9,10]
 }
 
-def get_status():
+def get_status(games_distance):
     
     start = datetime.datetime.utcnow()
 
@@ -55,29 +55,28 @@ def get_status():
 
             events.append(event)
             
-            if time_dif >30:
+            if time_dif > 15:
                 status[event] = 1
-            elif time_dif >15:
+            elif time_dif > 7:
                 status[event] = 2
-            elif time_dif >7:
-                status[event] = 3
             elif time_dif > 0:
-                status[event] = 4
+                status[event] = 3
+    
             # Else game must have been in the past
             else:
-                status[event]=5
+                status[event]=4
 
-    current_hour= datetime.datetime.utcnow().strftime("%H")
+  #  current_hour= datetime.datetime.utcnow().strftime("%H")
  
     updated = []
+
     for event in events:
-   
-        if int(current_hour) in status_times[status[event]]:
-           
+        
+        if status[event] in games_distance:
+
             try:
                 update_event_data(event, dates[event], teams[event], sports[event])
                 updated.append(event)
-               # pdb.set_trace()
 
                 time.sleep(7)
 
@@ -86,12 +85,13 @@ def get_status():
 
     end = datetime.datetime.utcnow()
 
+
     elapsed_minutes = float((end - start).seconds) / 60
 
-    with open('../Collection_Logs.csv', 'a') as log_file:
+    # with open('../Collection_Logs.csv', 'a') as log_file:
 
-        writer = csv.writer(log_file)
-        writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
+    #     writer = csv.writer(log_file)
+    #     writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
 
 
 def update_event_data(event_id, date, team, sport):
@@ -208,19 +208,13 @@ def update_event_data(event_id, date, team, sport):
 if __name__ == '__main__':
 
 
-    username = USERNAME
-    password = PASSWORD
-    basic_auth = BASIC_AUTH
-    app_token = APP_TOKEN
 
     try:
-        app_token = Stubhub.get_app_token(app_token=app_token)
-        user_token = Stubhub.get_user_token(basic_auth=basic_auth, username=username, password=password)
-        user_id = Stubhub.get_user_id(basic_auth=basic_auth, username=username, password=password)
 
-        stubhub = Stubhub(app_token=app_token, user_token=user_token, user_id=user_id)
+        # Get account to use from command line arg
+        stubhub = Stubhub(account = sys.argv[1])
     
-        get_status()
+        get_status(eval(sys.argv[2]))
 
     except Exception as e:
 
