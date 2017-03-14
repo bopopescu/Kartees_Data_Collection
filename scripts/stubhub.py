@@ -15,6 +15,7 @@ import os.path
 import dateutil.parser as dparser
 # from django.utils.timezone import utc
 import pdb
+from credentials import *
 
 import sys
 
@@ -34,35 +35,7 @@ sys.dont_write_bytecode = True
 # requests_log.setLevel(logging.DEBUG)
 # requests_log.propagate = True
 
-
-
-# Constants
-SANDBOX_URL = 'https://api.stubhubsandbox.com'
-PROD_URL = 'https://api.stubhub.com'
-
-USERNAME = 'abelabo30@aol.com'
-PASSWORD = 'nyjets'
-BASIC_AUTH_SAND = 'ZjRjSlptUGZ0VExSQklLdDdtaHJiYU5pOW9ZYTpCZnVfbDVyTzZUSklscU9Cbl9MSlpJeXk5Sklh'
-APP_TOKEN_SAND = '6u6p394ZmCk75NfNPUZ0gHR74dMa'
-BASIC_AUTH_PROD = 'TlczU0ZMbVgycXNEenp1S3IzOGdkdExHbnlrYTpBVHhib3pJSjhsS3A5TnJQcVROdXZraGloREVh'
-APP_TOKEN_PROD = 'He3oVj6yqxvkHfSB8Rd7rAL0tvAa'
-
-# USERNAME = 'mgzeitouni@gmail.com'
-# PASSWORD = 'morris12'
-
-# BASIC_AUTH_PROD = 'QWNSQUNfZjdXenYzQjRZaG1wakpUazFPYjBjYTplSzVxSll0bVYwb2diRDdRRHFtMGhIUENfQ2th'
-# APP_TOKEN_PROD = 'sllPgZnDi98izhNL63NMp5oTTTka'
-
-
-
-
-#Specify keys to use - Sandbox or Prod
-BASIC_AUTH = BASIC_AUTH_PROD
-APP_TOKEN = APP_TOKEN_PROD
-URL = PROD_URL
 cache = {}
-EVENT_LIST = [9444003, 9444030, 9444079, 9444101, 9444421, 9445362, 9445339, 9445319, 9445356, 9445310, 9445134, 9445028, 9445151, 9445089, 9445062, 9445027, 9444843, 9444850, 9444836, 9444835, 9444794, 9443093, 9443062, 9443091, 9443103, 9443054, 9370849, 9370785, 9370688, 9370708, 9370659, 9371410, 9371429, 9371158, 9371165, 9371178, 9371167, 9371186, 9371201, 9341506, 9341526, 9341540, 9341444, 9341472, 9341496, 9341669, 9341682, 9341695, 9342393, 9342407, 9342419, 9342424, 9342429, 9342434]
-    
 
 
 def req(full_url, headers, params, req_type='GET', use_cache=True):
@@ -90,7 +63,8 @@ def req(full_url, headers, params, req_type='GET', use_cache=True):
     return cache[cache_key]
 
 
-def login(basic_auth=BASIC_AUTH, username=USERNAME, password=PASSWORD, base_url=URL):
+def login(account):
+    basic_auth, username, password, base_url, client_id, client_secret = CREDS[account]['BASIC_AUTH'],CREDS[account]['USERNAME'], CREDS[account]['PASSWORD'], URL, CREDS[account]['CLIENT_ID'], CREDS[account]['CLIENT_SECRET']
     headers = {'Content-Type': 'application/x-www-form-urlencoded',
                'Authorization': 'Basic %s' % (basic_auth),
                }
@@ -98,6 +72,8 @@ def login(basic_auth=BASIC_AUTH, username=USERNAME, password=PASSWORD, base_url=
     params = {
         'grant_type': 'password',
         'username': username,
+        'client_secret': client_secret,
+        'client_id': client_id,
         'password': password,
         'scope': 'PRODUCTION'
     }
@@ -107,20 +83,27 @@ def login(basic_auth=BASIC_AUTH, username=USERNAME, password=PASSWORD, base_url=
 
 class Stubhub():
     @staticmethod
-    def get_app_token(app_token=APP_TOKEN):
-        return app_token
+    def get_app_token(account):
+        return CREDS[account]['APP_TOKEN']
 
     @staticmethod
-    def get_user_token(basic_auth=BASIC_AUTH, username=USERNAME, password=PASSWORD, base_url=URL):
-        return login(basic_auth=basic_auth, username=username, password=password, base_url=base_url).json()[
+    def get_user_token(account):
+        basic_auth, username, password, base_url=CREDS[account]['BASIC_AUTH'],CREDS[account]['USERNAME'], CREDS[account]['PASSWORD'], URL
+        return login(account=account).json()[
             'access_token']
 
     @staticmethod
-    def get_user_id(basic_auth=BASIC_AUTH, username=USERNAME, password=PASSWORD, base_url=URL):
-        return login(basic_auth=basic_auth, username=username, password=password, base_url=base_url).headers[
+    def get_user_id(account):
+        basic_auth, username, password, base_url=CREDS[account]['BASIC_AUTH'],CREDS[account]['USERNAME'], CREDS[account]['PASSWORD'], URL
+        return login(account=account).headers[
             'X-StubHub-User-GUID']
 
-    def __init__(self, app_token, user_token, user_id):
+    def __init__(self, account):
+
+        app_token = Stubhub.get_app_token(account)  
+        user_token = Stubhub.get_user_token(account)
+        user_id = Stubhub.get_user_id(account)
+
         self.app_token = app_token
         self.user_token = user_token
         self.user_id = user_id
@@ -253,19 +236,14 @@ if __name__ == '__main__':
     
     
     try:
-        app_token = Stubhub.get_app_token(app_token=app_token)  
-       
-        user_token = Stubhub.get_user_token(basic_auth=basic_auth, username=username, password=password)
-        user_id = Stubhub.get_user_id(basic_auth=basic_auth, username=username, password=password)
-      
-        stubhub = Stubhub(app_token=app_token, user_token=user_token, user_id=user_id)
-          
+
+        stubhub = Stubhub(account = 'LABO')
+   
         #event_list = [9370813, 9370773, 9370849, 9370785, 9370651, 9370664, 9370688, 9370708, 9370659, 9371397, 9371402, 9371410, 9371429, 9371138, 9371158, 9371165, 9371178, 9371146, 9371157, 9371167, 9371186, 9371201, 9341475, 9341486, 9341506, 9341526, 9341540, 9341429, 9341444, 9341472, 9341496, 9341636, 9341669, 9341682, 9341695, 9342365, 9342374, 9342393, 9342407, 9342419, 9342412, 9342418, 9342424, 9342429, 9342434]
         
         # event = stubhub.get_event(9710889)
         # print event.text
         games = stubhub.get_event_inventory(9710889)
-
         print games
      
         #keys = games['events'][0].keys()

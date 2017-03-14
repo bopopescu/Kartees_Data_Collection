@@ -12,7 +12,7 @@ latest_game_schedules = '2017-03-05_18_29'
 # 10 UTC = 5 PM EST, 4 PM PT, 11 PM CET
 # 22 UTC = 5 AM EST, 5 AM PT, 11 AM CET
 
-status_times = {1: [10,22],
+status_times = {1: [10,22],  # Change to 2, 14
                 2: [10,16,22,4],
                 3: [10,13,16,19,22,1,4,7],
                 4: [11,12,13,14,15,16,17,18,19,20,21,22,23,1,2,3,4,5,6,7,8,9,10]
