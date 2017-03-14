@@ -5,21 +5,10 @@ import shutil
 import sys
 import matplotlib.pyplot as plt
 import random
+from num2words import num2words
 sys.dont_write_bytecode = True
 
-username = USERNAME
-password = PASSWORD
-
-basic_auth = BASIC_AUTH
-#print basic_auth
-app_token = APP_TOKEN
-
-app_token = Stubhub.get_app_token(app_token=app_token)  
-
-user_token = Stubhub.get_user_token(basic_auth=basic_auth, username=username, password=password)
-user_id = Stubhub.get_user_id(basic_auth=basic_auth, username=username, password=password)
-
-stubhub = Stubhub(app_token=app_token, user_token=user_token, user_id=user_id)
+stubhub = Stubhub(account='LABO')
   
 
 
@@ -407,9 +396,11 @@ def input_future_prices(old_path, header):
 	for n in range(0, size):
 		days_list.append(int(raw_input("Number %s: " %(int(n)+1))))
 	#days_list = [1 , 10, 30]
+	
 
 	for n in days_list:
-		header.append('%s_days_ahead_price' %n) 
+		x = str(num2words(n))
+		header.append('%s_days_ahead_price' %x) 
 
 	# rand_smpl = [ rows[i] for i in sorted(random.sample(xrange(len(rows)), 1000)) ]
 
@@ -495,7 +486,7 @@ def input_past_derivatives(old_path, header):
 
 		reader = csv.reader(old_file)
 
-		reader.next()
+		header_row = reader.next()
 
 		rows = [row for row in reader]
 
@@ -507,9 +498,10 @@ def input_past_derivatives(old_path, header):
 	#days_list = [1 , 10, 30]
 
 	for n in derivative_list:
-		header.append('%s_past_days_price' %n)
-		header.append('%s_past_days_derivative' %n) 
-		header.append('%s_past_days_pctchange' %n)  
+		x = str(num2words(n)).replace(' ','-')
+		header_row.append('%s_past_days_price' %x)
+		header_row.append('%s_past_days_derivative' %x) 
+		header_row.append('%s_past_days_pctchange' %x)  
 
 	for n_days in derivative_list:
 
@@ -518,7 +510,7 @@ def input_past_derivatives(old_path, header):
 		if index==0:
 			old_path = old_path
 		else:
-			old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/%s_days.csv' %derivative_list[index-1]
+			old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/sections/%s_days.csv' %derivative_list[index-1]
 			#old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/test_derivative.csv'
 		
 
@@ -578,13 +570,13 @@ def input_past_derivatives(old_path, header):
 
 				# if not found: row.append('MISSING')
 
-		new_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/%s_days.csv' %n_days
+		new_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/sections/%s_days.csv' %n_days
 
 		with open(new_path, 'wb') as new_file:
 
 			writer = csv.writer(new_file)
 
-			writer.writerow(header)
+			writer.writerow(header_row)
 
 			writer.writerows(rows)
 
@@ -696,10 +688,10 @@ if __name__ == '__main__':
 
 	#input_future_prices(old_path, header_row)
 
-	#input_past_derivatives(old_path, header_row)
+	input_past_derivatives(old_path, header_row)
 
 	#check_rows()
 	#consolidate_days()
 
-	count_NAs(old_path)
+	#count_NAs(old_path)
 
