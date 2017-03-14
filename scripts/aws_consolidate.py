@@ -52,8 +52,6 @@ def append_to_total(event_csv, lines, team):
 	bucket = s3_resource.Bucket('2017pricedata')
 
 	import boto.s3.connection
-	access_key = 'AKIAIOWD5SFYZNZTNPWA'
-	secret_key = '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'
 
 	conn = boto.connect_s3(
         aws_access_key_id = access_key,
