@@ -2,3 +2,7 @@ price_data/
 2016_data/
 
 credentials.py
+credentials.pyc
+espn.pyc
+static_dictionaries.pyc
+stubhub.pyc
