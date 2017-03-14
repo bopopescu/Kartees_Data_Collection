@@ -9,7 +9,6 @@ import csv
 import requests
 import shutil
 
-s3_resource = boto3.resource('s3')
 
 def consolidate_dailys(day):
 
@@ -20,6 +19,7 @@ def consolidate_dailys(day):
 	for obj in bucket.objects.all():
 		
 		key = obj.key
+
 
 		if 'daily' in key and 'csv' in key:
 
@@ -51,25 +51,12 @@ def append_to_total(event_csv, lines, team):
 
 	bucket = s3_resource.Bucket('2017pricedata')
 
-	import boto.s3.connection
-
-	conn = boto.connect_s3(
-        aws_access_key_id = access_key,
-        aws_secret_access_key = secret_key,
-      #  host = 'objects.dreamhost.com',
-        #is_secure=False,               # uncomment if you are not using ssl
-        calling_format = boto.s3.connection.OrdinaryCallingFormat(),
-        )
-
-	bucket = conn.get_bucket('2017pricedata')
-
 	key = 'total/%s/%s' %(team,event_csv)
 	exists = False
 	existing_lines = []
 	key_file = None
 
-
-	for obj in bucket.list():
+	for obj in bucket.objects.all():
 		
 		if obj.key == key:
 
@@ -92,7 +79,7 @@ def append_to_total(event_csv, lines, team):
 
 		elif 'total' in obj.key:
 
-			key_file = bucket.new_key(key)
+		#	key_file = bucket.new_key(key)
 
 			existing_lines = list(lines)
 
@@ -118,7 +105,7 @@ def append_to_total(event_csv, lines, team):
 
 	size = os.path.getsize(tmp_file_name)/1000
 
-	key_file.set_contents_from_filename(tmp_file_name)
+	s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,event_csv))
 
 	shutil.rmtree(directory) 
 
@@ -128,6 +115,23 @@ def append_to_total(event_csv, lines, team):
 if __name__ == '__main__':
 
 	now = datetime.datetime.utcnow()
+	
+	# import boto.s3.connection
+
+	# conn = boto.connect_s3(
+ #        aws_access_key_id = access_key,
+ #        aws_secret_access_key = secret_key,
+ #      #  host = 'objects.dreamhost.com',
+ #        #is_secure=False,               # uncomment if you are not using ssl
+ #        calling_format = boto.s3.connection.OrdinaryCallingFormat(),
+ #        )
+
+	# bucket = conn.get_bucket('2017pricedata')
+
+		
+	s3_resource = boto3.resource('s3')
+	s3_client = boto3.client('s3')
+
 
 	days_to_collect = []
 
