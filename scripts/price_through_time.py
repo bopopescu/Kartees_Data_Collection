@@ -18,7 +18,7 @@ status_times = {1: [10,22],  # Change to 2, 14
                 4: [11,12,13,14,15,16,17,18,19,20,21,22,23,1,2,3,4,5,6,7,8,9,10]
 }
 
-def get_status(games_distance):
+def get_status(event_id):
     
     start = datetime.datetime.utcnow()
 
@@ -30,68 +30,72 @@ def get_status(games_distance):
 
     now = datetime.datetime.utcnow()
 
-    with open('../global_data/game_schedules/%s.csv' %latest_game_schedules, 'rU') as schedule_file:
+    # with open('../global_data/game_schedules/%s.csv' %latest_game_schedules, 'rU') as schedule_file:
         
-        reader = csv.reader(schedule_file)
-        schedule_file.readline()
+    #     reader = csv.reader(schedule_file)
+    #     schedule_file.readline()
 
-        for row in reader:
+    #     for row in reader:
 
-            team = row[0]
-            event = row[1]
-            date = row[2]
-            sport = row[3]
+    #         event = row[1]
 
-            event_date = dparser.parse(date).replace(tzinfo=None)
+    #         if event == event_id:
+
+    #         team = row[0]
+            
+    #         date = row[2]
+    #         sport = row[3]
+
+    #         event_date = dparser.parse(date).replace(tzinfo=None)
  
-            date_dif = event_date - now
+    #         date_dif = event_date - now
 
-            time_dif = date_dif.days + (float(date_dif.seconds)/3600)/24
+    #         time_dif = date_dif.days + (float(date_dif.seconds)/3600)/24
             
-            dates[event] = date
-            teams[event] = team
-            sports[event] = sport
+    #         dates[event] = date
+    #         teams[event] = team
+    #         sports[event] = sport
 
 
-            events.append(event)
+    #         events.append(event)
             
-            if time_dif > 15:
-                status[event] = 1
-            elif time_dif > 7:
-                status[event] = 2
-            elif time_dif > 0:
-                status[event] = 3
+    #         if time_dif > 15:
+    #             status[event] = 1
+    #         elif time_dif > 7:
+    #             status[event] = 2
+    #         elif time_dif > 0:
+    #             status[event] = 3
     
-            # Else game must have been in the past
-            else:
-                status[event]=4
+    #         # Else game must have been in the past
+    #         else:
+    #             status[event]=4
 
   #  current_hour= datetime.datetime.utcnow().strftime("%H")
  
-    updated = []
+    # updated = []
 
-    for event in events:
+    # for event in events:
         
-        if status[event] in games_distance:
+    #     if status[event] in games_distance:
 
-            try:
-                update_event_data(event, dates[event], teams[event], sports[event])
-                updated.append(event)
+    #         try:
+    #             update_event_data(event, dates[event], teams[event], sports[event])
+    #             updated.append(event)
 
-                time.sleep(7)
+    #             time.sleep(7)
 
-            except Exception as e:
-                logging.error(traceback.format_exc())
+    #         except Exception as e:
+    #             logging.error(traceback.format_exc())
 
-    end = datetime.datetime.utcnow()
+    # end = datetime.datetime.utcnow()
 
 
-    elapsed_minutes = float((end - start).seconds) / 60
+    # elapsed_minutes = float((end - start).seconds) / 60
 
-    with open('../Collection_Logs.csv', 'a') as log_file:
+    # with open('../Collection_Logs.csv', 'a') as log_file:
 
-        writer = csv.writer(log_file)
-        writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
+    #     writer = csv.writer(log_file)
+    #     writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
 
 
 def update_event_data(event_id, date, team, sport):
@@ -207,14 +211,18 @@ def update_event_data(event_id, date, team, sport):
 
 if __name__ == '__main__':
 
-
-
     try:
 
-        # Get account to use from command line arg
+        # Get account to use from first command line arg
         stubhub = Stubhub(account = sys.argv[1])
-    
-        get_status(eval(sys.argv[2]))
+
+        # Get game to use from second command line arg
+        event_id = sys.argv[2]
+        date = sys.argv[3]
+        sport = sys.argv[4]
+
+ 
+        update_event_data(event, date, team, sport)
 
     except Exception as e:
 

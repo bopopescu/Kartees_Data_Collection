@@ -662,6 +662,67 @@ def count_NAs(path):
 
 		print "NA count: %s\n Good Rows: %s\n PCT bad: %s" %(na_count, good_count, (float(na_count)/float(na_count+good_count)))
 
+def split_models(path, new_path1, new_path2):
+
+	under400 = [[]]
+	over400 = [[]]
+
+	averages = {}
+	prices = {}
+	rows = None
+	with open(path, 'rU') as file:
+
+		reader = csv.reader(file)
+
+		header_row = reader.next()
+
+		rows = [row for row in reader]
+
+		for row in rows:
+
+			zone = row[2]
+			price = row[7]
+			# Check if the zone is already in averages
+			if zone not in averages:
+
+				prices[zone] = []
+
+			if price != "NA":
+				prices[zone].append(float(price))
+
+			# Recalculate average
+			averages[zone] = np.mean(prices[zone])
+
+	
+	with open(new_path1, 'wb') as under400_file:
+
+		writer = csv.writer(under400_file)
+
+		writer.writerow(header_row)
+
+		for row in rows:
+
+			zone = row[2]
+
+			if averages[zone] < 400:
+
+				writer.writerow(row)
+
+	with open(new_path2, 'wb') as over400_file:
+
+		writer = csv.writer(over400_file)
+
+		writer.writerow(header_row)
+
+		for row in rows:
+
+			zone = row[2]
+
+			if averages[zone] > 400:
+
+				writer.writerow(row)
+
+
 
 if __name__ == '__main__':
 
@@ -674,7 +735,11 @@ if __name__ == '__main__':
 
 	old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days.csv'
 
-	#new_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/zones_clean_time_factored_l10_na.csv' 
+	new_path1 = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days_under400.csv' 
+
+	new_path2 = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days_over400.csv' 
+
+
 
 	#convert_time_dif(old_path, new_path, header_row)
 
@@ -688,10 +753,14 @@ if __name__ == '__main__':
 
 	#input_future_prices(old_path, header_row)
 
-	input_past_derivatives(old_path, header_row)
+	#input_past_derivatives(old_path, header_row)
 
 	#check_rows()
 	#consolidate_days()
 
 	#count_NAs(old_path)
+
+	split_models(old_path, new_path1, new_path2)
+
+
 

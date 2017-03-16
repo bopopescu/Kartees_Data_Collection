@@ -1,0 +1,51 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\froman\fcharset0 Times-Roman;
+}
+{\colortbl;\red255\green255\blue255;\red52\green52\blue52;\red255\green255\blue255;\red52\green52\blue52;
+\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c26667\c26667\c26667;\cssrgb\c100000\c100000\c100000;\cssrgb\c26667\c26667\c26667;
+\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 R notes:\
+\
+\ul Feature scaling\ulnone  - sets mean to 0 and std to 1:\
+scale(x) - where x can be a matrix or vector or data frame\
+\
+\ul Select column subset\ulnone  - If columns are labeled, use subset function:\
+dat <- data.frame(A=c(1,2),B=c(3,4),C=c(5,6),D=c(7,7),E=c(8,8),F=c(9,9))\
+subset(dat, select=c("A", "B"))\
+\
+\ul Evaluate normality of features:\ulnone  Plot a Q-Q plot \
+qqnorm(z)\
+qqline(z)\
+\
+\ul Leverages and outliers:\ulnone  Cook\'92s distance is a formula applied to find the outliers. Values > 1 are considered large\
+lm.influence(model)\
+\
+Plotting the model itself will give you 4 graphs:  Residuals vs. fitted, Normal Q-Q plot, Scale-location (standardized residuals), Residuals vs. leverages - with Cook\'92s distance lines\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \ul \ulc0 Model Confidence\ulnone : Find the confidence interval of each feature using:
+\f1\fs28 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sl320\partightenfactor0
+\cf2 confint(model, level=0.95)\
+\
+\pard\pardeftab720\sl340\sa280\partightenfactor0
+
+\f2 \cf2 Plot of fitted vs residuals. No clear pattern should show in the residual plot if the model is a good fit\
+\pard\pardeftab720\sl320\partightenfactor0
+
+\f1 \cf2 plot(fitted(model),residuals(model))\
+\
+\pard\pardeftab720\sl340\sa280\partightenfactor0
+
+\f2 \cf4 \cb5 \ul \ulc4 \outl0\strokewidth0 Correlations:\ulnone  Compute correlation matrix of features\
+install.packages(\'93Car\'94) 												Library(car)\
+
+\f1 \cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sl320\partightenfactor0
+\cf2 \
+}
