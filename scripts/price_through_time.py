@@ -98,7 +98,7 @@ def get_status(event_id):
     #     writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
 
 
-def update_event_data(event_id, date, team, sport):
+def update_event_data(event_id, team, sport):
 
     now = datetime.datetime.utcnow()
 
@@ -218,11 +218,10 @@ if __name__ == '__main__':
 
         # Get game to use from second command line arg
         event_id = sys.argv[2]
-        date = sys.argv[3]
         sport = sys.argv[4]
 
  
-        update_event_data(event, date, team, sport)
+        update_event_data(event, team, sport)
 
     except Exception as e:
 
