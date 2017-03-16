@@ -218,7 +218,7 @@ if __name__ == '__main__':
 
         # Get game to use from second command line arg
         event_id = sys.argv[2]
-        sport = sys.argv[4]
+        sport = sys.argv[3]
 
  
         update_event_data(event, team, sport)
