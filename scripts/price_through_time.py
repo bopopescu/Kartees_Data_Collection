@@ -102,6 +102,8 @@ def update_event_data(event_id, team, sport):
 
     now = datetime.datetime.utcnow()
 
+
+
     directory = '../price_data/%s_%s_%s' %(now.year, now.month, now.day)
 
     if not os.path.exists(directory): os.makedirs(directory)
@@ -218,8 +220,9 @@ if __name__ == '__main__':
 
         # Get game to use from second command line arg
         event_id = sys.argv[2]
-        sport = sys.argv[3]
-
+        team = sys.argv[3]
+        sport = sys.argv[4]
+        
         update_event_data(event_id, team, sport)
 
         print 'success'
