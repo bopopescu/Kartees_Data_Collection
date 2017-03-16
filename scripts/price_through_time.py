@@ -220,7 +220,7 @@ if __name__ == '__main__':
         event_id = sys.argv[2]
         sport = sys.argv[3]
 
-        update_event_data(event, team, sport)
+        update_event_data(event_id, team, sport)
 
         print 'success'
 
