@@ -15,7 +15,7 @@ def get_cron(account):
 		rows = [l for l in reader]
 
 		return rows, header
-		
+
 
 def cron_write_delay(account):
 
@@ -58,7 +58,13 @@ def cron_write_delay(account):
 
 			for row in rows:
 
-				writer.writerow([row[0], 'NA'])
+				if int(row[0])==1:
+
+					writer.writerow([row[0], time.time()])
+
+				else:
+
+					writer.writerow([row[0], 'NA'])
 
 	else:
 
@@ -78,4 +84,7 @@ def cron_write_delay(account):
 				else:
 					writer.writerow(row)
 
+if __name__ == '__main__':
+
+	cron_write_delay("LABO")
 
