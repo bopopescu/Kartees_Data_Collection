@@ -15,6 +15,7 @@ def get_cron(account):
 		rows = [l for l in reader]
 
 		return rows, header
+		
 
 def cron_write_delay(account):
 
