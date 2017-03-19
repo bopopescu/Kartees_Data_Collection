@@ -95,11 +95,6 @@ def update_event_data(event_id, team, sport):
     columns = []
     time_dif =  str(metadata['time_difference']).replace(",","")
 
-   # Before season, ignore wins/losses and l_10
-
-    if datetime.datetime.now()<datetime.datetime(2017,4,3):
-
-        wins, losses, l_10 = 'NA', 'NA', 'NA'
 
    # Section = 1, Zone = 2
 

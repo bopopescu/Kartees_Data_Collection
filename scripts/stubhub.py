@@ -215,10 +215,16 @@ class Stubhub():
             total_tickets = data['totalTickets']
             average_price = data['pricingSummary']['averageTicketPrice']
             total_listings = data['totalListings']
+
             
-            # Get team info
-            
-            wins, losses, l_10 = espn.get_team_performance(event_id, sport, team)
+            # Before season, ignore wins/losses and l_10
+
+            if datetime.datetime.now()<datetime.datetime(2017,4,3):
+
+                wins, losses, l_10 = 'NA', 'NA', 'NA'
+                
+            else:
+                wins, losses, l_10 = espn.get_team_performance(event_id, sport, team)
             
 
             return zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings
