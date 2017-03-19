@@ -3,105 +3,16 @@
 
 
 from stubhub import *
+from cron_functions import *
 import sys
 sys.dont_write_bytecode = True
 
 latest_game_schedules = '2017-03-05_18_29'
 
 
-# 10 UTC = 5 PM EST, 4 PM PT, 11 PM CET
-# 22 UTC = 5 AM EST, 5 AM PT, 11 AM CET
-
-# status_times = {1: [10,22],  # Change to 2, 14
-#                 2: [10,16,22,4],
-#                 3: [10,13,16,19,22,1,4,7],
-#                 4: [11,12,13,14,15,16,17,18,19,20,21,22,23,1,2,3,4,5,6,7,8,9,10]
-# }
-
-# def get_status(event_id):
-    
-#     start = datetime.datetime.utcnow()
-
-#     events=[]
-#     status = {}
-#     dates = {}
-#     teams = {}
-#     sports = {}
-
-#     now = datetime.datetime.utcnow()
-
-    # with open('../global_data/game_schedules/%s.csv' %latest_game_schedules, 'rU') as schedule_file:
-        
-    #     reader = csv.reader(schedule_file)
-    #     schedule_file.readline()
-
-    #     for row in reader:
-
-    #         event = row[1]
-
-    #         if event == event_id:
-
-    #         team = row[0]
-            
-    #         date = row[2]
-    #         sport = row[3]
-
-    #         event_date = dparser.parse(date).replace(tzinfo=None)
- 
-    #         date_dif = event_date - now
-
-    #         time_dif = date_dif.days + (float(date_dif.seconds)/3600)/24
-            
-    #         dates[event] = date
-    #         teams[event] = team
-    #         sports[event] = sport
-
-
-    #         events.append(event)
-            
-    #         if time_dif > 15:
-    #             status[event] = 1
-    #         elif time_dif > 7:
-    #             status[event] = 2
-    #         elif time_dif > 0:
-    #             status[event] = 3
-    
-    #         # Else game must have been in the past
-    #         else:
-    #             status[event]=4
-
-  #  current_hour= datetime.datetime.utcnow().strftime("%H")
- 
-    # updated = []
-
-    # for event in events:
-        
-    #     if status[event] in games_distance:
-
-    #         try:
-    #             update_event_data(event, dates[event], teams[event], sports[event])
-    #             updated.append(event)
-
-    #             time.sleep(7)
-
-    #         except Exception as e:
-    #             logging.error(traceback.format_exc())
-
-    # end = datetime.datetime.utcnow()
-
-
-    # elapsed_minutes = float((end - start).seconds) / 60
-
-    # with open('../Collection_Logs.csv', 'a') as log_file:
-
-    #     writer = csv.writer(log_file)
-    #     writer.writerow([str(datetime.datetime.utcnow()), elapsed_minutes, updated])
-
-
 def update_event_data(event_id, team, sport):
 
     now = datetime.datetime.utcnow()
-
 
 
     directory = '../price_data/%s_%s_%s' %(now.year, now.month, now.day)
@@ -216,13 +127,15 @@ if __name__ == '__main__':
     try:
 
         # Get account to use from first command line arg
-        stubhub = Stubhub(account = sys.argv[1])
+        account = sys.argv[1]
+        stubhub = Stubhub(account)
 
         # Get game to use from second command line arg
         event_id = sys.argv[2]
         team = sys.argv[3]
         sport = sys.argv[4]
         
+        cron_write_delay(account)
         update_event_data(event_id, team, sport)
 
         print 'success'
