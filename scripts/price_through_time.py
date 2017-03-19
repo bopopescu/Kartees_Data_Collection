@@ -5,6 +5,7 @@
 from stubhub import *
 from cron_functions import *
 import sys
+import time
 sys.dont_write_bytecode = True
 
 latest_game_schedules = '2017-03-05_18_29'
@@ -12,8 +13,9 @@ latest_game_schedules = '2017-03-05_18_29'
 
 def update_event_data(event_id, team, sport):
 
-    now = datetime.datetime.utcnow()
+    first = time.time()
 
+    now = datetime.datetime.utcnow()
 
     directory = '../price_data/%s_%s_%s' %(now.year, now.month, now.day)
 
@@ -38,12 +40,15 @@ def update_event_data(event_id, team, sport):
 
         include_header=True
 
+    second = time.time()
         
     new_listings_request = stubhub.get_event_inventory(event_id)
 
+    third = time.time()
 
     zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings = stubhub.get_event_data(event_id=event_id, new_listings=new_listings_request, sport=sport, team = team)
 
+    fourth = time.time()
 
     listing_divisor = .181
      # Find section and zone averages
@@ -120,13 +125,16 @@ def update_event_data(event_id, team, sport):
     csv.writer(file).writerows(columns)
      
     file.close()
- 
+    
+    fifth = time.time()
+
 
 if __name__ == '__main__':
 
     try:
 
         # Get account to use from first command line arg
+        first= time.time()
         account = sys.argv[1]
         stubhub = Stubhub(account)
 
@@ -136,7 +144,9 @@ if __name__ == '__main__':
         sport = sys.argv[4]
         
         cron_write_delay(account)
+        
         update_event_data(event_id, team, sport)
+        second = time.time()
 
         print 'success'
 

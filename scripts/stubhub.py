@@ -173,6 +173,7 @@ class Stubhub():
 
     def get_event_data(self, event_id, sport, team, new_listings = None):
         # Get XML of event details
+        
         event_details = self.get_event(event_id=event_id).text
 
         #import pdb; pdb.set_trace()
@@ -197,13 +198,13 @@ class Stubhub():
 
         time_difference_in_days = date_dif.days + (float(date_dif.seconds)/3600)/24
 
-      
+        
         current_time_formatted = now.strftime("%Y-%m-%d %H:%M:%S")
         event_date_formatted = event_date_UTC.strftime("%Y-%m-%d %H:%M:%S")
         metadata = {'event_date':event_date_formatted, 'event_id' : event_id, 'time_difference' : time_difference_in_days, 'current_time':current_time_formatted}
 
-
         if new_listings !=None:
+
 
             data = new_listings
 
@@ -216,10 +217,13 @@ class Stubhub():
             total_listings = data['totalListings']
             
             # Get team info
+            
             wins, losses, l_10 = espn.get_team_performance(event_id, sport, team)
-    
+            
+
             return zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings
-        
+
+
         else:
             return metadata
             
@@ -243,8 +247,8 @@ if __name__ == '__main__':
         
         # event = stubhub.get_event(9710889)
         # print event.text
-        games = stubhub.get_event_inventory(9710889)
-        print games
+        #games = stubhub.get_event_inventory(9710889)
+        #print games
      
         #keys = games['events'][0].keys()
      
@@ -296,7 +300,14 @@ if __name__ == '__main__':
         #     print response.text
         #     i=i+1
         # events = [9445120,9445123,9445125,9445126,9445128,9445036,9445134,9445135,9445136,9445137,9445139,9445141,9445143,9445144,9445146,9445039,9445148,9445151,9445152,9445153,9445027,9445156,9445041,9445030,9445093,9445032,9445033,9445164,9445037,9445167,9445169,9445170,9445171,9445044,9445173,9445174,9445175,9445176,9445177,9445178,9445181,9445182,9445055,9445057,9445059,9445061,9445062,9445063,9445065,9445047,9445068,9445069,9445071,9445074,9445155,9445077,9445049,9445080,9445028,9445084,9445085,9445086,9445087,9445088,9445089,9445090,9445091,9445092,9445158,9445094,9445095,9445106,9445075,9445108,9445109,9445111,9445112,9445114,9445172,9445116,9445118]
-        # #event = stubhub.get_event_data()
+        event_id = 9715974
+        first = time.time()
+        new_listings_request = stubhub.get_event_inventory(event_id)
+        second = time.time()
+        zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings = stubhub.get_event_data(event_id=event_id, new_listings=new_listings_request, sport='mlb', team = 'Baltimore Orioles')
+        third=time.time()
+        print '1 to 2: %s' %str(second-first)
+        print '2 to 3: %s' %str(third-second)
 
         # dates_dict = {}
         # dates_list = []

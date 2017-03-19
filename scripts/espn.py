@@ -6,14 +6,17 @@ import stubhub
 import static_dictionaries
 import datetime
 import pdb
+import time
 
 
 def get_team_performance(event_id, sport, team):
 
+	first = time.time()
 	current_sport = sport
 	full_team_name = team
 
-	sports = ['nba','mlb','nhl','nfl']
+	#sports = ['nba','mlb','nhl','nfl']
+	sports = ['mlb']
 	stats_row_buffer = {'mlb': 13, 'nba': 14, 'nhl': 16, 'nfl': 13}
 	
 	sports_wins = {}
@@ -25,8 +28,9 @@ def get_team_performance(event_id, sport, team):
 		
 		if sport !='nhl':
 			
+			second = time.time()
 			web_page = urllib.urlopen("http://espn.go.com/%s/standings" % sport).read()
-		
+			third = time.time()
 			soup = BeautifulSoup(web_page, "html.parser")
 		
 			teams = soup.find_all("span", class_= "team-names")
@@ -56,6 +60,10 @@ def get_team_performance(event_id, sport, team):
 			sports_losses[sport] = losses
 			sports_l_10[sport] = l_10
 			
+			fourth = time.time()
+
+			#print '2 to 3: %s' %str(third-second)
+			#print '3 to 4: %s' %str(fourth-third)
             
 		else:
 			web_page = urllib.urlopen("http://www.msn.com/en-us/sports/nhl/standings").read()
