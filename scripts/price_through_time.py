@@ -143,7 +143,7 @@ if __name__ == '__main__':
         update_event_data(event_id, team, sport)
         second = time.time()
 
-        print 'success'
+        print 'true'
 
     except Exception as e:
 
