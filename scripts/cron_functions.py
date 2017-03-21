@@ -40,13 +40,11 @@ def cron_write_delay(account):
 
 		difference = now - first_time
 
-		print difference
 
 		if difference<59:
 
 			delay = float(60) - difference
 
-			print delay
 
 			time.sleep(delay)
 
