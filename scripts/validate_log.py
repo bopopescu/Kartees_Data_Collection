@@ -32,10 +32,10 @@ def validate_data():
 
 	if last_row_value > (np.mean(past_rows_elapsed[last_row_type]) +  np.std(past_rows_elapsed[last_row_type]) *1.95) or last_row_value < (np.mean(past_rows_elapsed[last_row_type]) -  np.std(past_rows_elapsed[last_row_type])*1.95):
 
-		print 'different'
+		print 'true'
 
 	else:
-		print 'good'
+		print 'false'
 
 if __name__ == '__main__':
 
