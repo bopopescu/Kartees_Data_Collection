@@ -232,6 +232,199 @@ class Stubhub():
 
         else:
             return metadata
+        def create_listing(self, listing_dict):
+
+        #params = listing_dict
+#         params = {         
+#             "eventId": "9445175",
+#             "pricePerProduct": {"amount": "503", "currency": "USD"},
+#             "quantity": "1",
+#             "splitOption": "NOSINGLES",
+#             "deliveryOption": "BARCODE",
+#             "section": "311",
+#             "products":{"row":"4", "seat":"12", "operation": "ADD", "productType": "TICKET"}
+#         }
+        eventId = listing_dict['eventId']
+        quantity = listing_dict['quantity']
+        section = listing_dict['section']
+        row = listing_dict['row']
+        splitOption = 'NOSINGLES'
+        deliveryOption = 'BARCODE'
+        quantity = listing_dict['quantity']
+        tickets = ''
+        counter = 0
+        for seat in listing_dict['seats']:
+            addition = ''
+            if counter != 0:
+                addition = ","
+            
+            tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
+            counter+=1
+            
+        print tickets
+        pdb.set_trace()
+        price = (float(self.get_cheapest(eventId, section))) * 1.05
+
+        params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
+
+
+        print params
+        response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
+        pdb.set_trace()
+        stubhub_id = response.json()['id']
+        print stubhub_id
+    
+    def create_listing_with_barcodes(self):
+        
+        params = {
+                  "listing": {
+                    "event": "9445175",
+                    "pricePerTicket": {
+                      "amount": 502,
+                      "currency": "USD"
+                    },
+                    "quantity": 2,
+                    "splitOption": "NONE",
+                    "tickets": [
+                      {
+                        "row": "4",
+                        "seat": "10",
+                        "barcode": "VAY7-LLW793Q9"
+                      },
+                      {
+                        "row": "4",
+                        "seat": "11",
+                        "barcode": "VAY7-KKH929Y2"
+                      }
+                    ]
+                  }
+                }
+        
+        response = self.send_req('/inventory/listings/v1/barcodes', token_type='USER',req_type = 'POST',params=params)
+        print response
+        print response.json()
+         
+    
+    def update_barcodes(self, csv_name):
+        
+        barcode_csv_path = "barcode_csvs/%s.csv" %csv_name
+        
+        seat_10_codes = {}
+        seat_11_codes = {}
+        with open(barcode_csv_path,'rU') as barcode_file:
+            reader = csv.reader(barcode_file)
+            next(reader)
+            
+            for row in reader:
+                stubhub_listing_id = row[1]
+                seat_10_codes[stubhub_listing_id] = row[2]
+                seat_11_codes[stubhub_listing_id] = row[3]
+        
+        row = 4
+        for listing in seat_10_codes:
+            print listing
+            
+            barcode_10 = seat_10_codes[listing]
+            barcode_11 = seat_11_codes[listing]
+            
+            seat_10_dict = { "seat": "10","row": "4" ,"barcode": "%s" %barcode_10 }
+            seat_11_dict = { "seat": "11","row": "4" ,"barcode": "%s" %barcode_11  }
+                    
+            params = { "listing": {"tickets": [seat_10_dict, seat_11_dict]} } 
+
+            print "Listing: %s, %s" %(listing, params)
+            response = self.send_req('/inventory/listings/v1/%s/barcodes' %(listing), token_type = 'USER', req_type='POST', params=params)
+            pdb.set_trace()
+            #print response.header
+            print response
+            print response.text
+            
+        return None
+    
+    def update_barcodes_v2(self,csv_name):
+        
+        barcode_csv_path = "barcode_csvs/%s.csv" %csv_name
+        
+        seat_10_codes = {}
+        seat_11_codes = {}
+        
+        with open(barcode_csv_path,'rU') as barcode_file:
+            reader = csv.reader(barcode_file)
+            next(reader)
+            
+            for row in reader:
+
+                if row[1] != "":
+                    stubhub_listing_id = "%s" %row[1].strip()
+                  #  print stubhub_listing_id
+                    seat_10_codes[stubhub_listing_id] = "%s" %row[2].upper().strip()
+                    seat_11_codes[stubhub_listing_id] = "%s" %row[3].upper().strip()
+        
+        #pdb.set_trace()
+        #print len(seat_10_codes)
+        #print len(seat_11_codes)
+        row = 4
+        counter = 1
+        error_codes = {}
+        error_response = {}
+        for listing in seat_10_codes:
+            #print listing
+            
+            barcode_10 = seat_10_codes[listing]
+            barcode_11 = seat_11_codes[listing]
+            
+         #   seat_10_dict = { "seat": "10","row": "4" ,"barcode": "%s" %barcode_10 }
+          #  seat_11_dict = { "seat": "11","row": "4" ,"barcode": "%s" %barcode_11  }
+                    
+            params = { "products": [
+                                {"row" : "4", "seat":"10", "fulfillmentArtifact" : "%s" %barcode_10, "operation" : "UPDATE"},
+                                 {"row" : "4", "seat":"11", "fulfillmentArtifact" : "%s" %barcode_11, "operation" : "UPDATE"}  
+                                   
+                                   ] } 
+            
+            #pdb.set_trace()
+            #print "Listing: %s, %s" %(listing, params)
+
+            if counter <10:
+               # pdb.set_trace()
+                print "Listing: %s, %s" %(listing, params)
+                response = self.send_req('/inventory/listings/v2/%s' %(listing), token_type = 'USER', req_type='PUT', params=params)
+                
+                print response.headers
+
+                print response
+                print response.text
+                pdb.set_trace()
+                if response !=200:
+                    error_codes[listing] = response
+                    error_response[listing] = response.text
+                counter+=1
+            else:
+                 time.sleep(61)
+                 counter=1
+            
+        print error_codes
+        print error_response
+    
+    
+    def get_all_listings(self):
+        
+        return self.send_req('/accountmanagement/listings/v1/seller/%s' %self.user_id, token_type='USER', req_type='GET' ).json()
+        
+    def relist_listing(self, listing_id):
+                       
+        return None        
+                
+     
+    def get_cheapest(self, eventId, section):
+            
+        listings = self.get_event_inventory(eventId)
+        
+        for listing in listings['section_stats']:
+            if str(listing['sectionName'][-3:]) == str(section):  
+                buyer_price_min = listing['minTicketPrice']
+
+        return buyer_price_min
             
 if __name__ == '__main__':
 
