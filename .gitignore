@@ -7,4 +7,8 @@ espn.pyc
 static_dictionaries.pyc
 stubhub.pyc
 *.pyc
-
+Collection_Logs.csv
+Collection_Logs_pivot
+cron_MO.csv
+cron_LABO.csv
+game_times.csv
