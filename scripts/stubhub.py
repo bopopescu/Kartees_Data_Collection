@@ -234,45 +234,35 @@ class Stubhub():
             return metadata
         def create_listing(self, listing_dict):
 
-        #params = listing_dict
-#         params = {         
-#             "eventId": "9445175",
-#             "pricePerProduct": {"amount": "503", "currency": "USD"},
-#             "quantity": "1",
-#             "splitOption": "NOSINGLES",
-#             "deliveryOption": "BARCODE",
-#             "section": "311",
-#             "products":{"row":"4", "seat":"12", "operation": "ADD", "productType": "TICKET"}
-#         }
-        eventId = listing_dict['eventId']
-        quantity = listing_dict['quantity']
-        section = listing_dict['section']
-        row = listing_dict['row']
-        splitOption = 'NOSINGLES'
-        deliveryOption = 'BARCODE'
-        quantity = listing_dict['quantity']
-        tickets = ''
-        counter = 0
-        for seat in listing_dict['seats']:
-            addition = ''
-            if counter != 0:
-                addition = ","
-            
-            tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
-            counter+=1
-            
-        print tickets
-        pdb.set_trace()
-        price = (float(self.get_cheapest(eventId, section))) * 1.05
+            eventId = listing_dict['eventId']
+            quantity = listing_dict['quantity']
+            section = listing_dict['section']
+            row = listing_dict['row']
+            splitOption = 'NOSINGLES'
+            deliveryOption = 'BARCODE'
+            quantity = listing_dict['quantity']
+            tickets = ''
+            counter = 0
+            for seat in listing_dict['seats']:
+                addition = ''
+                if counter != 0:
+                    addition = ","
+                
+                tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
+                counter+=1
+                
+            print tickets
+            pdb.set_trace()
+            price = (float(self.get_cheapest(eventId, section))) * 1.05
 
-        params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
+            params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
 
 
-        print params
-        response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
-        pdb.set_trace()
-        stubhub_id = response.json()['id']
-        print stubhub_id
+            print params
+            response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
+            pdb.set_trace()
+            stubhub_id = response.json()['id']
+            print stubhub_id
     
     def create_listing_with_barcodes(self):
         
@@ -307,7 +297,7 @@ class Stubhub():
     
     def update_barcodes(self, csv_name):
         
-        barcode_csv_path = "barcode_csvs/%s.csv" %csv_name
+        barcode_csv_path = "../barcode_csvs/%s.csv" %csv_name
         
         seat_10_codes = {}
         seat_11_codes = {}
@@ -317,8 +307,8 @@ class Stubhub():
             
             for row in reader:
                 stubhub_listing_id = row[1]
-                seat_10_codes[stubhub_listing_id] = row[2]
-                seat_11_codes[stubhub_listing_id] = row[3]
+                seat_10_codes[stubhub_listing_id] = row[2].strip()
+                seat_11_codes[stubhub_listing_id] = row[3].strip()
         
         row = 4
         for listing in seat_10_codes:
@@ -327,8 +317,8 @@ class Stubhub():
             barcode_10 = seat_10_codes[listing]
             barcode_11 = seat_11_codes[listing]
             
-            seat_10_dict = { "seat": "10","row": "4" ,"barcode": "%s" %barcode_10 }
-            seat_11_dict = { "seat": "11","row": "4" ,"barcode": "%s" %barcode_11  }
+            seat_10_dict = { "seat": "15","row": "2" ,"barcode": "%s" %barcode_10 }
+            seat_11_dict = { "seat": "16","row": "2" ,"barcode": "%s" %barcode_11  }
                     
             params = { "listing": {"tickets": [seat_10_dict, seat_11_dict]} } 
 
@@ -343,7 +333,7 @@ class Stubhub():
     
     def update_barcodes_v2(self,csv_name):
         
-        barcode_csv_path = "barcode_csvs/%s.csv" %csv_name
+        barcode_csv_path = "../barcode_csvs/%s.csv" %csv_name
         
         seat_10_codes = {}
         seat_11_codes = {}
@@ -377,8 +367,8 @@ class Stubhub():
           #  seat_11_dict = { "seat": "11","row": "4" ,"barcode": "%s" %barcode_11  }
                     
             params = { "products": [
-                                {"row" : "4", "seat":"10", "fulfillmentArtifact" : "%s" %barcode_10, "operation" : "UPDATE"},
-                                 {"row" : "4", "seat":"11", "fulfillmentArtifact" : "%s" %barcode_11, "operation" : "UPDATE"}  
+                                {"row" : "2", "seat":"15", "fulfillmentArtifact" : "%s" %barcode_10, "operation" : "UPDATE"},
+                                 {"row" : "2", "seat":"16", "fulfillmentArtifact" : "%s" %barcode_11, "operation" : "UPDATE"}  
                                    
                                    ] } 
             
@@ -390,12 +380,13 @@ class Stubhub():
                 print "Listing: %s, %s" %(listing, params)
                 response = self.send_req('/inventory/listings/v2/%s' %(listing), token_type = 'USER', req_type='PUT', params=params)
                 
-                print response.headers
+               # print response.headers
 
-                print response
-                print response.text
-                pdb.set_trace()
-                if response !=200:
+                print "%s - %s" %(listing,response)
+               # print response.text
+              #  pdb.set_trace()
+                if response.status_code !=200:
+                    pdb.set_trace()
                     error_codes[listing] = response
                     error_response[listing] = response.text
                 counter+=1
@@ -441,6 +432,43 @@ if __name__ == '__main__':
     try:
 
         stubhub = Stubhub(account = 'LABO')
+
+
+        listing = 1232289487
+
+        params = { "products": [
+                        {"row" : "2", "seat":"15", "fulfillmentArtifact" : "E6U7-ZKW992KQ", "operation" : "UPDATE"},
+                         {"row" : "2", "seat":"16", "fulfillmentArtifact" : "E6U7-UJPDFAWR", "operation" : "UPDATE"}  
+                           
+                           ] } 
+
+
+        # response = stubhub.send_req('/inventory/listings/v2/%s' %(listing), token_type = 'USER', req_type='PUT', params=params)
+
+         #print response.text
+
+
+
+        # csv_path = '../barcodes/barcodes_2017.csv'
+
+        # stubhub.update_barcodes_v2('barcodes_2017')
+
+        # with open(csv_path, 'rU') as barcodes:
+        #     reader = csv.reader(barcodes)
+
+        #     reader.next()
+
+        #     rows = [l for l in reader]
+
+        #     for row in rows:
+
+        #         row[1] = str(dparser.parse(row[1]) - timedelta(hours = 4))[0:10]
+
+        # with open(csv_path, 'a') as new_file:
+
+        #     writer = csv.writer(new_file)
+
+        #     writer.writerows(rows)
    
         #event_list = [9370813, 9370773, 9370849, 9370785, 9370651, 9370664, 9370688, 9370708, 9370659, 9371397, 9371402, 9371410, 9371429, 9371138, 9371158, 9371165, 9371178, 9371146, 9371157, 9371167, 9371186, 9371201, 9341475, 9341486, 9341506, 9341526, 9341540, 9341429, 9341444, 9341472, 9341496, 9341636, 9341669, 9341682, 9341695, 9342365, 9342374, 9342393, 9342407, 9342419, 9342412, 9342418, 9342424, 9342429, 9342434]
         
@@ -499,14 +527,14 @@ if __name__ == '__main__':
         #     print response.text
         #     i=i+1
         # events = [9445120,9445123,9445125,9445126,9445128,9445036,9445134,9445135,9445136,9445137,9445139,9445141,9445143,9445144,9445146,9445039,9445148,9445151,9445152,9445153,9445027,9445156,9445041,9445030,9445093,9445032,9445033,9445164,9445037,9445167,9445169,9445170,9445171,9445044,9445173,9445174,9445175,9445176,9445177,9445178,9445181,9445182,9445055,9445057,9445059,9445061,9445062,9445063,9445065,9445047,9445068,9445069,9445071,9445074,9445155,9445077,9445049,9445080,9445028,9445084,9445085,9445086,9445087,9445088,9445089,9445090,9445091,9445092,9445158,9445094,9445095,9445106,9445075,9445108,9445109,9445111,9445112,9445114,9445172,9445116,9445118]
-        event_id = 9715974
-        first = time.time()
-        new_listings_request = stubhub.get_event_inventory(event_id)
-        second = time.time()
-        zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings = stubhub.get_event_data(event_id=event_id, new_listings=new_listings_request, sport='mlb', team = 'Baltimore Orioles')
-        third=time.time()
-        print '1 to 2: %s' %str(second-first)
-        print '2 to 3: %s' %str(third-second)
+        # event_id = 9715974
+        # first = time.time()
+        # new_listings_request = stubhub.get_event_inventory(event_id)
+        # second = time.time()
+        # zones_dict, sections_dict, listings, metadata, event_id, total_tickets, average_price, wins, losses, l_10, opponent, total_listings = stubhub.get_event_data(event_id=event_id, new_listings=new_listings_request, sport='mlb', team = 'Baltimore Orioles')
+        # third=time.time()
+        # print '1 to 2: %s' %str(second-first)
+        # print '2 to 3: %s' %str(third-second)
 
         # dates_dict = {}
         # dates_list = []
