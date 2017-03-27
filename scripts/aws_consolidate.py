@@ -126,7 +126,7 @@ def cloudant_read():
 
 	return logs_doc["logs"]
 
-if __name__ == '__main__':
+def aws_consolidate(first_day, second_day)
 
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],
              connect=True,
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
 	days_to_collect = []
 
-	for i in range(19,20):
+	for i in range(first_day,last_day):
 
 		day = now - datetime.timedelta(days=i)
 		days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))

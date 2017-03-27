@@ -224,7 +224,12 @@ def reprice():
 @app.route('/weekly_consolidate', methods = ['GET'])
 def weekly_consolidate():
 
-	aws_consolidate()
+	if request.args.get('first_day') and request.args.get('last_day'):
+
+		aws_consolidate(request.args.get('first_day'),request.args.get('last_day'))
+
+	else:
+		aws_consolidate(1,8)
 	
 	return 'success' 
 

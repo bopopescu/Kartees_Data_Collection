@@ -1,4 +1,4 @@
 ---
 applications:
-- name: bluemix-python-flask-sample
+- name: stubhub-services-python
   memory: 128M
