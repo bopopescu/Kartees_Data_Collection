@@ -15,7 +15,9 @@ import os.path
 import dateutil.parser as dparser
 # from django.utils.timezone import utc
 import pdb
-from credentials import *
+
+if 'VCAP_SERVICES' not in os.environ:
+    from credentials import *
 
 import sys
 

@@ -20,7 +20,9 @@ from scripts.stubhub import Stubhub
 from scripts.stubhub import *
 from scripts.aws_consolidate import *
 import pdb
-
+if 'VCAP_SERVICES' not in os.environ:
+	print 'hey'
+	from scripts.credentials import *
 
 app = Flask(__name__)
 
@@ -223,12 +225,29 @@ def reprice():
 @app.route('/weekly_consolidate', methods = ['GET'])
 def weekly_consolidate():
 
+	if 'VCAP_SERVICES' in os.environ:
+
+	    vcap = json.loads(os.getenv('VCAP_SERVICES'))
+	    print('Found VCAP_SERVICES')
+	    if 'cloudantNoSQLDB' in vcap:
+	        creds = vcap['cloudantNoSQLDB'][0]['credentials']
+	        user = creds['username']
+	        password = creds['password']
+	        url = 'https://' + creds['host']
+	        client = Cloudant(user, password, url=url, connect=True)
+	  
+	else:
+
+		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+
+
+
 	if request.args.get('first_day') and request.args.get('last_day'):
 
-		aws_consolidate(request.args.get('first_day'),request.args.get('last_day'))
+		aws_consolidate(client, request.args.get('first_day'),request.args.get('last_day'))
 
 	else:
-		aws_consolidate(1,8)
+		aws_consolidate(client,1,8)
 	
 	return 'success' 
 
