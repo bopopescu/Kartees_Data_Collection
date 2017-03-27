@@ -126,7 +126,7 @@ def cloudant_read():
 
 	return logs_doc["logs"]
 
-def aws_consolidate(first_day, second_day)
+def aws_consolidate(first_day, second_day):
 
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],
              connect=True,

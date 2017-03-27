@@ -15,7 +15,6 @@
 
 import os
 from flask import Flask, request, jsonify
-from flask_restful import reqparse, Resource, Api
 import json
 from scripts.stubhub import Stubhub
 from scripts.stubhub import *
@@ -24,7 +23,7 @@ import pdb
 
 
 app = Flask(__name__)
-api = Api(app)
+
 
 
 stubhub = Stubhub(account="LABO")
