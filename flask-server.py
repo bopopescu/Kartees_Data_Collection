@@ -17,9 +17,9 @@ import os
 from flask import Flask, request, jsonify
 from flask_restful import reqparse, Resource, Api
 import json
-from stubhub import Stubhub
-from stubhub import *
-from aws_consolidate import *
+from scripts.stubhub import Stubhub
+from scripts.stubhub import *
+from scripts.aws_consolidate import *
 import pdb
 
 

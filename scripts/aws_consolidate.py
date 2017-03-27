@@ -100,6 +100,8 @@ def append_to_total(event_csv, lines, team):
 
 		writer = csv.writer(new_file)
 
+		existing_lines[0] = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
+
 		writer.writerows(existing_lines)
 
 	size = os.path.getsize(tmp_file_name)/1000
