@@ -22,6 +22,7 @@ def upload_Collection_Logs():
 
 	s3.upload_file('../Collection_Logs.csv','2017pricedata','Collection_Logs.csv')
 
+
 if __name__ == '__main__':
 
 	now = datetime.datetime.utcnow()
