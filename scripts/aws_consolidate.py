@@ -167,7 +167,6 @@ def aws_consolidate(first_day, second_day)
 				days_consolidated.append(day)
 
 	print days_to_collect
-	pdb.set_trace()
 
 
 	for day in reversed(days_to_collect):
