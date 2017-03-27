@@ -21,7 +21,6 @@ def update_event_data(event_id, team, sport):
 
     if not os.path.exists(directory): os.makedirs(directory)
 
-
     path = "%s/%s/%s.csv"%(directory,team,event_id)
 
     include_header = False
@@ -39,6 +38,7 @@ def update_event_data(event_id, team, sport):
         file = open(path, 'wb') 
 
         include_header=True
+
 
     second = time.time()
         
