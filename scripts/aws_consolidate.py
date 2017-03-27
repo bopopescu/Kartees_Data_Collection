@@ -134,9 +134,7 @@ if __name__ == '__main__':
 
 	logs_doc = db["weekly_logs"]
 
-	print cloudant_read()
-
-	pdb.set_trace()
+	logs = cloudant_read()
 
 	now = datetime.datetime.utcnow()
 
@@ -146,7 +144,7 @@ if __name__ == '__main__':
 
 	days_to_collect = []
 
-	for i in range(1,15):
+	for i in range(19,20):
 
 		day = now - datetime.timedelta(days=i)
 		days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))
@@ -157,19 +155,17 @@ if __name__ == '__main__':
 	days_consolidated = []
 	collection_file_path = '../weekly_consolidation_log.csv'
 
-	with open(collection_file_path, 'rU') as log_file:
 
-		reader = csv.reader(log_file)
-		reader.next()
-		
+	if logs:
+		for log in logs:
 
-		for row in reader:
+			days = log['Days_Collected']
 
-			days_list = eval(row[1])
-
-			for day in days_list:
+			for day in days:
 				days_consolidated.append(day)
 
+	print days_to_collect
+	pdb.set_trace()
 
 
 	for day in reversed(days_to_collect):
@@ -187,11 +183,13 @@ if __name__ == '__main__':
 			print sizes[day]
 
 
+	elapsed = "%.2f" %float(float((datetime.utcnow() - now).seconds) /60)
 
 	data = {"Timestamp":str(now),
-			"Days_Collection":days_to_collect,
+			"Days_Collected":days_to_collect,
 			"Total_storage_KB":total_size,
-			"Sizes":sizes}
+			"Sizes":sizes,
+			"Time_Elapsed":elapsed}
 
 
 	cloudant_write(data)
