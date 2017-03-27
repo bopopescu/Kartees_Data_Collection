@@ -1,5 +1,6 @@
 price_data/
 2016_data/
+kartees_virtualenv/
 
 credentials.py
 credentials.pyc
@@ -12,3 +13,4 @@ Collection_Logs_pivot
 cron_MO.csv
 cron_LABO.csv
 game_times.csv
+
