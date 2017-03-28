@@ -15,17 +15,17 @@ import os.path
 import dateutil.parser as dparser
 # from django.utils.timezone import utc
 import pdb
+import sys
 
 if 'VCAP_SERVICES' not in os.environ:
     from credentials import *
 else:
-    x =os.getenv('CREDS')
-    print  x
-    CREDS = eval(x)
-    print type(CREDS)
+    CREDS = eval(os.getenv('CREDS'))
 
 
-import sys
+URL = os.getenv('URL')
+
+
 
 sys.dont_write_bytecode = True
 
