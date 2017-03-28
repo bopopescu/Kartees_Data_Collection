@@ -21,9 +21,10 @@ if 'VCAP_SERVICES' not in os.environ:
     from credentials import *
 else:
     CREDS = eval(os.getenv('CREDS'))
+    URL = os.getenv('URL')
 
 
-URL = os.getenv('URL')
+
 
 
 
