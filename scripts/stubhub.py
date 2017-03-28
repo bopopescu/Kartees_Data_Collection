@@ -19,7 +19,10 @@ import pdb
 if 'VCAP_SERVICES' not in os.environ:
     from credentials import *
 else:
-    CREDS = json.loads(os.getenv('CREDS'))
+    x =os.getenv('CREDS')
+    print  type(x)
+    CREDS = json.loads(x)
+    print type(CREDS)
 
 
 import sys
