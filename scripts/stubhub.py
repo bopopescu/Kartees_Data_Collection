@@ -20,8 +20,8 @@ if 'VCAP_SERVICES' not in os.environ:
     from credentials import *
 else:
     x =os.getenv('CREDS')
-    print  type(x)
-    CREDS = json.loads(x)
+    print  x
+    CREDS = eval(x)
     print type(CREDS)
 
 
