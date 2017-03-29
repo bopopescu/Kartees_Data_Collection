@@ -224,6 +224,8 @@ def reprice():
 @app.route('/weekly_consolidate', methods = ['GET'])
 def weekly_consolidate():
 
+	requests.get('https://stubhub-services-node-red-dev.mybluemix.net/flask_status')
+
 	if 'VCAP_SERVICES' in os.environ:
 
 	    vcap = json.loads(os.getenv('VCAP_SERVICES'))
@@ -263,8 +265,8 @@ class Config(object):
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
-        		'hour': '*',
-        		'minute': '*/15'
+        		'hour': '9',
+        		'minute': '*'
 			}
         }
     ]
