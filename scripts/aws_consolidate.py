@@ -43,6 +43,7 @@ def consolidate_dailys(s3_resource,day):
 
 
 				total_size += append_to_total(s3_resource,event_csv, lines, team)
+				print '--------------%s finished, SIZE: %s--------------' %(day, total_size)
 
 	return total_size
 
@@ -107,6 +108,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 	s3_client = boto3.client('s3')
 
+	print 'Uploading file: %s - %s' %(team, event_csv)
 	s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,event_csv))
 
 	shutil.rmtree(directory) 
@@ -156,7 +158,7 @@ def aws_consolidate(client, first_day, last_day):
 			for day in days:
 				days_consolidated.append(day)
 
-	print days_to_collect
+	print "Days to collect: %s" %days_to_collect
 
 
 	for day in reversed(days_to_collect):
