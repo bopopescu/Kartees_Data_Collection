@@ -255,15 +255,21 @@ def test_cron():
 	return 'hi'
 
 class Config(object):
-    JOBS = [
+
+        JOBS = [
         {
             'id': 'consolidate totals',
             'func': weekly_consolidate,
-            'trigger': 'interval',
-            'seconds': 86400
+             'trigger': {
+        		'type': 'cron',
+        		'day_of_week': '*',
+        		'hour': '*',
+        		'minute': '*/15'
+			}
         }
     ]
-    SCHEDULER_API_ENABLED = True
+
+    	SCHEDULER_API_ENABLED = True
 
 
 
