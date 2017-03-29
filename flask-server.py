@@ -34,7 +34,7 @@ else:
 app = Flask(__name__)
 
 
-string = 'echo "[default]\naws_access_key_id=%s\naws_secret_access_key=%s">~/.aws/credentials' %(aws_id,aws_key)
+string = 'echo "[default]\naws_access_key_id=%s\naws_secret_access_key=%s">~/.aws/credentials' %(aws_id.strip(),aws_key.strip())
 
 subprocess.Popen(string, shell=True)
 
