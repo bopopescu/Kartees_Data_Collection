@@ -20,12 +20,23 @@ from scripts.stubhub import Stubhub
 from scripts.stubhub import *
 from scripts.aws_consolidate import *
 import pdb
+import subprocess
 if 'VCAP_SERVICES' not in os.environ:
 	print 'hey'
 	from scripts.credentials import *
+	aws_id = AWS_ACCESS_KEY_ID
+	aws_key=AWS_SECRET_ACCESS_KEY
+else:
+	aws_id = os.getenv('AWS_ACCESS_KEY_ID')
+	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+
 
 app = Flask(__name__)
 
+
+string = 'echo "aws_access_key_id=%s\naws_secret_access_key%s">~/.aws/credentials' %(aws_id,aws_key)
+
+subprocess.Popen(string, shell=True)
 
 
 stubhub = Stubhub(account="LABO")
