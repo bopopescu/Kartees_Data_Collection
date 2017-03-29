@@ -21,6 +21,10 @@ from scripts.stubhub import *
 from scripts.aws_consolidate import *
 import pdb
 import subprocess
+
+
+from flask_apscheduler import APScheduler
+
 if 'VCAP_SERVICES' not in os.environ:
 	print 'hey'
 	from scripts.credentials import *
@@ -29,7 +33,6 @@ if 'VCAP_SERVICES' not in os.environ:
 else:
 	aws_id = os.getenv('AWS_ACCESS_KEY_ID')
 	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
-
 
 app = Flask(__name__)
 
@@ -41,21 +44,6 @@ subprocess.Popen(string, shell=True)
 
 stubhub = Stubhub(account="LABO")
 
-#parser = reqparse.RequestParser()
-
-# class HelloWorld(Resource):
-#     def get(self):
-#         return {'hello': 'world'}
-
-# api.add_resource(HelloWorld, '/helloworld')
-
-# class EventDate(Resource):
-# 	def get(self):
-# 		parser.add_argument('eventId', type=int, help='Get event data for this event Id')
-# 		args = parser.parse_args()
-# 		return args
-
-# api.add_resource(EventDate, '/eventdata')
 
 def construct_error(code, message):
 	return json.dumps({"Error_Code": "%d" %code, "Error_Message": "%s" %message})
@@ -262,10 +250,26 @@ def weekly_consolidate():
 	
 	return 'success' 
 
+def test_cron():
+	print 'cron running'
+	return 'hi'
+
+class Config(object):
+    JOBS = [
+        {
+            'id': 'consolidate totals',
+            'func': weekly_consolidate,
+            'trigger': 'interval',
+            'seconds': 86400
+        }
+    ]
+    SCHEDULER_API_ENABLED = True
+
+
 
 @app.route('/')
 def Welcome():
-    return app.send_static_file('index.html')
+    return "Hey there this is Kartees's python web server running on Bluemix"
 
 @app.route('/myapp')
 def WelcomeToMyapp():
@@ -273,4 +277,10 @@ def WelcomeToMyapp():
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
+
+	app.config.from_object(Config())
+
+	scheduler = APScheduler()
+	scheduler.init_app(app)
+	scheduler.start()
 	app.run(host='0.0.0.0', port=int(port), debug=True)
