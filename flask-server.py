@@ -36,11 +36,13 @@ else:
 
 app = Flask(__name__)
 
+string1 = 'export AWS_ACCESS_KEY_ID=%s' %aws_id
+string2 = 'export AWS_SECRET_ACCESS_KEY=%s' %aws_key
+#string = 'echo "[default]\naws_access_key_id=%s\naws_secret_access_key=%s">~/.aws/credentials' %(aws_id.strip(),aws_key.strip())
 
-string = 'echo "[default]\naws_access_key_id=%s\naws_secret_access_key=%s">~/.aws/credentials' %(aws_id.strip(),aws_key.strip())
-
-subprocess.Popen(string, shell=True)
-
+#subprocess.Popen(string, shell=True)
+subprocess.Popen(string1, shell=True)
+subprocess.Popen(string2, shell=True)
 
 stubhub = Stubhub(account="LABO")
 
