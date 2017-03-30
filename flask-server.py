@@ -292,7 +292,7 @@ class Config(object):
 
 @app.route('/')
 def Welcome():
-    return "Hey there this is Kartees's python web server running on Bluemix"
+    return "Hey there this is Kartees's python web server running on Bluemix. Time - %s" %datetime.datetime.now()
 
 @app.route('/myapp')
 def WelcomeToMyapp():
