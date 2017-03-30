@@ -260,31 +260,31 @@ def test_cron():
 
 class Config(object):
 
-   #      JOBS = [
-   #      {
-   #          'id': 'consolidate totals',
-   #          'func': weekly_consolidate,
-   #           'trigger': {
-   #      		'type': 'cron',
-   #      		'day_of_week': '*',
-   #      		'hour': '9',
-   #      		'minute': '*'
-			# }
-   #      }
-   #  ]
-
         JOBS = [
         {
             'id': 'consolidate totals',
-            'func': test_cron,
+            'func': weekly_consolidate,
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
-        		'hour': '22',
-        		'minute': '47'
+        		'hour': '8',
+        		'minute': '*'
 			}
         }
     ]
+
+   #      JOBS = [
+   #      {
+   #          'id': 'consolidate totals',
+   #          'func': test_cron,
+   #           'trigger': {
+   #      		'type': 'cron',
+   #      		'day_of_week': '*',
+   #      		'hour': '22',
+   #      		'minute': '47'
+			# }
+   #      }
+   #  ]
 
     	SCHEDULER_API_ENABLED = True
 
