@@ -1,0 +1,1 @@
+50 1 * * *  cd ~/Desktop/Kartees_Data_Collection; git add .; git commit -m "next set of conso"; git push

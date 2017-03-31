@@ -9,36 +9,70 @@ import requests
 import shutil
 from cloudant.client import Cloudant
 
-schedule={"Baltimore Orioles":"00:00",
-"Los Angeles Dodgers":"00:30",
-"Washington Nationals":"01:00",
-"Arizona Diamondbacks":"01:30",
-"San Diego Padres":"02:00",
-"Toronto Blue Jays":"02:30",
-"Chicago Cubs":"03:00",
-"Colorado Rockies":"03:30",
-"Houston Astros":"04:00",
-"Milwaukee Brewers":"04:30",
-"Cleveland Indians":"05:00",
-"Kansas City Royals":"05:30",
-"St. Louis Cardinals":"06:00",
-"Chicago White Sox":"06:30",
-"Boston Red Sox":"07:00",
-"Seattle Mariners":"07:30",
-"Philadelphia Phillies":"08:00",
-"New York Mets":"08:30",
-"Atlanta Braves":"09:00",
-"San Francisco Giants":"09:30",
-"Oakland Athletics":"10:00",
-"New York Yankees":"10:30",
-"Miami Marlins":"11:00",
-"Cincinnati Reds":"11:30",
-"Minnesota Twins":"12:00",
-"Detroit Tigers":"12:30",
-"Los Angeles Angels":"13:00",
-"Texas Rangers":"13:30",
-"Pittsburgh Pirates":"14:00",
-"Tampa Bay Rays":"21:00"}
+# schedule1={"Baltimore Orioles":"00:00",
+# "Los Angeles Dodgers":"01:30",
+# "Washington Nationals":"03:00",
+# "Arizona Diamondbacks":"04:30",
+# "San Diego Padres":"06:00",
+# "Toronto Blue Jays":"07:30",
+# "Chicago Cubs":"09:00",
+# "Colorado Rockies":"10:30",
+# "Houston Astros":"12:00",
+# "Milwaukee Brewers":"13:30",
+# "Cleveland Indians":"15:00",
+# "Kansas City Royals":"17:30",
+# "St. Louis Cardinals":"19:00",
+# "Chicago White Sox":"20:30",
+# "Boston Red Sox":"22:00"}
+
+#schedule2={ "Seattle Mariners":"00:00",
+# "Philadelphia Phillies":"01:30",
+# "New York Mets":"03:00",
+# "Atlanta Braves":"04:30",
+# "San Francisco Giants":"06:00",
+# "Oakland Athletics":"07:30",
+# "New York Yankees":"09:00",
+# "Miami Marlins":"10:30",
+# "Cincinnati Reds":"12:00",
+# "Minnesota Twins":"13:30",
+# "Detroit Tigers":"15:00",
+# "Los Angeles Angels":"17:30",
+# "Texas Rangers":"19:00",
+# "Pittsburgh Pirates":"20:30",
+# "Tampa Bay Rays":"22:00"}
+
+schedule={"Baltimore Orioles":"01:00",
+"Los Angeles Dodgers":"04:00",
+"Washington Nationals":"07:00",
+"Arizona Diamondbacks":"10:00",
+"San Diego Padres":"13:00",
+"Toronto Blue Jays":"16:00",
+"Chicago Cubs":"19:00"
+# "Colorado Rockies":"03:30",
+# "Houston Astros":"04:00",
+# "Milwaukee Brewers":"04:30",
+# "Cleveland Indians":"05:00",
+# "Kansas City Royals":"05:30",
+# "St. Louis Cardinals":"06:00",
+# "Chicago White Sox":"06:30",
+# "Boston Red Sox":"07:00",
+# "Seattle Mariners":"07:30",
+# "Philadelphia Phillies":"08:00",
+# "New York Mets":"08:30",
+# "Atlanta Braves":"09:00",
+# "San Francisco Giants":"09:30",
+# "Oakland Athletics":"10:00",
+# "New York Yankees":"10:30",
+# "Miami Marlins":"11:00",
+# "Cincinnati Reds":"11:30",
+# "Minnesota Twins":"12:00",
+# "Detroit Tigers":"12:30",
+# "Los Angeles Angels":"13:00",
+# "Texas Rangers":"13:30",
+# "Pittsburgh Pirates":"14:00",
+# "Tampa Bay Rays":"21:00" --- don't need, this is done
+}
+
 
 def consolidate_dailys(s3_resource,day, use_team):
 
@@ -159,6 +193,8 @@ def aws_consolidate(client, first_day, last_day):
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
 	
+	#schedule=schedule1 if schedule_type==1 else schedule2
+
 	for team in schedule:
 		if team == "Tampa Bay Rays":
 			print int(schedule[team].split(":")[0])

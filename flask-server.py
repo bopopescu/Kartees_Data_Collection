@@ -22,6 +22,8 @@ from scripts.aws_consolidate import *
 import pdb
 import subprocess
 import logging
+import threading
+
 logging.basicConfig()
 
 
@@ -246,6 +248,9 @@ def weekly_consolidate():
 
 		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
+	# threads = []
+	# for i in range(1,3):
+	# 	t = threading.Thread(target=worker, args=(i,))
 
 	if request and request.args.get('first_day') and request.args.get('last_day'):
 
@@ -255,12 +260,27 @@ def weekly_consolidate():
 	else:
 		print 'No params given, looking for last week of data'
 		aws_consolidate(client,1,8)
+		
 	
 	return 'success' 
 
+def worker(schedule):
+
+    aws_consolidate(client,1,8,schedule)
+
+    return
+
+
+@app.route('/thread', methods = ['GET'])
 def test_cron():
-	print 'cron running'
+	threads = []
+	for i in range(5):
+	    t = threading.Thread(target=worker, args=(i,))
+	    threads.append(t)
+	    t.start()
+
 	return 'hi'
+
 
 class Config(object):
 
@@ -277,18 +297,6 @@ class Config(object):
         }
     ]
 
-   #      JOBS = [
-   #      {
-   #          'id': 'consolidate totals',
-   #          'func': test_cron,
-   #           'trigger': {
-   #      		'type': 'cron',
-   #      		'day_of_week': '*',
-   #      		'hour': '22',
-   #      		'minute': '47'
-			# }
-   #      }
-   #  ]
 
     	SCHEDULER_API_ENABLED = True
 
