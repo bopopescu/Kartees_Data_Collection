@@ -21,6 +21,8 @@ from scripts.stubhub import *
 from scripts.aws_consolidate import *
 import pdb
 import subprocess
+import logging
+logging.basicConfig()
 
 
 from flask_apscheduler import APScheduler
@@ -245,12 +247,13 @@ def weekly_consolidate():
 		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 
+	if request and request.args.get('first_day') and request.args.get('last_day'):
 
-	if request.args.get('first_day') and request.args.get('last_day'):
-
+		print 'We have a request and params'
 		aws_consolidate(client, request.args.get('first_day'),request.args.get('last_day'))
 
 	else:
+		print 'No params given, looking for last week of data'
 		aws_consolidate(client,1,8)
 	
 	return 'success' 
@@ -269,7 +272,7 @@ class Config(object):
         		'type': 'cron',
         		'day_of_week': '*',
         		'hour': '8',
-        		'minute': '33'
+        		'minute': '47'
 			}
         }
     ]
