@@ -38,7 +38,7 @@ schedule={"Baltimore Orioles":"00:00",
 "Los Angeles Angels":"13:00",
 "Texas Rangers":"13:30",
 "Pittsburgh Pirates":"14:00",
-"Tampa Bay Rays":"22:55"}
+"Tampa Bay Rays":"23:00"}
 
 def consolidate_dailys(s3_resource,day, use_team):
 
