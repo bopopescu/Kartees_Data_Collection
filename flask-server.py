@@ -271,8 +271,8 @@ class Config(object):
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
-        		'hour': '8',
-        		'minute': '47'
+        		'hour': '*',
+        		'minute': '0,30'
 			}
         }
     ]

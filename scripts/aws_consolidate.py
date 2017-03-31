@@ -9,8 +9,38 @@ import requests
 import shutil
 from cloudant.client import Cloudant
 
+schedule={"Baltimore Orioles":"00:00",
+"Los Angeles Dodgers":"00:30",
+"Washington Nationals":"01:00",
+"Arizona Diamondbacks":"01:30",
+"San Diego Padres":"02:00",
+"Toronto Blue Jays":"02:30",
+"Chicago Cubs":"03:00",
+"Colorado Rockies":"03:30",
+"Houston Astros":"04:00",
+"Milwaukee Brewers":"04:30",
+"Cleveland Indians":"05:00",
+"Kansas City Royals":"05:30",
+"St. Louis Cardinals":"06:00",
+"Chicago White Sox":"06:30",
+"Boston Red Sox":"07:00",
+"Seattle Mariners":"07:30",
+"Philadelphia Phillies":"08:00",
+"New York Mets":"08:30",
+"Atlanta Braves":"09:00",
+"San Francisco Giants":"09:30",
+"Oakland Athletics":"10:00",
+"New York Yankees":"10:30",
+"Miami Marlins":"11:00",
+"Cincinnati Reds":"11:30",
+"Minnesota Twins":"12:00",
+"Detroit Tigers":"12:30",
+"Los Angeles Angels":"13:00",
+"Texas Rangers":"13:30",
+"Pittsburgh Pirates":"14:00",
+"Tampa Bay Rays":"22:55"}
 
-def consolidate_dailys(s3_resource,day):
+def consolidate_dailys(s3_resource,day, use_team):
 
 	bucket = s3_resource.Bucket('2017pricedata')
 
@@ -29,7 +59,7 @@ def consolidate_dailys(s3_resource,day):
 			team = key_list[2]
 			event_csv = key_list[3]
 
-			if file_day == day:
+			if file_day == day and use_team==team :
 
 				lines = []
 				#print 's3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)
@@ -126,64 +156,77 @@ def cloudant_write(new_data):
 
 def aws_consolidate(client, first_day, last_day):
 
+	hour = datetime.datetime.utcnow().hour
+	minute = datetime.datetime.utcnow().minute
+	
+	for team in schedule:
+		if team == "Tampa Bay Rays":
+			print int(schedule[team].split(":")[0])
+			print minute ==int(schedule[team].split(":")[1])
+		
+	
+		#print int(schedule[team].split(":")[1]) 
+		if int(schedule[team].split(":")[0])==hour and int(schedule[team].split(":")[1])==minute:
+			print 'here'
+			use_team = team
 
-	db = client['data_collection']
-	logs_doc = db["weekly_logs"]
+			db = client['data_collection']
+			logs_doc = db["weekly_logs"]
 
-	logs = logs_doc["logs"]
+			logs = logs_doc["logs"]
 
-	now = datetime.datetime.utcnow()
+			now = datetime.datetime.utcnow()
 
-	s3_resource = boto3.resource('s3')
+			s3_resource = boto3.resource('s3')
 
-	days_to_collect = []
+			days_to_collect = []
 
-	for i in range(int(first_day),int(last_day)):
+			for i in range(int(first_day),int(last_day)):
 
-		day = now - datetime.timedelta(days=i)
-		days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))
-
-
-	sizes = {}
-	total_size = 0
-	days_consolidated = []
-	collection_file_path = '../weekly_consolidation_log.csv'
-
-
-	if logs:
-		for log in logs:
-
-			days = log['Days_Collected']
-
-			for day in days:
-				days_consolidated.append(day)
-
-	print "Days to collect: %s" %days_to_collect
+				day = now - datetime.timedelta(days=i)
+				days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))
 
 
-	for day in reversed(days_to_collect):
-
-		print day
-
-		if day not in days_consolidated:
-
-			size = consolidate_dailys(s3_resource,day)
-
-			total_size+=size
-
-			sizes[day] = size
-
-			print sizes[day]
+			sizes = {}
+			total_size = 0
+			days_consolidated = []
+			collection_file_path = '../weekly_consolidation_log.csv'
 
 
-	elapsed = "%.2f" %float(float((datetime.utcnow() - now).seconds) /60)
+			if logs:
+				for log in logs:
 
-	data = {"Timestamp":str(now),
-			"Days_Collected":days_to_collect,
-			"Total_storage_KB":total_size,
-			"Sizes":sizes,
-			"Time_Elapsed":elapsed}
+					days = log['Days_Collected']
+
+					for day in days:
+						days_consolidated.append(day)
+
+			print "Days to collect: %s" %days_to_collect
 
 
-	cloudant_write(data)
+			for day in reversed(days_to_collect):
+
+				print day
+
+				if day not in days_consolidated:
+
+					size = consolidate_dailys(s3_resource,day, use_team)
+
+					total_size+=size
+
+					sizes[day] = size
+
+					print sizes[day]
+
+
+			elapsed = "%.2f" %float(float((datetime.utcnow() - now).seconds) /60)
+
+			data = {"Timestamp":str(now),
+					"Days_Collected":days_to_collect,
+					"Total_storage_KB":total_size,
+					"Sizes":sizes,
+					"Time_Elapsed":elapsed}
+
+
+			cloudant_write(data)
 
