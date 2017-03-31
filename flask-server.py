@@ -268,7 +268,7 @@ class Config(object):
         		'type': 'cron',
         		'day_of_week': '*',
         		'hour': '8',
-        		'minute': '*'
+        		'minute': '20'
 			}
         }
     ]
