@@ -26,11 +26,12 @@ import subprocess
 from flask_apscheduler import APScheduler
 
 if 'VCAP_SERVICES' not in os.environ:
-	print 'hey'
+	print 'Running on Local'
 	from scripts.credentials import *
 	aws_id = AWS_ACCESS_KEY_ID
 	aws_key=AWS_SECRET_ACCESS_KEY
 else:
+	print 'Running on Bluemix'
 	aws_id = os.getenv('AWS_ACCESS_KEY_ID')
 	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 
@@ -268,7 +269,7 @@ class Config(object):
         		'type': 'cron',
         		'day_of_week': '*',
         		'hour': '8',
-        		'minute': '20'
+        		'minute': '33'
 			}
         }
     ]
@@ -288,7 +289,7 @@ class Config(object):
 
     	SCHEDULER_API_ENABLED = True
 
-    	print datetime.datetime.now()
+    	print "Current Time: %s" %datetime.datetime.now()
 
 
 
@@ -308,4 +309,4 @@ if __name__ == "__main__":
 	scheduler = APScheduler()
 	scheduler.init_app(app)
 	scheduler.start()
-	app.run(host='0.0.0.0', port=int(port), debug=True)
+	app.run(host='0.0.0.0', port=int(port))

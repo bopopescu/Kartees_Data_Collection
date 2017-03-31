@@ -43,7 +43,7 @@ def consolidate_dailys(s3_resource,day):
 
 
 				total_size += append_to_total(s3_resource,event_csv, lines, team)
-				print '--------------%s finished, SIZE: %s--------------' %(day, total_size)
+				print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
 
 	return total_size
 
