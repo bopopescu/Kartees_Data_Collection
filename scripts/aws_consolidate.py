@@ -34,7 +34,7 @@ schedule2={
 "Atlanta Braves":"19:00",
 "San Francisco Giants":"22:00",
 "Oakland Athletics":"01:00",
-"New York Yankees":"04:00"
+"New York Yankees":"04:00",
 "Miami Marlins":"07:00",
 "Cincinnati Reds":"10:00"
 # "Minnesota Twins":"13:30",
