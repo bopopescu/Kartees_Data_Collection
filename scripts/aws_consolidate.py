@@ -16,34 +16,34 @@ schedule1={
 # "Arizona Diamondbacks":"04:30",
 "San Diego Padres":"11:30",
 "Toronto Blue Jays":"13:00",
-"Chicago Cubs":"15:00",
-"Colorado Rockies":"17:00",
-"Houston Astros":"19:00",
-"Milwaukee Brewers":"21:00",
-"Cleveland Indians":"23:00",
-# "Kansas City Royals":"17:30",
-# "St. Louis Cardinals":"19:00",
-# "Chicago White Sox":"20:30",
-# "Boston Red Sox":"22:00"
+"Chicago Cubs":"16:00",
+"Colorado Rockies":"19:00",
+"Houston Astros":"22:00",
+"Milwaukee Brewers":"01:00",
+"Cleveland Indians":"04:00",
+"Kansas City Royals":"07:00",
+"St. Louis Cardinals":"10:00"
+# "Chicago White Sox":"13:00",
+# "Boston Red Sox":"16:00"
 }
 
 schedule2={ 
 "Seattle Mariners":"11:30",
 "Philadelphia Phillies":"13:00",
-"New York Mets":"15:00",
-"Atlanta Braves":"17:00",
-"San Francisco Giants":"19:00",
-"Oakland Athletics":"021:00",
-"New York Yankees":"23:00"
-# "Miami Marlins":"10:30",
-# "Cincinnati Reds":"12:00",
+"New York Mets":"16:00",
+"Atlanta Braves":"19:00",
+"San Francisco Giants":"22:00",
+"Oakland Athletics":"01:00",
+"New York Yankees":"04:00"
+"Miami Marlins":"07:00",
+"Cincinnati Reds":"10:00"
 # "Minnesota Twins":"13:30",
 # "Detroit Tigers":"15:00",
 # "Los Angeles Angels":"17:30",
 # "Texas Rangers":"19:00",
 # "Pittsburgh Pirates":"20:30",
 # "Tampa Bay Rays":"22:00"}
-
+}
 # schedule={"Baltimore Orioles":"11:00",
 # "Los Angeles Dodgers":"04:00",
 # "Washington Nationals":"07:00",
@@ -74,7 +74,7 @@ schedule2={
 # "Texas Rangers":"13:30",
 # "Pittsburgh Pirates":"14:00",
 # "Tampa Bay Rays":"21:00" --- don't need, this is done
-}
+#}
 
 
 def consolidate_dailys(s3_resource,day, use_team):
