@@ -14,7 +14,7 @@ schedule1={
 # "Los Angeles Dodgers":"01:30",
 # "Washington Nationals":"03:00",
 # "Arizona Diamondbacks":"04:30",
-"San Diego Padres":"11:00",
+"San Diego Padres":"11:30",
 "Toronto Blue Jays":"13:00",
 "Chicago Cubs":"15:00",
 "Colorado Rockies":"17:00",
@@ -28,7 +28,7 @@ schedule1={
 }
 
 schedule2={ 
-"Seattle Mariners":"11:00",
+"Seattle Mariners":"11:30",
 "Philadelphia Phillies":"13:00",
 "New York Mets":"15:00",
 "Atlanta Braves":"17:00",

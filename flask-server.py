@@ -51,6 +51,23 @@ subprocess.Popen(string2, shell=True)
 
 stubhub = Stubhub(account="LABO")
 
+if 'VCAP_SERVICES' in os.environ:
+
+    vcap = json.loads(os.getenv('VCAP_SERVICES'))
+    print('Found VCAP_SERVICES')
+    if 'cloudantNoSQLDB' in vcap:
+        creds = vcap['cloudantNoSQLDB'][0]['credentials']
+        user = creds['username']
+        password = creds['password']
+        url = 'https://' + creds['host']
+        client = Cloudant(user, password, url=url, connect=True)
+  
+else:
+
+	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+
+
+
 
 def construct_error(code, message):
 	return json.dumps({"Error_Code": "%d" %code, "Error_Message": "%s" %message})
@@ -232,21 +249,6 @@ def reprice():
 def weekly_consolidate():
 
 	requests.get('https://stubhub-services-node-red-dev.mybluemix.net/flask_status')
-
-	if 'VCAP_SERVICES' in os.environ:
-
-	    vcap = json.loads(os.getenv('VCAP_SERVICES'))
-	    print('Found VCAP_SERVICES')
-	    if 'cloudantNoSQLDB' in vcap:
-	        creds = vcap['cloudantNoSQLDB'][0]['credentials']
-	        user = creds['username']
-	        password = creds['password']
-	        url = 'https://' + creds['host']
-	        client = Cloudant(user, password, url=url, connect=True)
-	  
-	else:
-
-		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 
 	# if request and request.args.get('first_day') and request.args.get('last_day'):
