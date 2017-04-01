@@ -191,7 +191,7 @@ def cloudant_write(new_data):
 	logs_doc.save()
 
 
-def aws_consolidate(client, first_day, last_day), schedule_type:
+def aws_consolidate(client, first_day, last_day, schedule_type):
 
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
