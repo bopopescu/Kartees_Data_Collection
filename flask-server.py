@@ -329,7 +329,7 @@ def std():
 
 	for team in data:
 
-		stds[team] = np.mean(data[team])
+		stds[team] = np.std(data[team])
 
 	return jsonify(stds)
 
