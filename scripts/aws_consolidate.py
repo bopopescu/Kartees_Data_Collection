@@ -9,29 +9,32 @@ import requests
 import shutil
 from cloudant.client import Cloudant
 
-# schedule1={"Baltimore Orioles":"00:00",
+schedule1={
+# "Baltimore Orioles":"00:00",
 # "Los Angeles Dodgers":"01:30",
 # "Washington Nationals":"03:00",
 # "Arizona Diamondbacks":"04:30",
-# "San Diego Padres":"06:00",
-# "Toronto Blue Jays":"07:30",
-# "Chicago Cubs":"09:00",
-# "Colorado Rockies":"10:30",
-# "Houston Astros":"12:00",
-# "Milwaukee Brewers":"13:30",
-# "Cleveland Indians":"15:00",
+"San Diego Padres":"10:30",
+"Toronto Blue Jays":"13:00",
+"Chicago Cubs":"15:00",
+"Colorado Rockies":"17:00",
+"Houston Astros":"19:00",
+"Milwaukee Brewers":"21:00",
+"Cleveland Indians":"23:00",
 # "Kansas City Royals":"17:30",
 # "St. Louis Cardinals":"19:00",
 # "Chicago White Sox":"20:30",
-# "Boston Red Sox":"22:00"}
+# "Boston Red Sox":"22:00"
+}
 
-#schedule2={ "Seattle Mariners":"00:00",
-# "Philadelphia Phillies":"01:30",
-# "New York Mets":"03:00",
-# "Atlanta Braves":"04:30",
-# "San Francisco Giants":"06:00",
-# "Oakland Athletics":"07:30",
-# "New York Yankees":"09:00",
+schedule2={ 
+"Seattle Mariners":"10:30",
+"Philadelphia Phillies":"13:00",
+"New York Mets":"15:00",
+"Atlanta Braves":"17:00",
+"San Francisco Giants":"19:00",
+"Oakland Athletics":"021:00",
+"New York Yankees":"23:00"
 # "Miami Marlins":"10:30",
 # "Cincinnati Reds":"12:00",
 # "Minnesota Twins":"13:30",
@@ -41,13 +44,13 @@ from cloudant.client import Cloudant
 # "Pittsburgh Pirates":"20:30",
 # "Tampa Bay Rays":"22:00"}
 
-schedule={"Baltimore Orioles":"01:00",
-"Los Angeles Dodgers":"04:00",
-"Washington Nationals":"07:00",
-"Arizona Diamondbacks":"10:00",
-"San Diego Padres":"13:00",
-"Toronto Blue Jays":"16:00",
-"Chicago Cubs":"19:00"
+# schedule={"Baltimore Orioles":"11:00",
+# "Los Angeles Dodgers":"04:00",
+# "Washington Nationals":"07:00",
+# "Arizona Diamondbacks":"10:00",
+# "San Diego Padres":"13:00",
+# "Toronto Blue Jays":"16:00",
+# "Chicago Cubs":"19:00"
 # "Colorado Rockies":"03:30",
 # "Houston Astros":"04:00",
 # "Milwaukee Brewers":"04:30",
@@ -188,12 +191,12 @@ def cloudant_write(new_data):
 	logs_doc.save()
 
 
-def aws_consolidate(client, first_day, last_day):
+def aws_consolidate(client, first_day, last_day), schedule_type:
 
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
 	
-	#schedule=schedule1 if schedule_type==1 else schedule2
+	schedule=schedule1 if schedule_type==1 else schedule2
 
 	for team in schedule:
 		if team == "Tampa Bay Rays":

@@ -248,25 +248,28 @@ def weekly_consolidate():
 
 		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
-	# threads = []
-	# for i in range(1,3):
-	# 	t = threading.Thread(target=worker, args=(i,))
 
-	if request and request.args.get('first_day') and request.args.get('last_day'):
+	# if request and request.args.get('first_day') and request.args.get('last_day'):
 
-		print 'We have a request and params'
-		aws_consolidate(client, request.args.get('first_day'),request.args.get('last_day'))
+	# 	print 'We have a request and params'
+	# 	params = [request.args.get('first_day'),request.args.get('last_day')]
 
-	else:
-		print 'No params given, looking for last week of data'
-		aws_consolidate(client,1,8)
+	# else:
+	# 	print 'No params given, looking for last week of data'
+	# 	params = [1,8]
+
+	threads = []
+	for i in range(1,3):
+		t = threading.Thread(target=worker, args=(i,))
+
+		t.start()
 		
 	
 	return 'success' 
 
-def worker(schedule):
+def worker(schedule_type):
 
-    aws_consolidate(client,1,8,schedule)
+    aws_consolidate(client,1,8,schedule_type)
 
     return
 
