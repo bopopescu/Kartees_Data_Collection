@@ -46,7 +46,7 @@ schedules.append({
 schedules.append({ 
 "Seattle Mariners":"00:00",
 "Chicago White Sox":"03:00",
-"Boston Red Sox":"06:00"
+"Boston Red Sox":"06:00",
 "Baltimore Orioles":"09:00",
 "Los Angeles Dodgers":"12:00",
 "Washington Nationals":"15:00",
