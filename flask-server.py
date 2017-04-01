@@ -307,6 +307,31 @@ class Config(object):
     	print "Current Time: %s" %datetime.datetime.now()
 
 
+@app.route('/average',methods = ['POST'])
+def average():
+
+	data = eval(request.data)
+
+	averages = {}
+
+	for team in data:
+
+		averages[team] = np.mean(data[team])
+
+	return jsonify(averages)
+
+@app.route('/std', methods = ['POST'])
+def std():
+
+	data = eval(request.data)
+
+	stds = {}
+
+	for team in data:
+
+		stds[team] = np.mean(data[team])
+
+	return jsonify(stds)
 
 @app.route('/')
 def Welcome():
