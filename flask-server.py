@@ -261,9 +261,8 @@ def weekly_consolidate():
 	# 	params = [1,8]
 
 	threads = []
-	for i in range(1,3):
+	for i in range(4):
 		t = threading.Thread(target=worker, args=(i,))
-
 		t.start()
 		
 	
@@ -271,7 +270,7 @@ def weekly_consolidate():
 
 def worker(schedule_type):
 
-    aws_consolidate(client,1,8,schedule_type)
+    aws_consolidate(client,1,4,schedule_type)
 
     return
 
