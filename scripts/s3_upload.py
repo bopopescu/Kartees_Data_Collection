@@ -70,7 +70,9 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 
 		        	tmp_file_name = '%s/%s' %(directory,file)
 
-		        	os.makedirs(directory)
+		        	if not os.path.exists(directory):
+		        		os.makedirs(directory)
+		        		
 		        	print 's3://2017pricedata/total/%s/%s' %(team,file)
 		        	s3_client = boto3.client('s3')
 		        	try:
