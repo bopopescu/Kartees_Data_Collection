@@ -75,7 +75,7 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 		        	s3_client = boto3.client('s3')
 		        	try:
 						s3_client.download_file('2017pricedata', 'total/%s/%s'%(team,file),tmp_file_name)
-						pdb.set_trace()
+
 						with open (tmp_file_name, 'a') as new_file:
 
 							writer = csv.writer(new_file)
@@ -91,7 +91,7 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 						
 						size = os.path.getsize(tmp_file_name)/1000
 						print 'Uploading file: %s - %s' %(team, file)
-						pdb.set_trace()
+
 						s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,file))
 
 						shutil.rmtree(directory) 
