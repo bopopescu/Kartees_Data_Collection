@@ -19,7 +19,8 @@ schedules.append({
 "Houston Astros":"12:00",
 "Milwaukee Brewers":"15:00",
 "Cleveland Indians":"18:00",
-"Kansas City Royals":"21:00"
+"Kansas City Royals":"21:00",
+"New York Mets2":"14:54"
 })
 
 schedules.append({ 
@@ -65,7 +66,9 @@ def consolidate_dailys(s3_resource,day, use_team):
 		
 		key = obj.key
 
-		if 'daily' in key and 'csv' in key:
+		print "Observing key %s"%key
+
+		if 'daily' in key and 'csv' in key and day in key and use_team in key:
 
 			key_list = key.split('/')
 
@@ -73,21 +76,22 @@ def consolidate_dailys(s3_resource,day, use_team):
 			team = key_list[2]
 			event_csv = key_list[3]
 
-			if file_day == day and use_team==team :
+			#if file_day == day and use_team==team :
 
-				lines = []
-				#print 's3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)
-				first_line = True
-				for line in smart_open.smart_open('s3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)):
-					
-					if not first_line:
-						lines.append(line.replace('\r\n','').split(','))
-					else:
-						first_line= False
+			lines = []
+			print "Getting lines for %s, %s" %(team, day)
+			first_line = True
+			for line in smart_open.smart_open('s3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)):
+				
+				if not first_line:
+					lines.append(line.replace('\r\n','').split(','))
+				else:
+					first_line= False
 
-
-				total_size += append_to_total(s3_resource,event_csv, lines, team)
-				print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
+			print lines[0]
+			pdb.set_trace()
+			total_size += append_to_total(s3_resource,event_csv, lines, team)
+			print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
 
 	return total_size
 
@@ -122,14 +126,10 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 			break
 
-		else:
+	
+	if not exists:
 
-			existing_lines = list(lines)
-
-			#break
-
-		# else:
-		# 	print 'not our total file - %s' %obj.key
+		existing_lines = list(lines)
 
 
 
@@ -144,9 +144,12 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 		writer = csv.writer(new_file)
 
-		existing_lines[0] = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
+		header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
+
+		writer.writerow(header)
 
 		writer.writerows(existing_lines)
+
 
 	size = os.path.getsize(tmp_file_name)/1000
 
@@ -159,7 +162,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 	return size
 
-def cloudant_write(new_data):
+def cloudant_write(logs_doc, new_data):
 
 	logs = logs_doc["logs"]
 
@@ -178,7 +181,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 	for team in schedule:
 
 		if int(schedule[team].split(":")[0])==hour and int(schedule[team].split(":")[1])==minute:
-			print 'here'
+
 			use_team = team
 
 			db = client['data_collection']
@@ -186,48 +189,63 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 			logs = logs_doc["logs"]
 
+			days_already_consolidated = []
+
+			if logs:
+				for log in logs:
+
+					if log['Team'] == team:
+						days = log["Days_Collected"]
+
+						for day in days:
+							days_already_consolidated.append(str(day))
+
+
 			now = datetime.datetime.utcnow()
 
 			s3_resource = boto3.resource('s3')
 
 			days_to_collect = []
 
+
 			for i in range(int(first_day),int(last_day)):
 
 				day = now - datetime.timedelta(days=i)
-				days_to_collect.append('%s_%s_%s' %(day.year, day.month, day.day))
+				day = '%s_%s_%s' %(day.year, day.month, day.day)
 
 
-			sizes = {}
-			total_size = 0
-			days_consolidated = []
-			collection_file_path = '../weekly_consolidation_log.csv'
+				if not days_already_consolidated or str(day) not in days_already_consolidated:
+					days_to_collect.append(day)
+				
 
-
-			if logs:
-				for log in logs:
-
-					days = log['Days_Collected']
-
-					for day in days:
-						days_consolidated.append(day)
 
 			print "Days to collect: %s" %days_to_collect
 
+			sizes = {}
+			total_size = 0
+			
+			elapsed = "%.2f" %float(float((datetime.datetime.utcnow() - now).seconds) /60)
 
+			data = {"Timestamp":str(now),
+					"Days_Collected":days_to_collect,
+					"Team":use_team,
+					"Total_storage_KB":total_size,
+					"Sizes":sizes,
+					"Time_Elapsed":elapsed}
+
+
+			
 			for day in reversed(days_to_collect):
 
-				print day
+				print "Consolidating day: %s " %day
 
-				if day not in days_consolidated:
+				size = consolidate_dailys(s3_resource,day, use_team)
 
-					size = consolidate_dailys(s3_resource,day, use_team)
+				total_size+=size
 
-					total_size+=size
+				sizes[day] = size
 
-					sizes[day] = size
-
-					print sizes[day]
+				print sizes[day]
 
 
 			elapsed = "%.2f" %float(float((datetime.datetime.utcnow() - now).seconds) /60)
@@ -240,5 +258,5 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 					"Time_Elapsed":elapsed}
 
 
-			cloudant_write(data)
+			cloudant_write(logs_doc, data)
 

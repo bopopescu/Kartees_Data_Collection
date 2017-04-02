@@ -260,10 +260,10 @@ def weekly_consolidate():
 	# 	print 'No params given, looking for last week of data'
 	# 	params = [1,8]
 
-	threads = []
-	for i in range(4):
-		t = threading.Thread(target=worker, args=(i,))
-		t.start()
+	# threads = []
+	# for i in range(4):
+	# 	t = threading.Thread(target=worker, args=(i,))
+	# 	t.start()
 		
 	
 	return 'success' 
