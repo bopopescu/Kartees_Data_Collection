@@ -230,7 +230,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 					print sizes[day]
 
 
-			elapsed = "%.2f" %float(float((datetime.utcnow() - now).seconds) /60)
+			elapsed = "%.2f" %float(float((datetime.datetime.utcnow() - now).seconds) /60)
 
 			data = {"Timestamp":str(now),
 					"Days_Collected":days_to_collect,
