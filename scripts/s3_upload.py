@@ -129,20 +129,20 @@ if __name__ == '__main__':
 
 	now = datetime.datetime.utcnow()
 
-	for i in range(1,4):
-		yesterday = now - datetime.timedelta(days=i)
 
-		yesterday_dir  = '%s_%s_%s' %(yesterday.year, yesterday.month, yesterday.day)
+	yesterday = now - datetime.timedelta(days=1)
 
-		path_to_upload = '../price_data/%s' %yesterday_dir
+	yesterday_dir  = '%s_%s_%s' %(yesterday.year, yesterday.month, yesterday.day)
 
-
-		# Check if path from yesterday exists, and upload today's
-
-		if os.path.exists(path_to_upload):
+	path_to_upload = '../price_data/%s' %yesterday_dir
 
 
-			uploadDirectory(path_to_upload, '2017pricedata', yesterday_dir)
+	# Check if path from yesterday exists, and upload today's
+
+	if os.path.exists(path_to_upload):
+
+
+		uploadDirectory(path_to_upload, '2017pricedata', yesterday_dir)
 
 
 
