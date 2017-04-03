@@ -333,6 +333,13 @@ def std():
 
 	return jsonify(stds)
 
+@app.route('/remove_spaces', methods = ['GET'])
+def remove_spaces_api():
+
+	remove_spaces()
+	
+	return 'success'
+
 @app.route('/')
 def Welcome():
     return "Hey there this is Kartees's python web server running on Bluemix. Time - %s" %datetime.datetime.now()
