@@ -88,7 +88,7 @@ def consolidate_dailys(s3_resource,day, use_team):
 					first_line= False
 
 			print lines[0]
-			pdb.set_trace()
+			
 			total_size += append_to_total(s3_resource,event_csv, lines, team)
 			print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
 

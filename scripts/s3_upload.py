@@ -81,7 +81,7 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 						with open (tmp_file_name, 'a') as new_file:
 
 							writer = csv.writer(new_file)
-							writer.writerow([])
+							
 
 							# header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
 
@@ -93,10 +93,10 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 						
 						size = os.path.getsize(tmp_file_name)/1000
 						print 'Uploading file: %s - %s' %(team, file)
-
+						
 						s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,file))
 
-						shutil.rmtree(directory) 
+						shutil.rmtree(directory)
 
 
 		        	except:
@@ -112,7 +112,7 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 							writer.writerows(new_rows)
 
 		        		print 'doesnt exist -starting new'
-		
+		        		pdb.set_trace()
 		        		s3.upload_file(local_path,bucketname,'total/%s/%s' %(team, file))
 		        		shutil.rmtree(directory) 
 
