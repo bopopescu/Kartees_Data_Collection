@@ -261,6 +261,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 def remove_spaces():
 
+	print 'here'
 	s3_resource = boto3.resource('s3')
 
 	bucket = s3_resource.Bucket('2017pricedata')
@@ -320,7 +321,6 @@ def remove_spaces():
 						writer.writerow(row)
 
 			s3_client.upload_file(new_file_path, '2017pricedata','total/%s/%s' %(team,event_csv))
-			pdb.set_trace()
 			shutil.rmtree(directory)
 
 

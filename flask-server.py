@@ -268,11 +268,25 @@ def weekly_consolidate():
 	
 	return 'success' 
 
+@app.route('/remove_spaces', methods = ['GET'])
+def remove_spaces_api():
+
+	threads = []
+	for i in range(1):
+	    t = threading.Thread(target=worker, args=(i,))
+	    threads.append(t)
+	    t.start()
+
+	return 'success'
+
+
 def worker(schedule_type):
 
-    aws_consolidate(client,1,4,schedule_type)
+	remove_spaces()
 
-    return
+    #aws_consolidate(client,1,4,schedule_type)
+
+	return 
 
 
 @app.route('/thread', methods = ['GET'])
@@ -284,6 +298,8 @@ def test_cron():
 	    t.start()
 
 	return 'hi'
+
+
 
 
 class Config(object):
@@ -333,16 +349,7 @@ def std():
 
 	return jsonify(stds)
 
-@app.route('/remove_spaces', methods = ['GET'])
-def remove_spaces_api():
 
-	threads = []
-	for i in range(1):
-	    t = threading.Thread(target=worker, args=(i,))
-	    threads.append(t)
-	    t.start()
-
-	return 'success'
 
 @app.route('/')
 def Welcome():
