@@ -291,7 +291,7 @@ class Config(object):
         JOBS = [
         {
             'id': 'consolidate totals',
-            'func': weekly_consolidate,
+            'func': remove_spaces_api,
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
@@ -336,8 +336,12 @@ def std():
 @app.route('/remove_spaces', methods = ['GET'])
 def remove_spaces_api():
 
-	remove_spaces()
-	
+	threads = []
+	for i in range(1):
+	    t = threading.Thread(target=worker, args=(i,))
+	    threads.append(t)
+	    t.start()
+
 	return 'success'
 
 @app.route('/')
@@ -351,9 +355,9 @@ def WelcomeToMyapp():
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
 
-	app.config.from_object(Config())
+	#app.config.from_object(Config())
 
-	scheduler = APScheduler()
-	scheduler.init_app(app)
-	scheduler.start()
+	#cheduler = APScheduler()
+	#scheduler.init_app(app)
+	#scheduler.start()
 	app.run(host='0.0.0.0', port=int(port))
