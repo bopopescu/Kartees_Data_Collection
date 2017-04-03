@@ -19,8 +19,7 @@ schedules.append({
 "Houston Astros":"12:00",
 "Milwaukee Brewers":"15:00",
 "Cleveland Indians":"18:00",
-"Kansas City Royals":"21:00",
-"New York Mets2":"14:54"
+"Kansas City Royals":"21:00"
 })
 
 schedules.append({ 
@@ -260,3 +259,78 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 			cloudant_write(logs_doc, data)
 
+def remove_spaces():
+
+	s3_resource = boto3.resource('s3')
+
+	bucket = s3_resource.Bucket('2017pricedata')
+
+	directory = ""	
+	event_csv = ""
+
+	for obj in bucket.objects.all():
+
+		key = obj.key
+
+		#print "Observing key %s"%key
+
+		if 'total' in key and 'csv' in key:
+
+			key_list = key.split('/')
+
+			print key_list
+			
+			#file_day = key_list[1]
+			team = key_list[1]
+			event_csv = key_list[2]
+
+			print key_list
+
+			directory = '../price_data/tmp_spaces/%s' %(team)
+			
+			print directory
+			tmp_file_name = "%s/%s" %(directory,event_csv)
+			
+
+        	# if not os.path.exists(directory):
+			os.makedirs(directory)
+        		
+			print 's3://2017pricedata/total/%s/%s' %(team,event_csv)
+			s3_client = boto3.client('s3')
+
+			s3_client.download_file('2017pricedata', 'total/%s/%s'%(team,event_csv),tmp_file_name)
+
+			with open(tmp_file_name, 'rU') as old_file:
+
+				reader = csv.reader(old_file)
+
+				rows = [l for l in reader]
+
+			new_dir = '%s/new' %(directory)
+			os.makedirs(new_dir)
+			new_file_path = '%s/%s' %(new_dir, event_csv)
+			with open(new_file_path, 'wb') as new_file:
+
+				writer = csv.writer(new_file)
+
+				for row in rows:
+
+					if row != []:
+
+						writer.writerow(row)
+
+			s3_client.upload_file(new_file_path, '2017pricedata','total/%s/%s' %(team,event_csv))
+			pdb.set_trace()
+			shutil.rmtree(directory)
+
+
+
+
+			
+			
+
+
+
+if __name__=='__main__':
+
+	remove_spaces()
