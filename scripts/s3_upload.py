@@ -117,78 +117,79 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 
 		        	# Get new lines for daily
 
-		        	with open(local_path, 'rU') as new_data:
+		        	if day_size >0:
 
-		        		reader = csv.reader(new_data)
-		        		if reader.next():
+			        	with open(local_path, 'rU') as new_data:
+
+			        		reader = csv.reader(new_data)
+			        		
+			  
 			        		reader.next()
 			        		new_rows = [l for l in reader]
-			        	else:
-			        		new_rows = [[]]
+			
+				        	new_rows = [[]]
 
-		        	directory = '../price_data/tmp/%s' %(team)
+			        	directory = '../price_data/tmp/%s' %(team)
 
-		        	tmp_file_name = '%s/%s' %(directory,file)
+			        	tmp_file_name = '%s/%s' %(directory,file)
 
-		        	if not os.path.exists(directory):
-		        		os.makedirs(directory)
-		        		
-		        	print 's3://2017pricedata/total/%s/%s' %(team,file)
-		        	s3_client = boto3.client('s3')
-		        	try:
-						s3_client.download_file('2017pricedata', 'total/%s/%s'%(team,file),tmp_file_name)
+			        	if not os.path.exists(directory):
+			        		os.makedirs(directory)
+			        		
+			        	print 's3://2017pricedata/total/%s/%s' %(team,file)
+			        	s3_client = boto3.client('s3')
+			        	try:
+							s3_client.download_file('2017pricedata', 'total/%s/%s'%(team,file),tmp_file_name)
 
-						with open (tmp_file_name, 'a') as new_file:
+							with open (tmp_file_name, 'a') as new_file:
 
-							writer = csv.writer(new_file)
+								writer = csv.writer(new_file)
 
-							writer.writerows(new_rows)
-						
-						size = os.path.getsize(tmp_file_name)/1000
-						print 'Uploading file: %s - %s' %(team, file)
-						
-						s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,file))
+								writer.writerows(new_rows)
+							
+							size = os.path.getsize(tmp_file_name)/1000
+							print 'Uploading file: %s - %s' %(team, file)
+							
+							s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,file))
 
-						shutil.rmtree(directory)
+							shutil.rmtree(directory)
 
-						new_doc = False
-
-
-		        	except:
-
-		        		with open (tmp_file_name, 'wb') as new_file:
-
-							writer = csv.writer(new_file)
-
-							header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
-
-							writer.writerow(header)
-
-							writer.writerows(new_rows)
-
-		        		print 'doesnt exist -starting new'
-		        		
-		        		s3.upload_file(local_path,bucketname,'total/%s/%s' %(team, file))
-		        		size = os.path.getsize(tmp_file_name)/1000
-		        		shutil.rmtree(directory) 
-
-		        		new_doc =True
+							new_doc = False
 
 
-		        	new_data = {
+			        	except:
 
-    						"UTC_Timestamp": str(datetime.datetime.utcnow()),
-    						"Team_Uploaded": team,
-    						"Event":file.replace('.csv',''),
-    						"Day_Added_To_Total":yesterday_dir,
-    						"Size_KB": size,
-    						"New_doc":new_doc
+			        		with open (tmp_file_name, 'wb') as new_file:
 
-    					}
+								writer = csv.writer(new_file)
 
-    				cloudant_write_total(new_data)
-    				pdb.set_trace()
+								header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
 
+								writer.writerow(header)
+
+								writer.writerows(new_rows)
+
+			        		print 'doesnt exist -starting new'
+			        		
+			        		s3.upload_file(local_path,bucketname,'total/%s/%s' %(team, file))
+			        		size = os.path.getsize(tmp_file_name)/1000
+			        		shutil.rmtree(directory) 
+
+			        		new_doc =True
+
+
+			        	new_data = {
+
+	    						"UTC_Timestamp": str(datetime.datetime.utcnow()),
+	    						"Team_Uploaded": team,
+	    						"Event":file.replace('.csv',''),
+	    						"Day_Added_To_Total":yesterday_dir,
+	    						"Size_KB": size,
+	    						"New_doc":new_doc
+
+	    					}
+
+	    				cloudant_write_total(new_data)
 
 
 
