@@ -120,9 +120,11 @@ def uploadDirectory(path,bucketname, yesterday_dir):
 		        	with open(local_path, 'rU') as new_data:
 
 		        		reader = csv.reader(new_data)
-		        		reader.next()
-		        		new_rows = [l for l in reader]
-
+		        		if reader.next():
+			        		reader.next()
+			        		new_rows = [l for l in reader]
+			        	else:
+			        		new_rows = [[]]
 
 		        	directory = '../price_data/tmp/%s' %(team)
 
