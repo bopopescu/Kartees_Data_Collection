@@ -122,11 +122,12 @@ def update_event_data(event_id, team, sport):
         
         csv.writer(file).writerow(header)
 
-    csv.writer(file).writerows(columns)
+    if len(columns) >1:
+
+        csv.writer(file).writerows(columns)
      
     file.close()
     
-    fifth = time.time()
 
 
 if __name__ == '__main__':
