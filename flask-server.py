@@ -349,6 +349,12 @@ def std():
 
 	return jsonify(stds)
 
+@app.route('/login', methods = ['GET'])
+def login():
+	stubhub = Stubhub(account="LABO")
+	print stubhub
+
+	return 'success'
 
 
 @app.route('/')
