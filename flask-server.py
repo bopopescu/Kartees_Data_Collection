@@ -352,9 +352,9 @@ def std():
 @app.route('/login', methods = ['GET'])
 def login():
 	stubhub = Stubhub(account="LABO")
-	print stubhub
-
-	return 'success'
+	event = stubhub.get_event(9710889)
+	
+	return event.text
 
 
 @app.route('/')
