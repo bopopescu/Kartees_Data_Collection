@@ -23,6 +23,8 @@ import pdb
 import subprocess
 import logging
 import threading
+from scripts.cron_functions import *
+from scripts.price_through_time import *
 
 logging.basicConfig()
 
@@ -279,14 +281,76 @@ def remove_spaces_api():
 
 	return 'success'
 
+@app.route('/get_data', methods = ['GET'])
+def get_data():
 
-def worker(schedule_type):
+	resp = False
 
-	remove_spaces()
+	#try:
+
+	account = request.args.get("account")
+	stubhub = Stubhub(account)
+	
+    # Get game to use from second command line arg
+	event_id = request.args.get("event_id")
+	team = request.args.get("team")
+	sport = request.args.get("sport")
+	
+	#cron_write_delay(account)
+
+	columns = update_event_data(stubhub,event_id, team, sport)
+    
+	resp = True
+	#print columns
+
+	#except Exception as e:
+
+		# print 'false'
 
     #aws_consolidate(client,1,4,schedule_type)
+	return jsonify(columns)
 
+
+
+
+def worker(schedule_type):
 	return 
+
+	# resp = False
+
+	# try:
+
+ #        # Get account to use from first command line arg
+ #        account = request.args.get("account")
+ #        stubhub = Stubhub(account)
+
+ #        # Get game to use from second command line arg
+ #        event_id = request.args.get("event_id")
+ #        team = request.args.get("team")
+ #        sport = request.args.get("sport")
+        
+ #        cron_write_delay(account)
+        
+ #        update_event_data(event_id, team, sport)
+        
+ #        resp = True
+ #        print 'true'
+
+ #    except Exception as e:
+
+ #        print 'false'
+
+ #    #aws_consolidate(client,1,4,schedule_type)
+
+	# return resp
+
+def collect_data():
+
+	threads = []
+	for i in range(1):
+	    t = threading.Thread(target=worker, args=(i,))
+	    threads.append(t)
+	    t.start()
 
 
 @app.route('/thread', methods = ['GET'])

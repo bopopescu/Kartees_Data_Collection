@@ -4,9 +4,10 @@ import time
 
 def get_cron(account):
 
-	path = '../global_data/cron_%s.csv' %account
+	path = 'cron_%s.csv' %account
 
 	with open(path, 'rU') as cron_file:
+
 
 		reader = csv.reader(cron_file)
 
@@ -19,14 +20,15 @@ def get_cron(account):
 
 def cron_write_delay(account):
 
-	path = '../global_data/cron_%s.csv' %account
+	path = 'cron_%s.csv' %account
 
 	delay = 0
 
 	rows, header = get_cron(account)
 
-	next_value = 11
 
+	next_value = 11
+	
 	for row in rows:
 
 		if row[1] == "NA":
@@ -65,6 +67,7 @@ def cron_write_delay(account):
 					writer.writerow([row[0], 'NA'])
 
 	else:
+		
 
 		with open(path, 'wb') as cron_file:
 
