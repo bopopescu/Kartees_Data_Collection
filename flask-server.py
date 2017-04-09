@@ -284,6 +284,11 @@ def remove_spaces_api():
 @app.route('/get_data', methods = ['GET'])
 def get_data():
 
+	with open('cron_test.csv', 'wb') as file:
+		writer = csv.writer(file)
+		writer.writerow(['hey']) 
+
+
 	try:
 
 		account = request.args.get("account")
@@ -293,6 +298,8 @@ def get_data():
 		event_id = request.args.get("event_id")
 		team = request.args.get("team")
 		sport = request.args.get("sport")
+
+
 		
 		cron_write_delay(account)
 
