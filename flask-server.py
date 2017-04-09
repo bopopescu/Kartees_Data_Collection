@@ -284,31 +284,29 @@ def remove_spaces_api():
 @app.route('/get_data', methods = ['GET'])
 def get_data():
 
-	resp = False
+	try:
 
-	#try:
+		account = request.args.get("account")
+		stubhub = Stubhub(account)
+		
+	    # Get game to use from second command line arg
+		event_id = request.args.get("event_id")
+		team = request.args.get("team")
+		sport = request.args.get("sport")
+		
+		cron_write_delay(account)
 
-	account = request.args.get("account")
-	stubhub = Stubhub(account)
-	
-    # Get game to use from second command line arg
-	event_id = request.args.get("event_id")
-	team = request.args.get("team")
-	sport = request.args.get("sport")
-	
-	#cron_write_delay(account)
+		columns = update_event_data(stubhub,event_id, team, sport)
+	    
+		resp = columns
 
-	columns = update_event_data(stubhub,event_id, team, sport)
-    
-	resp = True
-	#print columns
 
-	#except Exception as e:
+	except Exception as e:
 
-		# print 'false'
+		resp = False
 
-    #aws_consolidate(client,1,4,schedule_type)
-	return jsonify(columns)
+
+	return jsonify(resp)
 
 
 
