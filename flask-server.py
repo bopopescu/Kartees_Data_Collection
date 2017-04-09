@@ -303,6 +303,8 @@ def get_data():
 
 	except Exception as e:
 
+		print 'problem'
+
 		resp = False
 
 
