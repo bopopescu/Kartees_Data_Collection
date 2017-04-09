@@ -124,7 +124,7 @@ def update_event_data(stubhub,event_id, team, sport):
 
     #    csv.writer(file).writerows(columns)
         
-        print columns
+        # print columns
         return columns
     #file.close()
     

@@ -26,6 +26,7 @@ def cron_write_delay(account):
 
 	rows, header = get_cron(account)
 
+
 	next_value = 11
 	
 	for row in rows:

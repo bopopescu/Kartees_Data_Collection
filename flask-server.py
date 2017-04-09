@@ -25,7 +25,7 @@ import logging
 import threading
 from scripts.cron_functions import *
 from scripts.price_through_time import *
-
+import time
 logging.basicConfig()
 
 
@@ -69,7 +69,8 @@ else:
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 
-
+#cron_LABO = {'current':1, 1:'NA', 2:'NA', 3:'NA', 4: 'NA', 5:'NA', 6:'NA', 7:'NA', 8:'NA', 9:'NA', 10:'NA'}
+cron_LABO = {"time": time.time(), "number": 1}
 
 def construct_error(code, message):
 	return json.dumps({"Error_Code": "%d" %code, "Error_Message": "%s" %message})
@@ -288,6 +289,7 @@ def get_data():
 		writer = csv.writer(file)
 		writer.writerow(['hey']) 
 
+	resp = False
 
 	try:
 
@@ -299,21 +301,35 @@ def get_data():
 		team = request.args.get("team")
 		sport = request.args.get("sport")
 
+		#cron_write_delay(account)
 
-		
-		cron_write_delay(account)
+		difference = time.time()-cron_LABO['time']
+
+		if cron_LABO['number'] < 10:
+
+			cron_LABO['number'] +=1
+
+		else:
+
+			cron_LABO['number'] = 1
+
+
+			if difference < 59:
+
+				time.sleep(float(60)-difference)
+				
+				cron_LABO['time'] = time.time()
 
 		columns = update_event_data(stubhub,event_id, team, sport)
-	    
+
 		resp = columns
 
 
 	except Exception as e:
 
-		print 'problem'
+		 print 'problem'
 
-		resp = False
-
+	print cron_LABO
 
 	return jsonify(resp)
 
