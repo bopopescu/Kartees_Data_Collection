@@ -6,7 +6,7 @@ from stubhub import *
 from cron_functions import *
 import sys
 import time
-from credentials import *
+
 
 sys.dont_write_bytecode = True
 
