@@ -70,7 +70,8 @@ else:
 
 
 #cron_LABO = {'current':1, 1:'NA', 2:'NA', 3:'NA', 4: 'NA', 5:'NA', 6:'NA', 7:'NA', 8:'NA', 9:'NA', 10:'NA'}
-cron_LABO = {"time": time.time(), "number": 1}
+cron = {"LABO" :{"time": time.time(), "number": 1},
+		"MO":{"time": time.time(), "number": 1}}
 
 def construct_error(code, message):
 	return json.dumps({"Error_Code": "%d" %code, "Error_Message": "%s" %message})
@@ -305,20 +306,22 @@ def get_data():
 
 		difference = time.time()-cron_LABO['time']
 
-		if cron_LABO['number'] < 10:
+		cron = cron[account]
 
-			cron_LABO['number'] +=1
+		if cron['number'] < 10:
+
+			cron['number'] +=1
 
 		else:
 
-			cron_LABO['number'] = 1
+			cron['number'] = 1
 
 
 			if difference < 59:
 
 				time.sleep(float(60)-difference)
-				
-				cron_LABO['time'] = time.time()
+
+				cron['time'] = time.time()
 
 		columns = update_event_data(stubhub,event_id, team, sport)
 
@@ -329,7 +332,7 @@ def get_data():
 
 		 print 'problem'
 
-	print cron_LABO
+	print cron
 
 	return jsonify(resp)
 
