@@ -8,7 +8,7 @@ import csv
 import requests
 import shutil
 from cloudant.client import Cloudant
-from credentials import *
+
 
 schedules = []
 
