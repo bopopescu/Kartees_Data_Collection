@@ -350,6 +350,10 @@ def get_data():
 
 
 def worker(schedule_type):
+
+
+	aws_consolidate(client,1,4,schedule_type)
+
 	return 
 
 	# resp = False
@@ -407,7 +411,7 @@ class Config(object):
         JOBS = [
         {
             'id': 'consolidate totals',
-            'func': remove_spaces_api,
+            'func': collect_data,
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
@@ -468,9 +472,9 @@ def WelcomeToMyapp():
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
 
-	#app.config.from_object(Config())
+	app.config.from_object(Config())
 
-	#cheduler = APScheduler()
-	#scheduler.init_app(app)
-	#scheduler.start()
+	scheduler = APScheduler()
+	scheduler.init_app(app)
+	scheduler.start()
 	app.run(host='0.0.0.0', port=int(port))
