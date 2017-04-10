@@ -8,6 +8,7 @@ import csv
 import requests
 import shutil
 from cloudant.client import Cloudant
+from credentials import *
 
 schedules = []
 
@@ -29,7 +30,7 @@ schedules.append({
 "San Francisco Giants":"09:00",
 "Oakland Athletics":"12:00",
 "New York Yankees":"15:00",
-"Miami Marlins":"18:30",
+"Miami Marlins":"18:00",
 "Cincinnati Reds":"21:00"
 })
 
@@ -61,7 +62,9 @@ def consolidate_dailys(s3_resource,day, use_team):
 	total_size = 0
 
 
-	for obj in bucket.objects.all():
+	pre = 'daily/%s/%s' %(day, use_team) 
+
+	for obj in bucket.objects.filter(Prefix=pre):
 		
 		key = obj.key
 
@@ -178,6 +181,8 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 	print minute
 	
 	schedule = schedules[schedule_type]
+
+	print schedule
 
 	for team in schedule:
 
@@ -337,4 +342,13 @@ def remove_spaces():
 
 if __name__=='__main__':
 
-	remove_spaces()
+	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+
+	aws_consolidate(client,1,4,0)
+
+
+
+
+
+
+
