@@ -53,6 +53,11 @@ subprocess.Popen(string2, shell=True)
 
 stubhub = Stubhub(account="LABO")
 
+cron = {"LABO" :{"time": time.time(), "number": 1},
+		"MO":{"time": time.time(), "number": 1}}
+
+
+
 if 'VCAP_SERVICES' in os.environ:
 
     vcap = json.loads(os.getenv('VCAP_SERVICES'))
@@ -70,8 +75,7 @@ else:
 
 
 #cron_LABO = {'current':1, 1:'NA', 2:'NA', 3:'NA', 4: 'NA', 5:'NA', 6:'NA', 7:'NA', 8:'NA', 9:'NA', 10:'NA'}
-cron = {"LABO" :{"time": time.time(), "number": 1},
-		"MO":{"time": time.time(), "number": 1}}
+
 
 def construct_error(code, message):
 	return json.dumps({"Error_Code": "%d" %code, "Error_Message": "%s" %message})
@@ -286,11 +290,15 @@ def remove_spaces_api():
 @app.route('/get_data', methods = ['GET'])
 def get_data():
 
+	use_cron = ""
+
+	resp = {"result":False,
+			"data":[]}
+
 	with open('cron_test.csv', 'wb') as file:
 		writer = csv.writer(file)
 		writer.writerow(['hey']) 
 
-	resp = False
 
 	try:
 
@@ -304,35 +312,37 @@ def get_data():
 
 		#cron_write_delay(account)
 
-		difference = time.time()-cron_LABO['time']
+		use_cron = cron[account]
 
-		cron = cron[account]
+		difference = time.time()-use_cron['time']
 
-		if cron['number'] < 10:
+		
 
-			cron['number'] +=1
+		if use_cron['number'] < 10:
+
+			use_cron['number'] +=1
 
 		else:
 
-			cron['number'] = 1
+			use_cron['number'] = 1
 
 
 			if difference < 59:
 
 				time.sleep(float(60)-difference)
 
-				cron['time'] = time.time()
+				use_cron['time'] = time.time()
 
 		columns = update_event_data(stubhub,event_id, team, sport)
 
-		resp = columns
-
+		resp["data"] = columns
+		resp["result"] = True
 
 	except Exception as e:
 
 		 print 'problem'
 
-	print cron
+	print use_cron
 
 	return jsonify(resp)
 
