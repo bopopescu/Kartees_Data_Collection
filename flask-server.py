@@ -290,6 +290,12 @@ def remove_spaces_api():
 @app.route('/get_data', methods = ['GET'])
 def get_data():
 
+	try:
+		requests.get('https://stubhub-services-node-red-dev.mybluemix.net/flask-cron-running-status')
+
+	except:
+		print 'node red down'
+		
 	use_cron = ""
 
 	resp = {"result":False,
@@ -337,6 +343,8 @@ def get_data():
 
 		resp["data"] = columns
 		resp["result"] = True
+
+
 
 	except Exception as e:
 
