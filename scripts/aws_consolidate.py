@@ -9,6 +9,7 @@ import requests
 import shutil
 from cloudant.client import Cloudant
 
+
 schedules = []
 
 schedules.append({
@@ -61,7 +62,9 @@ def consolidate_dailys(s3_resource,day, use_team):
 	total_size = 0
 
 
-	for obj in bucket.objects.all():
+	pre = 'daily/%s/%s' %(day, use_team) 
+
+	for obj in bucket.objects.filter(Prefix=pre):
 		
 		key = obj.key
 
@@ -149,7 +152,6 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 		writer.writerows(existing_lines)
 
-
 	size = os.path.getsize(tmp_file_name)/1000
 
 	s3_client = boto3.client('s3')
@@ -174,13 +176,20 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
+
+	print hour
+	print minute
 	
 	schedule = schedules[schedule_type]
+
+	print schedule
 
 	for team in schedule:
 
 		if int(schedule[team].split(":")[0])==hour and int(schedule[team].split(":")[1])==minute:
 
+			
+			print team
 			use_team = team
 
 			db = client['data_collection']
@@ -333,4 +342,13 @@ def remove_spaces():
 
 if __name__=='__main__':
 
-	remove_spaces()
+	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+
+	aws_consolidate(client,1,4,0)
+
+
+
+
+
+
+

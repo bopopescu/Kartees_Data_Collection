@@ -23,7 +23,9 @@ import pdb
 import subprocess
 import logging
 import threading
-
+from scripts.cron_functions import *
+from scripts.price_through_time import *
+import time
 logging.basicConfig()
 
 
@@ -51,6 +53,11 @@ subprocess.Popen(string2, shell=True)
 
 stubhub = Stubhub(account="LABO")
 
+cron = {"LABO" :{"time": time.time(), "number": 1},
+		"MO":{"time": time.time(), "number": 1}}
+
+
+
 if 'VCAP_SERVICES' in os.environ:
 
     vcap = json.loads(os.getenv('VCAP_SERVICES'))
@@ -67,6 +74,7 @@ else:
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 
+#cron_LABO = {'current':1, 1:'NA', 2:'NA', 3:'NA', 4: 'NA', 5:'NA', 6:'NA', 7:'NA', 8:'NA', 9:'NA', 10:'NA'}
 
 
 def construct_error(code, message):
@@ -279,14 +287,118 @@ def remove_spaces_api():
 
 	return 'success'
 
+@app.route('/get_data', methods = ['GET'])
+def get_data():
+
+	try:
+		requests.get('https://stubhub-services-node-red-dev.mybluemix.net/flask-cron-running-status')
+
+	except:
+		print 'node red down'
+		
+	use_cron = ""
+
+	resp = {"result":False,
+			"data":[]}
+
+	with open('cron_test.csv', 'wb') as file:
+		writer = csv.writer(file)
+		writer.writerow(['hey']) 
+
+
+	try:
+
+		account = request.args.get("account")
+		stubhub = Stubhub(account)
+		
+	    # Get game to use from second command line arg
+		event_id = request.args.get("event_id")
+		team = request.args.get("team")
+		sport = request.args.get("sport")
+
+		#cron_write_delay(account)
+
+		use_cron = cron[account]
+
+		difference = time.time()-use_cron['time']
+
+		
+
+		if use_cron['number'] < 10:
+
+			use_cron['number'] +=1
+
+		else:
+
+			use_cron['number'] = 1
+
+
+			if difference < 59:
+
+				time.sleep(float(60)-difference)
+
+				use_cron['time'] = time.time()
+
+		columns = update_event_data(stubhub,event_id, team, sport)
+
+		resp["data"] = columns
+		resp["result"] = True
+
+
+
+	except Exception as e:
+
+		 print 'problem'
+
+	print use_cron
+
+	return jsonify(resp)
+
+
+
 
 def worker(schedule_type):
 
-	remove_spaces()
 
-    #aws_consolidate(client,1,4,schedule_type)
+	aws_consolidate(client,1,4,schedule_type)
 
 	return 
+
+	# resp = False
+
+	# try:
+
+ #        # Get account to use from first command line arg
+ #        account = request.args.get("account")
+ #        stubhub = Stubhub(account)
+
+ #        # Get game to use from second command line arg
+ #        event_id = request.args.get("event_id")
+ #        team = request.args.get("team")
+ #        sport = request.args.get("sport")
+        
+ #        cron_write_delay(account)
+        
+ #        update_event_data(event_id, team, sport)
+        
+ #        resp = True
+ #        print 'true'
+
+ #    except Exception as e:
+
+ #        print 'false'
+
+ #    #aws_consolidate(client,1,4,schedule_type)
+
+	# return resp
+
+def collect_data():
+
+	threads = []
+	for i in range(1):
+	    t = threading.Thread(target=worker, args=(i,))
+	    threads.append(t)
+	    t.start()
 
 
 @app.route('/thread', methods = ['GET'])
@@ -307,7 +419,7 @@ class Config(object):
         JOBS = [
         {
             'id': 'consolidate totals',
-            'func': remove_spaces_api,
+            'func': collect_data,
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
@@ -368,9 +480,9 @@ def WelcomeToMyapp():
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
 
-	#app.config.from_object(Config())
+	app.config.from_object(Config())
 
-	#cheduler = APScheduler()
-	#scheduler.init_app(app)
-	#scheduler.start()
+	scheduler = APScheduler()
+	scheduler.init_app(app)
+	scheduler.start()
 	app.run(host='0.0.0.0', port=int(port))

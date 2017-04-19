@@ -6,41 +6,42 @@ from stubhub import *
 from cron_functions import *
 import sys
 import time
+
+
 sys.dont_write_bytecode = True
+
 
 latest_game_schedules = '2017-03-05_18_29'
 
 
-def update_event_data(event_id, team, sport):
-
-    first = time.time()
+def update_event_data(stubhub,event_id, team, sport):
 
     now = datetime.datetime.utcnow()
 
-    directory = '../price_data/%s_%s_%s' %(now.year, now.month, now.day)
-
-    if not os.path.exists(directory): os.makedirs(directory)
-
-    path = "%s/%s/%s.csv"%(directory,team,event_id)
-
-    include_header = False
-
-    if os.path.isfile(path):
-
-        file = open(path, 'a')
-
-    else:
-        new_team_directory ='%s/%s' %(directory, team)
-
-        if not os.path.exists(new_team_directory):
-            os.makedirs(new_team_directory)
-
-        file = open(path, 'wb') 
-
-        include_header=True
+    directory = '/price_data/%s_%s_%s' %(now.year, now.month, now.day)
 
 
-    second = time.time()
+    # if not os.path.exists(directory): os.makedirs(directory)
+
+
+    # path = "%s/%s/%s.csv"%(directory,team,event_id)
+    
+    # include_header = False
+
+    # if os.path.isfile(path):
+
+    #     file = open(path, 'a')
+
+    # else:
+    #     new_team_directory ='%s/%s' %(directory, team)
+
+    #     if not os.path.exists(new_team_directory):
+    #         os.makedirs(new_team_directory)
+
+    #     file = open(path, 'wb') 
+
+    #     include_header=True
+
         
     new_listings_request = stubhub.get_event_inventory(event_id)
 
@@ -116,17 +117,19 @@ def update_event_data(event_id, team, sport):
         column = [metadata['current_time']] + [time_dif]+[section]+[sections_dict[section]['sectionName']] + [total_tickets] + [average_price] + [sections_dict[section]['totalTickets']] +[sections_dict[section]['averageTicketPrice']] +[sections_dict[section]['minTicketPrice']]+ [sections_dict[section]['maxTicketPrice']]+ [section_std[section]] +[win_pct]+[total_games]+[l_10] + [np.median(section_prices[section])] + [total_listings] + [sections_dict[section]['totalListings']]+[1]+[event_id]
         columns.append(column)
 
-    if include_header:
+    # if include_header:
 
-        header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
+    #     header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
         
-        csv.writer(file).writerow(header)
+    #     csv.writer(file).writerow(header)
 
     if len(columns) >1:
 
-        csv.writer(file).writerows(columns)
-     
-    file.close()
+    #    csv.writer(file).writerows(columns)
+        
+        # print columns
+        return columns
+    #file.close()
     
 
 
