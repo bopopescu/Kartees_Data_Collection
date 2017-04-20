@@ -345,6 +345,8 @@ def get_data():
 
 def worker(schedule_type):
 
+	client = ''
+
 	if 'VCAP_SERVICES' in os.environ:
 
 	    vcap = json.loads(os.getenv('VCAP_SERVICES'))
