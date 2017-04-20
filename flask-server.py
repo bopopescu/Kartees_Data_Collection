@@ -403,8 +403,8 @@ class Config(object):
              'trigger': {
         		'type': 'cron',
         		'day_of_week': '*',
-        		'hour': '*',
-        		'minute': '*'
+        		'hour': '0,3,6,9,12,15,18,21',
+        		'minute': '0'
 			}
         }
     ]
