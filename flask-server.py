@@ -392,13 +392,13 @@ def worker(schedule_type):
 
 	# return resp
 
-def collect_data():
+# def collect_data():
 
-	threads = []
-	for i in range(1):
-	    t = threading.Thread(target=worker, args=(i,))
-	    threads.append(t)
-	    t.start()
+# 	threads = []
+# 	for i in range(1):
+# 	    t = threading.Thread(target=worker, args=(i,))
+# 	    threads.append(t)
+# 	    t.start()
 
 
 @app.route('/thread', methods = ['GET'])
@@ -414,25 +414,25 @@ def test_cron():
 
 
 
-class Config(object):
+# class Config(object):
 
-        JOBS = [
-        {
-            'id': 'consolidate totals',
-            'func': collect_data,
-             'trigger': {
-        		'type': 'cron',
-        		'day_of_week': '*',
-        		'hour': '*',
-        		'minute': '0,30'
-			}
-        }
-    ]
+#         JOBS = [
+#         {
+#             'id': 'consolidate totals',
+#             'func': collect_data,
+#              'trigger': {
+#         		'type': 'cron',
+#         		'day_of_week': '*',
+#         		'hour': '*',
+#         		'minute': '0,30'
+# 			}
+#         }
+#     ]
 
 
-    	SCHEDULER_API_ENABLED = True
+#     	SCHEDULER_API_ENABLED = True
 
-    	print "Current Time: %s" %datetime.datetime.now()
+#     	print "Current Time: %s" %datetime.datetime.now()
 
 
 @app.route('/average',methods = ['POST'])
@@ -480,9 +480,9 @@ def WelcomeToMyapp():
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
 
-	app.config.from_object(Config())
+	# app.config.from_object(Config())
 
-	scheduler = APScheduler()
-	scheduler.init_app(app)
-	scheduler.start()
+	# scheduler = APScheduler()
+	# scheduler.init_app(app)
+	# scheduler.start()
 	app.run(host='0.0.0.0', port=int(port))
