@@ -186,17 +186,28 @@ class Stubhub():
         event_details = self.get_event(event_id=event_id).text
 
         #import pdb; pdb.set_trace()
-        #print event_details
+        
         #root = ET.fromstring(event_details)
         event_details = event_details.encode('utf-8', 'ignore')
         event_details = event_details.decode('ascii', 'ignore')
         root = ET.fromstring(unicode(event_details.encode('utf-8')))
-        #print root[7].text
+        local_date = dparser.parse(root[8].text)
+       
         event_date_UTC_unformatted = root[7].text
         event_date_UTC = dparser.parse(event_date_UTC_unformatted).replace(tzinfo=None)
-        #event_date_UTC = datetime.datetime.strptime(event_date_UTC_unformatted[:16] , '%y-%M-%d:%H:%M')
-        #print event_date_UTC
-        #current_time = datetime.datetime.now(datetime.timezone.utc)
+        
+        day_of_week = local_date.weekday()
+        
+        weekend = False
+
+        if day_of_week>=4:
+            weekend = True
+
+        hour_of_day = local_date.hour
+        day_game = False
+
+        if hour_of_day < 19:
+            day_game=True
        
         for elem in root.iter(tag='secondaryName'):
             opponent = elem.text
@@ -210,7 +221,7 @@ class Stubhub():
         
         current_time_formatted = now.strftime("%Y-%m-%d %H:%M:%S")
         event_date_formatted = event_date_UTC.strftime("%Y-%m-%d %H:%M:%S")
-        metadata = {'event_date':event_date_formatted, 'event_id' : event_id, 'time_difference' : time_difference_in_days, 'current_time':current_time_formatted}
+        metadata = {'event_date':event_date_formatted, 'event_id' : event_id, 'time_difference' : time_difference_in_days, 'current_time':current_time_formatted, 'day_of_week':day_of_week, 'weekend':weekend, 'day_game':day_game}
 
         if new_listings !=None:
 
@@ -241,6 +252,7 @@ class Stubhub():
 
         else:
             return metadata
+
         def create_listing(self, listing_dict):
 
             eventId = listing_dict['eventId']
@@ -443,20 +455,20 @@ if __name__ == '__main__':
         stubhub = Stubhub(account = 'LABO')
 
 
-        listing = 1232289487
+        # listing = 1232289487
 
-        params = { "products": [
-                        {"row" : "2", "seat":"15", "fulfillmentArtifact" : "E6U7-ZKW992KQ", "operation" : "UPDATE"},
-                         {"row" : "2", "seat":"16", "fulfillmentArtifact" : "E6U7-UJPDFAWR", "operation" : "UPDATE"}  
+        # params = { "products": [
+        #                 {"row" : "2", "seat":"15", "fulfillmentArtifact" : "E6U7-ZKW992KQ", "operation" : "UPDATE"},
+        #                  {"row" : "2", "seat":"16", "fulfillmentArtifact" : "E6U7-UJPDFAWR", "operation" : "UPDATE"}  
                            
-                           ] } 
+        #                    ] } 
 
 
         # response = stubhub.send_req('/inventory/listings/v2/%s' %(listing), token_type = 'USER', req_type='PUT', params=params)
 
          #print response.text
 
-
+       # print stubhub.get_event_data(9710927, 'mlb','New York Mets')
 
         # csv_path = '../barcodes/barcodes_2017.csv'
 
