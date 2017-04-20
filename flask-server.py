@@ -345,7 +345,7 @@ def get_data():
 
 def worker(schedule_type):
 
-	client = ''
+	creds = ''
 
 	if 'VCAP_SERVICES' in os.environ:
 
@@ -356,6 +356,8 @@ def worker(schedule_type):
 	        user = creds['username']
 	        password = creds['password']
 	        url = 'https://' + creds['host']
+
+	        creds = {"user":user, "password":password,"url":url}
 	  
 	else:
 
@@ -363,7 +365,7 @@ def worker(schedule_type):
 		password = CLOUDANT['password']
 		url = CLOUDANT['url']
 
-	creds = {"user":user, "password":password,"url":url}
+		creds = {"user":user, "password":password,"url":url}
 
 	aws_consolidate(creds,1,4,schedule_type)
 
