@@ -58,20 +58,6 @@ cron = {"LABO" :{"time": time.time(), "number": 1},
 
 
 
-if 'VCAP_SERVICES' in os.environ:
-
-    vcap = json.loads(os.getenv('VCAP_SERVICES'))
-    print('Found VCAP_SERVICES')
-    if 'cloudantNoSQLDB' in vcap:
-        creds = vcap['cloudantNoSQLDB'][0]['credentials']
-        user = creds['username']
-        password = creds['password']
-        url = 'https://' + creds['host']
-        client = Cloudant(user, password, url=url, connect=True)
-  
-else:
-
-	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 
 #cron_LABO = {'current':1, 1:'NA', 2:'NA', 3:'NA', 4: 'NA', 5:'NA', 6:'NA', 7:'NA', 8:'NA', 9:'NA', 10:'NA'}
@@ -359,38 +345,26 @@ def get_data():
 
 def worker(schedule_type):
 
+	if 'VCAP_SERVICES' in os.environ:
+
+	    vcap = json.loads(os.getenv('VCAP_SERVICES'))
+	    print('Found VCAP_SERVICES')
+	    if 'cloudantNoSQLDB' in vcap:
+	        creds = vcap['cloudantNoSQLDB'][0]['credentials']
+	        user = creds['username']
+	        password = creds['password']
+	        url = 'https://' + creds['host']
+	        client = Cloudant(user, password, url=url, connect=True)
+	  
+	else:
+
+		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+
 
 	aws_consolidate(client,1,4,schedule_type)
 
 	return 
 
-	# resp = False
-
-	# try:
-
- #        # Get account to use from first command line arg
- #        account = request.args.get("account")
- #        stubhub = Stubhub(account)
-
- #        # Get game to use from second command line arg
- #        event_id = request.args.get("event_id")
- #        team = request.args.get("team")
- #        sport = request.args.get("sport")
-        
- #        cron_write_delay(account)
-        
- #        update_event_data(event_id, team, sport)
-        
- #        resp = True
- #        print 'true'
-
- #    except Exception as e:
-
- #        print 'false'
-
- #    #aws_consolidate(client,1,4,schedule_type)
-
-	# return resp
 
 def collect_data():
 
@@ -424,7 +398,7 @@ class Config(object):
         		'type': 'cron',
         		'day_of_week': '*',
         		'hour': '*',
-        		'minute': '0,30'
+        		'minute': '0'
 			}
         }
     ]
