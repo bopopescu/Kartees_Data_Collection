@@ -134,7 +134,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 		existing_lines = list(lines)
 
 
-	pdb.set_trace()
+
 	# Save to tmp csv
 	directory = 'price_data/tmp/%s' %(team)
 
@@ -156,7 +156,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 	pdb.set_trace()
 	print size
-	
+
 	s3_client = boto3.client('s3')
 
 	print 'Uploading file: %s - %s' %(team, event_csv)
