@@ -61,7 +61,6 @@ def consolidate_dailys(s3_resource,day, use_team):
 
 	total_size = 0
 
-
 	pre = 'daily/%s/%s' %(day, use_team) 
 
 	for obj in bucket.objects.filter(Prefix=pre):
@@ -103,11 +102,14 @@ def append_to_total(s3_resource, event_csv, lines, team):
 	bucket = s3_resource.Bucket('2017pricedata')
 
 	key = 'total/%s/%s' %(team,event_csv)
+
+	pre = 'total/%s' %(team) 
+
 	exists = False
 	existing_lines = []
 	key_file = None
 
-	for obj in bucket.objects.all():
+	for obj in bucket.objects.filter(Prefix=pre):
 		
 		if obj.key == key:
 
@@ -146,9 +148,10 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 		writer = csv.writer(new_file)
 
-		header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id']
+		header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id', 'Weekend', 'Day_Game']
 
-		writer.writerow(header)
+		if not exists:
+			writer.writerow(header)
 
 		writer.writerows(existing_lines)
 
@@ -175,13 +178,15 @@ def cloudant_write(logs_doc, new_data):
 	logs_doc.save()
 
 
-def aws_consolidate(client, first_day, last_day, schedule_type):
+def aws_consolidate(creds, first_day, last_day, schedule_type):
 
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
 
 	print hour
 	print minute
+
+	client = Cloudant(creds['user'],creds['password'] , url=creds['url'],connect=True,auto_renew=True)
 
 	db = client['data_collection']
 

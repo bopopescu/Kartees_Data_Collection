@@ -356,14 +356,16 @@ def worker(schedule_type):
 	        user = creds['username']
 	        password = creds['password']
 	        url = 'https://' + creds['host']
-	        client = Cloudant(user, password, url=url, connect=True)
 	  
 	else:
 
-		client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
+		user = CLOUDANT['username']
+		password = CLOUDANT['password']
+		url = CLOUDANT['url']
 
+	creds = {"user":user, "password":password,"url":url}
 
-	aws_consolidate(client,1,4,schedule_type)
+	aws_consolidate(creds,1,4,schedule_type)
 
 	return 
 
@@ -371,7 +373,7 @@ def worker(schedule_type):
 def collect_data():
 
 	threads = []
-	for i in range(1):
+	for i in range(4):
 	    t = threading.Thread(target=worker, args=(i,))
 	    threads.append(t)
 	    t.start()
