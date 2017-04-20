@@ -400,7 +400,7 @@ class Config(object):
         		'type': 'cron',
         		'day_of_week': '*',
         		'hour': '*',
-        		'minute': '0'
+        		'minute': '*'
 			}
         }
     ]
