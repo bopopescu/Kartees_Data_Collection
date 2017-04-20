@@ -367,7 +367,7 @@ def worker(schedule_type):
 
 		creds = {"user":user, "password":password,"url":url}
 
-	aws_consolidate(creds,1,4,schedule_type)
+	aws_consolidate(creds,1,35,schedule_type)
 
 	return 
 
