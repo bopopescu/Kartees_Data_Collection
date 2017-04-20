@@ -157,14 +157,13 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 	size = os.path.getsize(tmp_file_name)/1000
 
-	pdb.set_trace()
 	print size
 
 	s3_client = boto3.client('s3')
 
 	print 'Uploading file: %s - %s' %(team, event_csv)
 	s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,event_csv))
-	pdb.set_trace()
+	
 	shutil.rmtree(directory) 
 
 	return size
