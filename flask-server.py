@@ -318,32 +318,32 @@ def get_data():
 
 		#cron_write_delay(account)
 
-		use_cron = cron[account]
+		# use_cron = cron[account]
 
-		difference = time.time()-use_cron['time']
+		# difference = time.time()-use_cron['time']
 
 		
 
-		if use_cron['number'] < 10:
+		# if use_cron['number'] < 10:
 
-			use_cron['number'] +=1
+		# 	use_cron['number'] +=1
 
-			print cron
+		# 	print cron
 
 
-		else:
+		# else:
 
-			print "At 10, difference is: %s" % difference
+		# 	print "At 10, difference is: %s" % difference
 
-			use_cron['number'] = 1
+		# 	use_cron['number'] = 1
 
-			if difference < 59:
+		# 	if difference < 59:
 
-				print "Waiting - %s seconds" %(float(60)-difference)
+		# 		print "Waiting - %s seconds" %(float(60)-difference)
 
-				time.sleep(float(60)-difference)
+		# 		time.sleep(float(60)-difference)
 
-				use_cron['time'] = time.time()
+		# 		use_cron['time'] = time.time()
 
 		columns = update_event_data(stubhub,event_id, team, sport)
 
