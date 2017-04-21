@@ -333,6 +333,8 @@ def get_data():
 
 		else:
 
+			print "At 10, difference is: %s" % difference
+
 			use_cron['number'] = 1
 
 			if difference < 59:
