@@ -328,12 +328,16 @@ def get_data():
 
 			use_cron['number'] +=1
 
+			print cron
+
+
 		else:
 
 			use_cron['number'] = 1
 
-
 			if difference < 59:
+
+				print "Waiting - %s seconds" %(float(60)-difference)
 
 				time.sleep(float(60)-difference)
 

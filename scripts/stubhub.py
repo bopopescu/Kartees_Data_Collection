@@ -468,7 +468,8 @@ if __name__ == '__main__':
 
          #print response.text
 
-       # print stubhub.get_event_data(9710927, 'mlb','New York Mets')
+        #print stubhub.get_event_data(9710927, 'mlb','New York Mets')
+        print stubhub.get_event_inventory(9710927)
 
         # csv_path = '../barcodes/barcodes_2017.csv'
 
