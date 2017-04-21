@@ -104,17 +104,25 @@ def update_event_data(stubhub,event_id, team, sport):
         total_games = int(wins) + int(losses)
 
     # Section = 1, Zone = 2
+    weekend_bool = metadata['weekend']
+    day_game_bool = metadata['day_game']
+
+    # Weekend game = 1, Weekday = 2
+    # Day/Afternoon Game = 1, Night Game = 2
+    weekend = 1 if weekend_bool else 2
+    day_game = 1 if day_game_bool else 2
+
 
     for zone in zones_dict:
 
         zone_average, zone_std, zone_count, zone_median = zones_stats[zone][0],  zones_stats[zone][1],  zones_stats[zone][2], zones_stats[zone][3]
 
-        column = [metadata['current_time']] + [time_dif] + [zone] + [zones_dict[zone]['zoneName']] + [total_tickets] + [average_price] +[zone_count]+ [zone_average]+[zones_dict[zone]['minTicketPrice']] +[zones_dict[zone]['maxTicketPrice']] + [zone_std] + [win_pct]+[total_games]+[l_10] + [zone_median]+[total_listings] + [zones_dict[zone]['totalListings']]+[2] +[event_id] +[metadata['day_of_week']]+[metadata['weekend']]+[metadata['day_game']]
+        column = [metadata['current_time']] + [time_dif] + [zone] + [zones_dict[zone]['zoneName']] + [total_tickets] + [average_price] +[zone_count]+ [zone_average]+[zones_dict[zone]['minTicketPrice']] +[zones_dict[zone]['maxTicketPrice']] + [zone_std] + [win_pct]+[total_games]+[l_10] + [zone_median]+[total_listings] + [zones_dict[zone]['totalListings']]+[2] +[event_id] +[metadata['day_of_week']]+[weekend]+[day_game]
         columns.append(column)
          
     for section in sections_dict:
 
-        column = [metadata['current_time']] + [time_dif]+[section]+[sections_dict[section]['sectionName']] + [total_tickets] + [average_price] + [sections_dict[section]['totalTickets']] +[sections_dict[section]['averageTicketPrice']] +[sections_dict[section]['minTicketPrice']]+ [sections_dict[section]['maxTicketPrice']]+ [section_std[section]] +[win_pct]+[total_games]+[l_10] + [np.median(section_prices[section])] + [total_listings] + [sections_dict[section]['totalListings']]+[1]+[event_id]+[metadata['day_of_week']]+[metadata['weekend']]+[metadata['day_game']]
+        column = [metadata['current_time']] + [time_dif]+[section]+[sections_dict[section]['sectionName']] + [total_tickets] + [average_price] + [sections_dict[section]['totalTickets']] +[sections_dict[section]['averageTicketPrice']] +[sections_dict[section]['minTicketPrice']]+ [sections_dict[section]['maxTicketPrice']]+ [section_std[section]] +[win_pct]+[total_games]+[l_10] + [np.median(section_prices[section])] + [total_listings] + [sections_dict[section]['totalListings']]+[1]+[event_id]+[metadata['day_of_week']]+[weekend]+[day_game]
         columns.append(column)
 
     # if include_header:
