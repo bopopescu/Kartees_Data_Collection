@@ -13,45 +13,45 @@ from cloudant.client import Cloudant
 schedules = []
 
 schedules.append({
-"San Diego Padres":"00:00",
-"Toronto Blue Jays":"03:00",
-"Chicago Cubs":"06:00",
-"Colorado Rockies":"09:00",
-"Houston Astros":"12:00",
-"Milwaukee Brewers":"15:00",
-"Cleveland Indians":"18:00",
-"Kansas City Royals":"21:00"
+# "San Diego Padres":"00:00",
+# "Toronto Blue Jays":"03:00",
+# "Chicago Cubs":"06:00",
+# "Colorado Rockies":"09:00",
+# "Houston Astros":"12:00",
+# "Milwaukee Brewers":"15:00",
+# "Cleveland Indians":"18:00",
+# "Kansas City Royals":"21:00"
 })
 
-schedules.append({ 
-"Philadelphia Phillies":"00:00",
+schedules.append({
+#"Philadelphia Phillies":"00:00",
 "New York Mets":"03:00",
-"Atlanta Braves":"06:00",
-"San Francisco Giants":"09:00",
-"Oakland Athletics":"12:00",
-"New York Yankees":"15:00",
-"Miami Marlins":"18:00",
-"Cincinnati Reds":"21:00"
+# "Atlanta Braves":"06:00",
+# "San Francisco Giants":"09:00",
+# "Oakland Athletics":"12:00",
+# "New York Yankees":"15:00",
+# "Miami Marlins":"18:00",
+# "Cincinnati Reds":"21:00"
 })
 
-schedules.append({ 
-"St. Louis Cardinals":"00:00",
-"Minnesota Twins":"03:00",
-"Detroit Tigers":"06:00",
-"Los Angeles Angels":"09:00",
-"Texas Rangers":"12:00",
-"Pittsburgh Pirates":"15:00",
-"Tampa Bay Rays":"18:00"
+schedules.append({
+# "St. Louis Cardinals":"00:00",
+# "Minnesota Twins":"03:00",
+# "Detroit Tigers":"06:00",
+# "Los Angeles Angels":"09:00",
+# "Texas Rangers":"12:00",
+# "Pittsburgh Pirates":"15:00",
+# "Tampa Bay Rays":"18:00"
 })
 
-schedules.append({ 
-"Seattle Mariners":"00:00",
-"Chicago White Sox":"03:00",
-"Boston Red Sox":"06:00",
-"Baltimore Orioles":"09:00",
-"Los Angeles Dodgers":"12:00",
-"Washington Nationals":"15:00",
-"Arizona Diamondbacks":"18:00"
+schedules.append({
+# "Seattle Mariners":"00:00",
+# "Chicago White Sox":"03:00",
+# "Boston Red Sox":"06:00",
+# "Baltimore Orioles":"09:00",
+# "Los Angeles Dodgers":"12:00",
+# "Washington Nationals":"15:00",
+# "Arizona Diamondbacks":"18:00"
 })
 
 
@@ -62,10 +62,10 @@ def consolidate_dailys(s3_resource,day, use_team):
 	total_size = 0
 
 
-	pre = 'daily/%s/%s' %(day, use_team) 
+	pre = 'daily/%s/%s' %(day, use_team)
 
 	for obj in bucket.objects.filter(Prefix=pre):
-		
+
 		key = obj.key
 
 		print "Observing key %s"%key
@@ -84,14 +84,14 @@ def consolidate_dailys(s3_resource,day, use_team):
 			print "Getting lines for %s, %s" %(team, day)
 			first_line = True
 			for line in smart_open.smart_open('s3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)):
-				
+
 				if not first_line:
 					lines.append(line.replace('\r\n','').split(','))
 				else:
 					first_line= False
 
 			print lines[0]
-			
+
 			total_size += append_to_total(s3_resource,event_csv, lines, team)
 			print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
 
@@ -108,7 +108,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 	key_file = None
 
 	for obj in bucket.objects.all():
-		
+
 		if obj.key == key:
 
 			exists = True
@@ -128,7 +128,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 			break
 
-	
+
 	if not exists:
 
 		existing_lines = list(lines)
@@ -159,7 +159,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 	print 'Uploading file: %s - %s' %(team, event_csv)
 	s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,event_csv))
 
-	shutil.rmtree(directory) 
+	shutil.rmtree(directory)
 
 	return size
 
@@ -179,7 +179,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 	print hour
 	print minute
-	
+
 	schedule = schedules[schedule_type]
 
 	print schedule
@@ -188,7 +188,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 		if int(schedule[team].split(":")[0])==hour and int(schedule[team].split(":")[1])==minute:
 
-			
+
 			print team
 			use_team = team
 
@@ -224,14 +224,14 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 				if not days_already_consolidated or str(day) not in days_already_consolidated:
 					days_to_collect.append(day)
-				
+
 
 
 			print "Days to collect: %s" %days_to_collect
 
 			sizes = {}
 			total_size = 0
-			
+
 			elapsed = "%.2f" %float(float((datetime.datetime.utcnow() - now).seconds) /60)
 
 			data = {"Timestamp":str(now),
@@ -242,7 +242,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 					"Time_Elapsed":elapsed}
 
 
-			
+
 			for day in reversed(days_to_collect):
 
 				print "Consolidating day: %s " %day
@@ -275,7 +275,7 @@ def remove_spaces():
 
 	bucket = s3_resource.Bucket('2017pricedata')
 
-	directory = ""	
+	directory = ""
 	event_csv = ""
 
 	for obj in bucket.objects.all():
@@ -289,7 +289,7 @@ def remove_spaces():
 			key_list = key.split('/')
 
 			print key_list
-			
+
 			#file_day = key_list[1]
 			team = key_list[1]
 			event_csv = key_list[2]
@@ -297,14 +297,14 @@ def remove_spaces():
 			print key_list
 
 			directory = '../price_data/tmp_spaces/%s' %(team)
-			
+
 			print directory
 			tmp_file_name = "%s/%s" %(directory,event_csv)
-			
+
 
         	# if not os.path.exists(directory):
 			os.makedirs(directory)
-        		
+
 			print 's3://2017pricedata/total/%s/%s' %(team,event_csv)
 			s3_client = boto3.client('s3')
 
@@ -335,8 +335,8 @@ def remove_spaces():
 
 
 
-			
-			
+
+
 
 
 
@@ -345,10 +345,3 @@ if __name__=='__main__':
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
 
 	aws_consolidate(client,1,4,0)
-
-
-
-
-
-
-

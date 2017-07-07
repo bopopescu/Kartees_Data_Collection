@@ -1,0 +1,263 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 > data = read.csv('/Users/mauricezeitouni/Desktop/Kartees_Data_Collection/2016_data/Mets/consolidated_datasets/2017-03-07_14_09/sections_clean_time_l10_factored.csv', header = TRUE)\
+> model = lm(data$Zone_Section_Average_Price ~ data$Time_Diff + factor(data$Zone) + data$Total_Tickets + data$Average_Price + data$Zone_Section_Total_Tickets + data$Zone_Section_Min_Price + data$Zone_Section_Max_Price + data$Zone_Section_Std + data$Wins + data$Losses+data$L_10 + factor(data$Tier))\
+> summary(model)\
+\
+Call:\
+lm(formula = data$Zone_Section_Average_Price ~ data$Time_Diff + \
+    factor(data$Zone) + data$Total_Tickets + data$Average_Price + \
+    data$Zone_Section_Total_Tickets + data$Zone_Section_Min_Price + \
+    data$Zone_Section_Max_Price + data$Zone_Section_Std + data$Wins + \
+    data$Losses + data$L_10 + factor(data$Tier))\
+\
+Residuals:\
+     Min       1Q   Median       3Q      Max \
+-2335.46    -8.90    -2.00     4.42  3157.75 \
+\
+Coefficients:\
+                                  Estimate Std. Error  t value Pr(>|t|)    \
+(Intercept)                      3.623e+01  2.700e+00   13.417  < 2e-16 ***\
+data$Time_Diff                   4.560e-02  6.419e-03    7.104 1.22e-12 ***\
+factor(data$Zone)181950          5.767e+00  2.866e+00    2.013 0.044164 *  \
+factor(data$Zone)181951          1.267e+01  2.868e+00    4.419 9.93e-06 ***\
+factor(data$Zone)181952          2.626e+01  2.868e+00    9.156  < 2e-16 ***\
+factor(data$Zone)181953          1.009e+00  2.882e+00    0.350 0.726182    \
+factor(data$Zone)181954          6.237e+00  2.868e+00    2.175 0.029640 *  \
+factor(data$Zone)181955          3.599e+00  2.867e+00    1.255 0.209301    \
+factor(data$Zone)181956         -2.590e-01  2.880e+00   -0.090 0.928354    \
+factor(data$Zone)181957          2.285e+00  2.864e+00    0.798 0.424932    \
+factor(data$Zone)181958          1.360e+00  2.880e+00    0.472 0.636791    \
+factor(data$Zone)181959          1.055e+01  2.865e+00    3.684 0.000230 ***\
+factor(data$Zone)181960          5.022e+00  2.894e+00    1.736 0.082651 .  \
+factor(data$Zone)181961         -5.789e+00  2.864e+00   -2.022 0.043227 *  \
+factor(data$Zone)181962         -4.616e+00  2.866e+00   -1.610 0.107310    \
+factor(data$Zone)181963         -3.134e+00  3.749e+00   -0.836 0.403098    \
+factor(data$Zone)181964         -9.072e+00  2.985e+00   -3.040 0.002369 ** \
+factor(data$Zone)181965          3.467e+00  2.925e+00    1.185 0.235924    \
+factor(data$Zone)181966         -3.112e+00  2.908e+00   -1.070 0.284592    \
+factor(data$Zone)181967          1.442e+01  2.896e+00    4.979 6.40e-07 ***\
+factor(data$Zone)181968         -3.391e+00  2.898e+00   -1.170 0.241884    \
+factor(data$Zone)181969         -1.094e+01  2.966e+00   -3.688 0.000226 ***\
+factor(data$Zone)181970         -1.867e+01  2.962e+00   -6.303 2.92e-10 ***\
+factor(data$Zone)181971         -1.114e+01  3.150e+00   -3.538 0.000404 ***\
+factor(data$Zone)181972         -2.566e+01  3.040e+00   -8.443  < 2e-16 ***\
+factor(data$Zone)181973         -9.399e+00  2.963e+00   -3.173 0.001512 ** \
+factor(data$Zone)181974         -1.322e+01  2.983e+00   -4.432 9.36e-06 ***\
+factor(data$Zone)181975         -3.261e+01  3.065e+00  -10.639  < 2e-16 ***\
+factor(data$Zone)181976         -1.789e+01  5.384e+00   -3.323 0.000891 ***\
+factor(data$Zone)181977          3.573e+01  3.187e+00   11.211  < 2e-16 ***\
+factor(data$Zone)181978         -1.367e+01  3.013e+00   -4.537 5.71e-06 ***\
+factor(data$Zone)181979         -3.618e+01  3.179e+00  -11.381  < 2e-16 ***\
+factor(data$Zone)181980          1.204e+01  2.864e+00    4.204 2.63e-05 ***\
+factor(data$Zone)181981         -2.352e+01  2.964e+00   -7.935 2.13e-15 ***\
+factor(data$Zone)181982         -1.488e+01  3.530e+00   -4.217 2.48e-05 ***\
+factor(data$Zone)181983         -1.720e+01  4.298e+00   -4.002 6.28e-05 ***\
+factor(data$Zone)181984         -1.156e+01  4.074e+00   -2.837 0.004559 ** \
+factor(data$Zone)181985         -8.415e+00  2.877e+00   -2.925 0.003450 ** \
+factor(data$Zone)181986         -5.931e+00  2.872e+00   -2.065 0.038914 *  \
+factor(data$Zone)181987         -4.606e+00  2.891e+00   -1.593 0.111085    \
+factor(data$Zone)181988          1.273e+01  2.872e+00    4.433 9.30e-06 ***\
+factor(data$Zone)181989          3.758e+01  3.009e+00   12.489  < 2e-16 ***\
+factor(data$Zone)181990         -1.829e+01  2.930e+00   -6.244 4.27e-10 ***\
+factor(data$Zone)181991         -7.426e+00  2.929e+00   -2.535 0.011250 *  \
+factor(data$Zone)181992         -2.159e+01  2.911e+00   -7.418 1.20e-13 ***\
+factor(data$Zone)181993         -1.546e+01  2.876e+00   -5.375 7.69e-08 ***\
+factor(data$Zone)181994         -1.192e+01  3.136e+00   -3.800 0.000145 ***\
+factor(data$Zone)181995         -2.732e+01  5.821e+00   -4.693 2.70e-06 ***\
+factor(data$Zone)181996         -2.581e+01  6.041e+00   -4.274 1.93e-05 ***\
+factor(data$Zone)181997         -4.185e+01  1.415e+01   -2.958 0.003100 ** \
+factor(data$Zone)181998         -1.026e+01  1.503e+01   -0.682 0.495065    \
+factor(data$Zone)182009         -6.128e+01  1.075e+01   -5.701 1.20e-08 ***\
+factor(data$Zone)182034         -1.777e+01  1.503e+01   -1.183 0.237009    \
+factor(data$Zone)182036         -1.927e+01  6.291e+00   -3.063 0.002194 ** \
+factor(data$Zone)182148         -1.440e+01  7.978e+00   -1.805 0.071088 .  \
+factor(data$Zone)182153         -1.282e+01  3.350e+00   -3.826 0.000130 ***\
+factor(data$Zone)182154         -1.097e+01  3.198e+00   -3.432 0.000600 ***\
+factor(data$Zone)182155         -1.254e+01  2.870e+00   -4.370 1.24e-05 ***\
+factor(data$Zone)182156         -1.037e+01  2.868e+00   -3.616 0.000300 ***\
+factor(data$Zone)182157         -1.231e+01  2.914e+00   -4.224 2.40e-05 ***\
+factor(data$Zone)182158         -1.267e+01  2.904e+00   -4.364 1.28e-05 ***\
+factor(data$Zone)182159         -4.064e+00  2.898e+00   -1.402 0.160846    \
+factor(data$Zone)182160         -9.722e+00  2.867e+00   -3.391 0.000695 ***\
+factor(data$Zone)182161         -9.331e+00  3.180e+00   -2.934 0.003345 ** \
+factor(data$Zone)182162         -6.063e+00  3.186e+00   -1.903 0.056995 .  \
+factor(data$Zone)182163         -7.978e+00  2.867e+00   -2.783 0.005393 ** \
+factor(data$Zone)182164         -2.340e+00  2.867e+00   -0.816 0.414298    \
+factor(data$Zone)182165          1.926e+01  2.871e+00    6.710 1.96e-11 ***\
+factor(data$Zone)182166         -9.258e+00  2.865e+00   -3.232 0.001230 ** \
+factor(data$Zone)182167         -7.759e+00  2.908e+00   -2.669 0.007619 ** \
+factor(data$Zone)182168         -6.056e-01  2.865e+00   -0.211 0.832597    \
+factor(data$Zone)182169         -8.736e+00  2.867e+00   -3.047 0.002312 ** \
+factor(data$Zone)182170         -6.934e+00  2.939e+00   -2.360 0.018295 *  \
+factor(data$Zone)182171         -6.846e+00  3.004e+00   -2.279 0.022651 *  \
+factor(data$Zone)182172         -5.685e+00  3.317e+00   -1.714 0.086518 .  \
+factor(data$Zone)182173         -1.156e+01  2.888e+00   -4.004 6.23e-05 ***\
+factor(data$Zone)182174         -1.183e+01  2.896e+00   -4.085 4.41e-05 ***\
+factor(data$Zone)182175         -1.075e+01  2.886e+00   -3.725 0.000195 ***\
+factor(data$Zone)182176         -1.175e+01  2.872e+00   -4.092 4.27e-05 ***\
+factor(data$Zone)182177         -1.233e+01  2.882e+00   -4.280 1.87e-05 ***\
+factor(data$Zone)182178         -7.437e+00  3.350e+00   -2.220 0.026436 *  \
+factor(data$Zone)182179         -1.371e+01  3.583e+00   -3.826 0.000130 ***\
+factor(data$Zone)182180         -1.674e+01  8.853e+00   -1.890 0.058719 .  \
+factor(data$Zone)182181         -1.723e+01  2.888e+00   -5.965 2.46e-09 ***\
+factor(data$Zone)182182         -2.115e+01  2.896e+00   -7.303 2.84e-13 ***\
+factor(data$Zone)182183         -1.749e+01  2.906e+00   -6.018 1.77e-09 ***\
+factor(data$Zone)182184         -1.795e+01  2.898e+00   -6.193 5.91e-10 ***\
+factor(data$Zone)182185         -1.513e+01  2.875e+00   -5.263 1.42e-07 ***\
+factor(data$Zone)182186         -1.836e+01  3.285e+00   -5.590 2.28e-08 ***\
+factor(data$Zone)182187         -1.309e+01  4.138e+00   -3.164 0.001556 ** \
+factor(data$Zone)182188         -1.569e+01  3.385e+00   -4.634 3.59e-06 ***\
+factor(data$Zone)182189         -1.841e+01  3.887e+00   -4.737 2.17e-06 ***\
+factor(data$Zone)182190         -2.268e+01  4.523e+00   -5.015 5.32e-07 ***\
+factor(data$Zone)182191         -1.633e+01  4.727e+00   -3.456 0.000549 ***\
+factor(data$Zone)182192         -1.594e+01  4.331e+00   -3.680 0.000233 ***\
+factor(data$Zone)182193         -1.593e+01  2.943e+00   -5.412 6.25e-08 ***\
+factor(data$Zone)182194         -1.277e+01  2.869e+00   -4.453 8.47e-06 ***\
+factor(data$Zone)182195         -9.767e+00  2.868e+00   -3.405 0.000661 ***\
+factor(data$Zone)182196         -1.535e+01  2.879e+00   -5.334 9.65e-08 ***\
+factor(data$Zone)182197         -1.427e+01  2.877e+00   -4.959 7.08e-07 ***\
+factor(data$Zone)182198         -1.269e+01  2.871e+00   -4.422 9.81e-06 ***\
+factor(data$Zone)182199         -1.372e+01  2.872e+00   -4.779 1.76e-06 ***\
+factor(data$Zone)182200         -1.209e+01  3.197e+00   -3.780 0.000157 ***\
+factor(data$Zone)182201         -1.223e+01  3.456e+00   -3.539 0.000401 ***\
+factor(data$Zone)182202         -1.524e+01  3.889e+00   -3.919 8.88e-05 ***\
+factor(data$Zone)182203         -1.493e+01  3.700e+00   -4.034 5.48e-05 ***\
+factor(data$Zone)182204         -1.398e+01  4.859e+00   -2.876 0.004026 ** \
+factor(data$Zone)182205         -7.518e+00  5.821e+00   -1.292 0.196502    \
+factor(data$Zone)182206         -2.061e+01  7.014e+00   -2.938 0.003303 ** \
+factor(data$Zone)182207         -2.334e+01  8.426e+00   -2.770 0.005598 ** \
+factor(data$Zone)182208         -2.576e+01  8.865e+00   -2.906 0.003658 ** \
+factor(data$Zone)182209         -2.466e+01  8.863e+00   -2.782 0.005400 ** \
+factor(data$Zone)182210         -2.710e+01  8.948e+00   -3.029 0.002456 ** \
+factor(data$Zone)182211         -1.287e+01  2.875e+00   -4.476 7.61e-06 ***\
+factor(data$Zone)182212         -1.642e+01  2.892e+00   -5.678 1.37e-08 ***\
+factor(data$Zone)182213         -1.661e+01  3.718e+00   -4.469 7.87e-06 ***\
+factor(data$Zone)182214         -1.125e+01  2.870e+00   -3.920 8.86e-05 ***\
+factor(data$Zone)182215         -7.299e+00  2.866e+00   -2.547 0.010882 *  \
+factor(data$Zone)182216         -9.669e+00  2.867e+00   -3.373 0.000743 ***\
+factor(data$Zone)182217         -9.414e+00  2.877e+00   -3.272 0.001070 ** \
+factor(data$Zone)182218          3.227e+00  2.866e+00    1.126 0.260266    \
+factor(data$Zone)182219         -5.141e+00  3.151e+00   -1.631 0.102793    \
+factor(data$Zone)182220          7.202e+00  2.866e+00    2.513 0.011986 *  \
+factor(data$Zone)182221         -5.248e+00  2.868e+00   -1.830 0.067261 .  \
+factor(data$Zone)182222         -9.936e+00  2.887e+00   -3.441 0.000580 ***\
+factor(data$Zone)182223         -2.479e+00  3.152e+00   -0.787 0.431553    \
+factor(data$Zone)182224          7.762e+00  2.871e+00    2.703 0.006864 ** \
+factor(data$Zone)182225         -1.320e+01  2.871e+00   -4.598 4.27e-06 ***\
+factor(data$Zone)182226         -1.425e+01  3.586e+00   -3.974 7.07e-05 ***\
+factor(data$Zone)182227         -1.758e+01  2.886e+00   -6.092 1.12e-09 ***\
+factor(data$Zone)182228         -1.151e+01  2.866e+00   -4.017 5.89e-05 ***\
+factor(data$Zone)182229         -2.300e+01  5.207e+00   -4.418 9.99e-06 ***\
+factor(data$Zone)182230         -2.511e+01  3.958e+00   -6.345 2.23e-10 ***\
+factor(data$Zone)182231          9.098e+00  3.672e+00    2.478 0.013229 *  \
+factor(data$Zone)182232         -2.437e+01  3.307e+00   -7.369 1.73e-13 ***\
+factor(data$Zone)182233         -1.696e+01  2.870e+00   -5.908 3.47e-09 ***\
+factor(data$Zone)182234         -1.237e+01  3.204e+00   -3.861 0.000113 ***\
+factor(data$Zone)182235         -1.443e+01  3.192e+00   -4.522 6.14e-06 ***\
+factor(data$Zone)182236          1.498e+01  2.997e+00    4.997 5.84e-07 ***\
+factor(data$Zone)182237         -1.488e+01  3.735e+00   -3.984 6.78e-05 ***\
+factor(data$Zone)182238         -2.585e+01  8.762e+00   -2.951 0.003173 ** \
+factor(data$Zone)182239         -3.713e+01  8.762e+00   -4.238 2.26e-05 ***\
+factor(data$Zone)182240         -1.627e+01  8.054e+00   -2.021 0.043331 *  \
+factor(data$Zone)182241          1.525e+00  2.906e+00    0.525 0.599741    \
+factor(data$Zone)182242         -1.575e+01  3.083e+00   -5.109 3.25e-07 ***\
+factor(data$Zone)182243         -1.383e+01  2.872e+00   -4.817 1.46e-06 ***\
+factor(data$Zone)182244          5.719e+00  3.015e+00    1.897 0.057792 .  \
+factor(data$Zone)182245         -1.287e+01  3.790e+00   -3.395 0.000687 ***\
+factor(data$Zone)182246         -1.532e+01  3.488e+00   -4.393 1.12e-05 ***\
+factor(data$Zone)182247         -1.613e+01  5.146e+00   -3.134 0.001726 ** \
+factor(data$Zone)182248         -2.519e+01  3.154e+00   -7.986 1.41e-15 ***\
+factor(data$Zone)182249         -1.982e+01  2.905e+00   -6.822 9.03e-12 ***\
+factor(data$Zone)182250         -2.417e+01  2.919e+00   -8.280  < 2e-16 ***\
+factor(data$Zone)182251         -2.597e+01  2.964e+00   -8.763  < 2e-16 ***\
+factor(data$Zone)182252         -1.482e+01  2.959e+00   -5.007 5.54e-07 ***\
+factor(data$Zone)182253         -1.890e+01  2.885e+00   -6.550 5.78e-11 ***\
+factor(data$Zone)182254         -1.119e+01  2.871e+00   -3.898 9.69e-05 ***\
+factor(data$Zone)182255         -2.079e+01  2.885e+00   -7.206 5.80e-13 ***\
+factor(data$Zone)182256          1.766e+01  2.890e+00    6.112 9.87e-10 ***\
+factor(data$Zone)182257          1.249e+01  2.877e+00    4.341 1.42e-05 ***\
+factor(data$Zone)182258         -9.588e+00  2.877e+00   -3.332 0.000862 ***\
+factor(data$Zone)182259         -1.535e+01  2.899e+00   -5.296 1.18e-07 ***\
+factor(data$Zone)182260         -1.859e+01  2.894e+00   -6.424 1.33e-10 ***\
+factor(data$Zone)182261         -1.545e+01  2.875e+00   -5.375 7.65e-08 ***\
+factor(data$Zone)182262         -2.535e+01  2.923e+00   -8.670  < 2e-16 ***\
+factor(data$Zone)182263         -1.315e+01  3.003e+00   -4.377 1.20e-05 ***\
+factor(data$Zone)182264         -2.875e+01  2.942e+00   -9.772  < 2e-16 ***\
+factor(data$Zone)182265         -2.586e+01  2.927e+00   -8.834  < 2e-16 ***\
+factor(data$Zone)182266         -2.529e+01  2.980e+00   -8.488  < 2e-16 ***\
+factor(data$Zone)182647         -6.756e+00  3.025e+00   -2.233 0.025533 *  \
+factor(data$Zone)182648         -7.768e+00  3.232e+00   -2.404 0.016220 *  \
+factor(data$Zone)344265          1.588e+00  3.737e+00    0.425 0.670886    \
+factor(data$Zone)344266         -1.486e+01  5.710e+00   -2.602 0.009277 ** \
+factor(data$Zone)344267         -7.923e+00  3.709e+00   -2.136 0.032660 *  \
+factor(data$Zone)344268          7.220e+00  3.214e+00    2.247 0.024658 *  \
+factor(data$Zone)344269         -9.044e+00  3.281e+00   -2.757 0.005843 ** \
+factor(data$Zone)344270         -1.103e+01  3.682e+00   -2.996 0.002734 ** \
+factor(data$Zone)344271         -9.682e+00  3.059e+00   -3.165 0.001549 ** \
+factor(data$Zone)344272         -1.445e+01  4.474e+00   -3.230 0.001240 ** \
+factor(data$Zone)344273          4.481e+00  2.976e+00    1.505 0.132199    \
+factor(data$Zone)344274         -1.053e+01  4.726e+00   -2.227 0.025917 *  \
+factor(data$Zone)344275          4.969e+00  3.270e+00    1.520 0.128602    \
+factor(data$Zone)344276          2.284e+01  5.083e+00    4.493 7.02e-06 ***\
+factor(data$Zone)344277          1.048e+00  3.353e+00    0.313 0.754555    \
+factor(data$Zone)344278         -3.272e+01  1.457e+01   -2.246 0.024718 *  \
+factor(data$Zone)344279         -6.969e-03  2.868e+00   -0.002 0.998061    \
+factor(data$Zone)344280          3.266e+01  2.875e+00   11.361  < 2e-16 ***\
+factor(data$Zone)344281          1.808e+01  2.879e+00    6.279 3.42e-10 ***\
+factor(data$Zone)344282          4.971e+00  2.871e+00    1.732 0.083317 .  \
+factor(data$Zone)344283         -3.782e+00  2.865e+00   -1.320 0.186869    \
+factor(data$Zone)344284         -8.501e+00  3.517e+00   -2.417 0.015646 *  \
+factor(data$Zone)344285         -1.225e+01  3.104e+00   -3.948 7.90e-05 ***\
+factor(data$Zone)344286         -1.918e+00  2.871e+00   -0.668 0.504025    \
+factor(data$Zone)344287         -6.183e-01  2.866e+00   -0.216 0.829198    \
+factor(data$Zone)344288          1.725e+01  2.870e+00    6.011 1.84e-09 ***\
+factor(data$Zone)344289         -2.782e+00  2.872e+00   -0.969 0.332648    \
+factor(data$Zone)344290         -8.842e+00  2.917e+00   -3.031 0.002436 ** \
+factor(data$Zone)344291         -4.863e+00  2.902e+00   -1.676 0.093825 .  \
+factor(data$Zone)344292         -1.062e+01  3.167e+00   -3.352 0.000803 ***\
+factor(data$Zone)344854          4.465e+01  6.280e+00    7.109 1.17e-12 ***\
+factor(data$Zone)344855          1.078e+01  3.321e+00    3.247 0.001167 ** \
+factor(data$Zone)344856         -4.472e+00  3.781e+00   -1.183 0.236821    \
+factor(data$Zone)344857         -4.877e+00  2.189e+01   -0.223 0.823725    \
+factor(data$Zone)344858         -8.724e-01  2.870e+00   -0.304 0.761151    \
+factor(data$Zone)344859         -3.046e+00  2.918e+00   -1.044 0.296503    \
+factor(data$Zone)344860          6.145e+00  4.765e+00    1.290 0.197148    \
+factor(data$Zone)344861         -7.127e+00  3.553e+00   -2.006 0.044840 *  \
+factor(data$Zone)344862         -1.017e+00  2.870e+00   -0.354 0.723160    \
+factor(data$Zone)344863         -8.108e+00  3.172e+00   -2.556 0.010598 *  \
+factor(data$Zone)344864          3.627e+00  3.375e+00    1.075 0.282563    \
+factor(data$Zone)344865         -1.495e+01  3.119e+00   -4.792 1.65e-06 ***\
+factor(data$Zone)344866         -7.131e+00  4.438e+00   -1.607 0.108104    \
+factor(data$Zone)344867         -7.005e+00  2.910e+00   -2.407 0.016079 *  \
+factor(data$Zone)344868          5.791e+00  2.870e+00    2.018 0.043590 *  \
+factor(data$Zone)344869         -5.240e+00  2.864e+00   -1.829 0.067350 .  \
+factor(data$Zone)344870         -1.040e+00  2.925e+00   -0.355 0.722291    \
+factor(data$Zone)344871         -9.620e+00  1.375e+01   -0.700 0.484008    \
+factor(data$Zone)344872          1.419e+02  3.163e+00   44.867  < 2e-16 ***\
+factor(data$Zone)458627         -1.232e+01  8.840e+00   -1.394 0.163465    \
+factor(data$Zone)497857         -8.943e+01  1.039e+01   -8.605  < 2e-16 ***\
+data$Total_Tickets               1.518e-03  3.586e-04    4.233 2.31e-05 ***\
+data$Average_Price              -3.682e-03  1.624e-03   -2.267 0.023411 *  \
+data$Zone_Section_Total_Tickets  5.103e-01  1.483e-02   34.410  < 2e-16 ***\
+data$Zone_Section_Min_Price      1.153e+00  7.591e-04 1519.563  < 2e-16 ***\
+data$Zone_Section_Max_Price     -1.602e-01  1.806e-04 -887.221  < 2e-16 ***\
+data$Zone_Section_Std            8.691e-01  5.140e-04 1690.906  < 2e-16 ***\
+data$Wins                        1.482e-01  6.197e-02    2.391 0.016788 *  \
+data$Losses                     -1.864e-01  7.592e-02   -2.455 0.014076 *  \
+data$L_10                       -2.432e+00  1.194e+00   -2.036 0.041728 *  \
+factor(data$Tier)2              -3.137e+01  8.151e-01  -38.481  < 2e-16 ***\
+factor(data$Tier)3              -2.570e+01  7.991e-01  -32.164  < 2e-16 ***\
+factor(data$Tier)4              -3.219e+01  8.326e-01  -38.660  < 2e-16 ***\
+factor(data$Tier)5              -3.399e+01  9.238e-01  -36.798  < 2e-16 ***\
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+Residual standard error: 57.65 on 130093 degrees of freedom\
+Multiple R-squared:  0.9994,	Adjusted R-squared:  0.9994 \
+F-statistic: 9.37e+05 on 232 and 130093 DF,  p-value: < 2.2e-16}
