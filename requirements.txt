@@ -64,4 +64,5 @@ wcwidth==0.1.7
 websocket-client==0.40.0
 Werkzeug==0.11.15
 xattr==0.6.4
+xmltodict==0.11.0
 zope.interface==4.1.1

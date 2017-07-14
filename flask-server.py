@@ -26,6 +26,8 @@ import threading
 from scripts.cron_functions import *
 from scripts.price_through_time import *
 import time
+from xml import etree
+import xmltodict
 logging.basicConfig()
 
 
@@ -68,7 +70,7 @@ if 'VCAP_SERVICES' in os.environ:
         password = creds['password']
         url = 'https://' + creds['host']
         client = Cloudant(user, password, url=url, connect=True)
-  
+
 else:
 
 	client = Cloudant(CLOUDANT['username'], CLOUDANT['password'], url=CLOUDANT['url'],connect=True,auto_renew=True)
@@ -97,7 +99,7 @@ def getevent():
 
 		# Call stubhub
 		stubhub_response = stubhub.get_event(event_id)
-		
+
 		# If nothing returned, send back error message
 		if str(stubhub_response) == '<Response [200]>':
 
@@ -122,10 +124,10 @@ def geteventinventory():
 
 		# Call stubhub
 		stubhub_response = stubhub.get_event_inventory(event_id)
-		
+
 		# If nothing returned, send back error message
 		if stubhub_response['eventId'] != 'None' and stubhub_response['eventId']  != None:
-			
+
 			response = json.dumps(stubhub_response)
 
 		else:
@@ -148,13 +150,13 @@ def postlisting():
 	dataDict = json.loads(data)
 
 	missing_array = []
-	
+
 	# First check if something is missing
 	for param in required:
 		if param not in dataDict:
 			# Missing Param error
 			missing_array.append(param)
-			
+
 
 	if missing_array:
 		response = error_1(missing_array)
@@ -164,10 +166,10 @@ def postlisting():
 		response_dict = json.dumps(stubhub.create_listing(dataDict))
 
 		if 'id' in response_dict:
-			
+
 			response = response_dict
 			#response = {"Status":response_dict['status'], "Stubhub Listing Id": response_dict['id']}
-		
+
 		else:
 			error_2('call')
 
@@ -177,7 +179,7 @@ def postlisting():
 
 @app.route('/getfirstprice', methods = ['GET'])
 def getfirstprice():
-	
+
 	# First check that sectionId was passed in
 
 	if request.args.get('sectionId'):
@@ -190,7 +192,7 @@ def getfirstprice():
 
 			# Call stubhub
 			stubhub_response = stubhub.get_event_inventory(event_id)
-			
+
 			# If nothing returned, send back error message
 			if stubhub_response['eventId'] != 'None' and stubhub_response['eventId']  != None:
 
@@ -201,7 +203,7 @@ def getfirstprice():
 
 				# Loop to look for the cheapest
 				for listing in listings['listing']:
-					
+
 
 					if listing['sectionName'] and listing['currentPrice']['amount'] and listing['quantity']:
 
@@ -209,8 +211,8 @@ def getfirstprice():
 						current_price = float(listing['currentPrice']['amount'])
 						current_quantity = int(listing['quantity'])
 
-						if current_section_name== section_id and current_price < min_buyer_price and current_quantity > 1 : 
-						
+						if current_section_name== section_id and current_price < min_buyer_price and current_quantity > 1 :
+
 							min_buyer_price = current_price
 							listing_id = int(listing['listingId'])
 
@@ -272,9 +274,9 @@ def weekly_consolidate():
 	# for i in range(4):
 	# 	t = threading.Thread(target=worker, args=(i,))
 	# 	t.start()
-		
-	
-	return 'success' 
+
+
+	return 'success'
 
 @app.route('/remove_spaces', methods = ['GET'])
 def remove_spaces_api():
@@ -295,22 +297,22 @@ def get_data():
 
 	except:
 		print 'node red down'
-		
+
 	use_cron = ""
 
 	resp = {"result":False,
 			"data":[]}
 
-	with open('cron_test.csv', 'wb') as file:
-		writer = csv.writer(file)
-		writer.writerow(['hey']) 
+	# with open('cron_test.csv', 'wb') as file:
+	# 	writer = csv.writer(file)
+	# 	writer.writerow(['hey'])
 
 
 	try:
 
 		account = request.args.get("account")
 		stubhub = Stubhub(account)
-		
+
 	    # Get game to use from second command line arg
 		event_id = request.args.get("event_id")
 		team = request.args.get("team")
@@ -322,7 +324,7 @@ def get_data():
 
 		# difference = time.time()-use_cron['time']
 
-		
+
 
 		# if use_cron['number'] < 10:
 
@@ -368,7 +370,7 @@ def worker(schedule_type):
 
 	aws_consolidate(client,1,4,schedule_type)
 
-	return 
+	return
 
 	# resp = False
 
@@ -382,11 +384,11 @@ def worker(schedule_type):
  #        event_id = request.args.get("event_id")
  #        team = request.args.get("team")
  #        sport = request.args.get("sport")
-        
+
  #        cron_write_delay(account)
-        
+
  #        update_event_data(event_id, team, sport)
-        
+
  #        resp = True
  #        print 'true'
 
@@ -471,8 +473,37 @@ def std():
 def login():
 	stubhub = Stubhub(account="LABO")
 	event = stubhub.get_event(9710889)
-	
+
 	return event.text
+
+@app.route('/get_event',methods = ['GET'])
+def get_event():
+	stubhub = Stubhub(account=request.args.get('account'))
+	eventId = request.args.get('eventId')
+	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
+	try:
+		event_data = stubhub.get_event(request.args.get('eventId')).text
+		event_data_object = xmltodict.parse(event_data)
+		response = event_data_object
+		response['timestamp'] = timestamp
+		return json.dumps(response, separators=(',',':'))
+	except:
+		return 'Data Acquisition for %s Unsuccesful' %eventId
+
+@app.route('/get_event_inventory',methods = ['GET'])
+def get_event_inventory():
+	stubhub = Stubhub(account=request.args.get('account'))
+	eventId = request.args.get('eventId')
+	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
+#	unixtime = calendar.timegm(d.utctimetuple())
+	#print unixtime
+	try:
+		event_data = stubhub.get_event_inventory(request.args.get('eventId'))
+		response = event_data
+		response['timestamp'] = timestamp
+		return json.dumps(response, separators=(',',':'))
+	except:
+		return 'Data Acquisition for %s Unsuccesful' %eventId
 
 
 @app.route('/')
