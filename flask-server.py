@@ -525,8 +525,8 @@ def get_account(request):
 
 @app.route('/get_event',methods = ['GET'])
 def get_event():
-	account = get_account('get_event')
-
+#	account = get_account('get_event')
+	account = request.args.get('account')
 	if not account:
 		response = jsonify({"message":"All API keys busy"})
 		response.status_code = 400
@@ -546,7 +546,8 @@ def get_event():
 
 @app.route('/get_event_inventory',methods = ['GET'])
 def get_event_inventory():
-	account = get_account('get_event_inventory')
+	#account = get_account('get_event_inventory')
+	account = request.args.get('account')
 	if not account:
 		response = jsonify({"message":"All API keys busy"})
 		response.status_code = 400

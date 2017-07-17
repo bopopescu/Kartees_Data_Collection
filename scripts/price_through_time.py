@@ -25,7 +25,7 @@ def update_event_data(stubhub,event_id, team, sport):
 
 
     # path = "%s/%s/%s.csv"%(directory,team,event_id)
-    
+
     # include_header = False
 
     # if os.path.isfile(path):
@@ -38,11 +38,11 @@ def update_event_data(stubhub,event_id, team, sport):
     #     if not os.path.exists(new_team_directory):
     #         os.makedirs(new_team_directory)
 
-    #     file = open(path, 'wb') 
+    #     file = open(path, 'wb')
 
     #     include_header=True
 
-        
+
     new_listings_request = stubhub.get_event_inventory(event_id)
 
     third = time.time()
@@ -59,7 +59,7 @@ def update_event_data(stubhub,event_id, team, sport):
     zones_stats = {}
     section_prices = {}
     section_std = {}
- 
+
     for listing in listings:
         if 'zoneId' in listing.keys():
 
@@ -68,16 +68,16 @@ def update_event_data(stubhub,event_id, team, sport):
         #    listing_value = buyer_price * listing['quantity']
 
             zone_id = listing['zoneId']
-    
+
             section_id = listing['sectionId']
-     
+
             if zone_id not in zones_quant:
                 zones_quant[zone_id] = [listing['quantity']]
                 zones_prices[zone_id] = [buyer_price]
             else:
                 zones_quant[zone_id].append(listing['quantity'])
                 zones_prices[zone_id].append(buyer_price)
-     
+
             if section_id not in section_prices:
                 section_prices[section_id] = [buyer_price]
             else:
@@ -90,9 +90,9 @@ def update_event_data(stubhub,event_id, team, sport):
             zone_median = np.median(zones_prices[zone_id])
 
             section_std[section_id] = np.std(section_prices[section_id])
-             
+
             zones_stats[zone_id] = [zone_average, zone_std, zone_count, zone_median]
-    
+
     columns = []
     time_dif =  str(metadata['time_difference']).replace(",","")
 
@@ -114,12 +114,17 @@ def update_event_data(stubhub,event_id, team, sport):
 
 
     for zone in zones_dict:
+        zone_average, zone_std, zone_count, zone_median = 'NA','NA','NA','NA'
+        print type(zones_stats[zone])
+        if zones_stats[zone]!='':
+            print 'here'
+            zone_average, zone_std, zone_count, zone_median = zones_stats[zone][0],  zones_stats[zone][1],  zones_stats[zone][2], zones_stats[zone][3]
 
-        zone_average, zone_std, zone_count, zone_median = zones_stats[zone][0],  zones_stats[zone][1],  zones_stats[zone][2], zones_stats[zone][3]
+
 
         column = [metadata['current_time']] + [time_dif] + [zone] + [zones_dict[zone]['zoneName']] + [total_tickets] + [average_price] +[zone_count]+ [zone_average]+[zones_dict[zone]['minTicketPrice']] +[zones_dict[zone]['maxTicketPrice']] + [zone_std] + [win_pct]+[total_games]+[l_10] + [zone_median]+[total_listings] + [zones_dict[zone]['totalListings']]+[2] +[event_id] +[metadata['day_of_week']]+[weekend]+[day_game]
         columns.append(column)
-         
+
     for section in sections_dict:
 
         column = [metadata['current_time']] + [time_dif]+[section]+[sections_dict[section]['sectionName']] + [total_tickets] + [average_price] + [sections_dict[section]['totalTickets']] +[sections_dict[section]['averageTicketPrice']] +[sections_dict[section]['minTicketPrice']]+ [sections_dict[section]['maxTicketPrice']]+ [section_std[section]] +[win_pct]+[total_games]+[l_10] + [np.median(section_prices[section])] + [total_listings] + [sections_dict[section]['totalListings']]+[1]+[event_id]+[metadata['day_of_week']]+[weekend]+[day_game]
@@ -128,17 +133,17 @@ def update_event_data(stubhub,event_id, team, sport):
     # if include_header:
 
     #     header = ['Time','Time_Diff','Zone_Section_Id','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Win_PCT','Total_Games','L_10','Section_Median','Total_Listings','Zone_Section_Num_Listings', 'Data_Type', 'Event_Id', 'Day_Of_Week', 'Weekend', 'Day_Game']
-        
+
     #     csv.writer(file).writerow(header)
 
     if len(columns) >1:
 
     #    csv.writer(file).writerows(columns)
-        
+
         # print columns
         return columns
     #file.close()
-    
+
 
 
 if __name__ == '__main__':
@@ -154,9 +159,9 @@ if __name__ == '__main__':
         event_id = sys.argv[2]
         team = sys.argv[3]
         sport = sys.argv[4]
-        
+
         cron_write_delay(account)
-        
+
         update_event_data(event_id, team, sport)
         second = time.time()
 
@@ -167,4 +172,3 @@ if __name__ == '__main__':
         print 'false'
 
         #logging.error(traceback.format_exc())
-
