@@ -28,6 +28,7 @@ from scripts.price_through_time import *
 import time
 from xml import etree
 import xmltodict
+
 logging.basicConfig()
 
 
@@ -44,6 +45,14 @@ else:
 	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 
 app = Flask(__name__)
+
+global accounts
+global limit_per_minute
+
+limit_per_minute = 2
+
+accounts = {"get_event":{"MO":[],"LABO":[]} ,
+			"get_event_inventory":{"MO":[],"LABO":[]} }
 
 string1 = 'export AWS_ACCESS_KEY_ID=%s' %aws_id
 string2 = 'export AWS_SECRET_ACCESS_KEY=%s' %aws_key
@@ -476,11 +485,56 @@ def login():
 
 	return event.text
 
+def get_account(request):
+
+	global accounts
+	global limit_per_minute
+
+	account_to_use = False
+
+	waiting_for_resource = True
+
+	while waiting_for_resource:
+
+		timestamp = int(datetime.datetime.utcnow().strftime("%s")) * 1000
+
+		for account in accounts[request]:
+			if len(accounts[request][account])<limit_per_minute:
+				accounts[request][account].append(timestamp)
+				account_to_use = account
+				waiting_for_resource = False
+				break
+
+			elif timestamp - accounts[request][account][0] > 60000:
+				#print timestamp - accounts[request][account][0]
+				account_to_use = account
+				accounts[request][account] = []
+
+				accounts[request][account].append(timestamp)
+				waiting_for_resource = False
+				break
+
+			else:
+				new_timestamp = int(datetime.datetime.utcnow().strftime("%s")) * 1000
+				sleep_time = 60 - (new_timestamp-accounts[request][account][0])/1000
+				print sleep_time
+				# time.sleep(sleep_time)
+
+
+	return account_to_use
+
 @app.route('/get_event',methods = ['GET'])
 def get_event():
-	stubhub = Stubhub(account=request.args.get('account'))
+	account = get_account('get_event')
+
+	if not account:
+		response = jsonify({"message":"All API keys busy"})
+		response.status_code = 400
+		return response
+	stubhub = Stubhub(account=account)
 	eventId = request.args.get('eventId')
 	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
+
 	try:
 		event_data = stubhub.get_event(request.args.get('eventId')).text
 		event_data_object = xmltodict.parse(event_data)
@@ -492,6 +546,11 @@ def get_event():
 
 @app.route('/get_event_inventory',methods = ['GET'])
 def get_event_inventory():
+	account = get_account('get_event_inventory')
+	if not account:
+		response = jsonify({"message":"All API keys busy"})
+		response.status_code = 400
+		return response
 	stubhub = Stubhub(account=request.args.get('account'))
 	eventId = request.args.get('eventId')
 	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
@@ -504,7 +563,6 @@ def get_event_inventory():
 		return json.dumps(response, separators=(',',':'))
 	except:
 		return 'Data Acquisition for %s Unsuccesful' %eventId
-
 
 @app.route('/')
 def Welcome():
