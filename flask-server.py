@@ -530,7 +530,7 @@ def get_date_obj():
 	day = date.day
 	year = date.year
 	readable = date.strftime('%m-%d-%y, %H:%M:%S %p')
-	date_object = dict({"date_object":date, "month":month, "year":year, "readable":readable})
+	date_object = dict({"date_object":date, "month":month, "year":year, "day":day, "readable":readable})
 
 	return date_object
 
@@ -549,14 +549,13 @@ def get_event_data():
 	eventId = request.args.get('eventId')
 
 	try:
-		if data_type== 'meta':
+		if data_type == 'meta':
 			event_data = stubhub.get_event(event).text
 			event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
 
 		elif data_type == 'inventory':
 			event_data_object = stubhub.get_event_inventory(event)
 		else:
-			print 'here'
 			response = jsonify({"message":"dataType must be either 'meta' or 'inventory'"})
 			response.status_code = 400
 			return response
@@ -571,36 +570,6 @@ def get_event_data():
 		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId})
 		response.status_code = 400
 		return response
-
-# @app.route('/get_event_inventory',methods = ['GET'])
-# def get_event_inventory():
-# 	#account = get_account('get_event_inventory')
-# 	account = request.args.get('account')
-#
-# 	stubhub = Stubhub(account=request.args.get('account'))
-# 	eventId = request.args.get('eventId')
-# 	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
-#
-# 	date = datetime.datetime.utcnow()
-# 	month = date.month
-# 	day = date.day
-# 	year = date.year
-# 	readable = date.strftime('%m-%d-%y, %H:%M:%S %p')
-# 	date_object = {"date_object":date, "month":month, "year":year, "readable":readable}
-# 	print date_object
-# #	unixtime = calendar.timegm(d.utctimetuple())
-# 	#print unixtime
-# 	try:
-# 		event_data = stubhub.get_event_inventory(request.args.get('eventId'))
-# 		response = event_data
-# 		response['timestamp'] = timestamp
-# 		response['date_object']= date_object
-# 		print response
-# 		return json.dumps(response, separators=(',',':'))
-# 	except:
-# 		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId})
-# 		response.status_code = 400
-# 		return response
 
 @app.route('/get_team_performance')
 def get_team_performance():
