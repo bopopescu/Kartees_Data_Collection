@@ -45,7 +45,7 @@ else:
 	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 
 app = Flask(__name__)
-
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 global accounts
 global limit_per_minute
 
@@ -523,47 +523,106 @@ def get_account(request):
 
 	return account_to_use
 
-@app.route('/get_event',methods = ['GET'])
-def get_event():
-#	account = get_account('get_event')
+def get_date_obj():
+
+	date = datetime.datetime.utcnow()
+	month = date.month
+	day = date.day
+	year = date.year
+	readable = date.strftime('%m-%d-%y, %H:%M:%S %p')
+	date_object = dict({"date_object":date, "month":month, "year":year, "readable":readable})
+
+	return date_object
+
+def get_timestamp():
+
+	return int(datetime.datetime.utcnow().strftime("%s")) * 1000
+
+@app.route('/get_event_data',methods = ['GET'])
+def get_event_data():
+
 	account = request.args.get('account')
-	if not account:
-		response = jsonify({"message":"All API keys busy"})
-		response.status_code = 400
-		return response
+	data_type = request.args.get('dataType')
+	event = request.args.get('eventId')
+
 	stubhub = Stubhub(account=account)
 	eventId = request.args.get('eventId')
-	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
 
 	try:
-		event_data = stubhub.get_event(request.args.get('eventId')).text
-		event_data_object = xmltodict.parse(event_data)
-		response = event_data_object
-		response['timestamp'] = timestamp
-		return json.dumps(response, separators=(',',':'))
-	except:
-		return 'Data Acquisition for %s Unsuccesful' %eventId
+		if data_type== 'meta':
+			event_data = stubhub.get_event(event).text
+			event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
 
-@app.route('/get_event_inventory',methods = ['GET'])
-def get_event_inventory():
-	#account = get_account('get_event_inventory')
-	account = request.args.get('account')
-	if not account:
-		response = jsonify({"message":"All API keys busy"})
+		elif data_type == 'inventory':
+			event_data_object = stubhub.get_event_inventory(event)
+		else:
+			print 'here'
+			response = jsonify({"message":"dataType must be either 'meta' or 'inventory'"})
+			response.status_code = 400
+			return response
+
+		response = event_data_object
+		response['current_timestamp'] = get_timestamp()
+		response['current_date'] = get_date_obj()
+
+		return jsonify(response)
+
+	except:
+		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId})
 		response.status_code = 400
 		return response
-	stubhub = Stubhub(account=request.args.get('account'))
-	eventId = request.args.get('eventId')
-	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
-#	unixtime = calendar.timegm(d.utctimetuple())
-	#print unixtime
+
+# @app.route('/get_event_inventory',methods = ['GET'])
+# def get_event_inventory():
+# 	#account = get_account('get_event_inventory')
+# 	account = request.args.get('account')
+#
+# 	stubhub = Stubhub(account=request.args.get('account'))
+# 	eventId = request.args.get('eventId')
+# 	timestamp= int(datetime.datetime.utcnow().strftime("%s")) * 1000
+#
+# 	date = datetime.datetime.utcnow()
+# 	month = date.month
+# 	day = date.day
+# 	year = date.year
+# 	readable = date.strftime('%m-%d-%y, %H:%M:%S %p')
+# 	date_object = {"date_object":date, "month":month, "year":year, "readable":readable}
+# 	print date_object
+# #	unixtime = calendar.timegm(d.utctimetuple())
+# 	#print unixtime
+# 	try:
+# 		event_data = stubhub.get_event_inventory(request.args.get('eventId'))
+# 		response = event_data
+# 		response['timestamp'] = timestamp
+# 		response['date_object']= date_object
+# 		print response
+# 		return json.dumps(response, separators=(',',':'))
+# 	except:
+# 		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId})
+# 		response.status_code = 400
+# 		return response
+
+@app.route('/get_team_performance')
+def get_team_performance():
+	sport = request.args.get('sport')
+	team = request.args.get('team')
 	try:
-		event_data = stubhub.get_event_inventory(request.args.get('eventId'))
-		response = event_data
-		response['timestamp'] = timestamp
-		return json.dumps(response, separators=(',',':'))
+		wins, losses, l_10 = espn.get_team_performance(sport, team)
+		response = {"wins":wins,
+		"losses":losses,
+		"last_10":l_10}
+
+		response['current_timestamp'] = get_timestamp()
+		response['current_date'] = get_date_obj()
+
+		return jsonify(response)
+
 	except:
-		return 'Data Acquisition for %s Unsuccesful' %eventId
+		response = jsonify({"message":"Performance data for %s unavailable" %team})
+		response.status_code = 400
+		return response
+
+
 
 @app.route('/')
 def Welcome():
