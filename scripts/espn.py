@@ -15,77 +15,76 @@ def get_team_performance(sport, team):
 	current_sport = sport
 	full_team_name = team
 
-	#sports = ['nba','mlb','nhl','nfl']
-	sports = ['mlb']
+	sports = ['nba','mlb','nhl','nfl']
+	#sports = ['mlb']
 	stats_row_buffer = {'mlb': 13, 'nba': 14, 'nhl': 16, 'nfl': 13}
 
 	sports_wins = {}
 	sports_losses = {}
 	sports_l_10 = {}
 
+	if sport !='nhl':
 
-	for sport in sports:
+		second = time.time()
+		web_page = urllib.urlopen("http://espn.go.com/%s/standings" % sport).read()
+		third = time.time()
+		soup = BeautifulSoup(web_page, "html.parser")
 
-		if sport !='nhl':
+		teams = soup.find_all("span", class_= "team-names")
+		stats = soup.find_all("td")
 
-			second = time.time()
-			web_page = urllib.urlopen("http://espn.go.com/%s/standings" % sport).read()
-			third = time.time()
-			soup = BeautifulSoup(web_page, "html.parser")
+		#pdb.set_trace()
+		wins = {}
+		losses = {}
+		l_10 = {}
 
-			teams = soup.find_all("span", class_= "team-names")
-			stats = soup.find_all("td")
+		k = 1
+		i=0
+		for team in teams:
 
-			#pdb.set_trace()
-			wins = {}
-			losses = {}
-			l_10 = {}
+		 	wins[team.text] = stats[k-i].text
+		 	losses[team.text] = stats[k-i+1].text
 
-			k = 1
-			i=0
-			for team in teams:
+		 	if sport =='nba':
+		 		l_10[team.text] = stats[k+12].text
+		 	elif sport == 'mlb':
+		 		l_10[team.text] = stats[k+10-i].text
+		 		i+=1
 
-			 	wins[team.text] = stats[k-i].text
-			 	losses[team.text] = stats[k-i+1].text
+		 	k += stats_row_buffer[sport]
 
-			 	if sport =='nba':
-			 		l_10[team.text] = stats[k+12].text
-			 	elif sport == 'mlb':
-			 		l_10[team.text] = stats[k+10-i].text
-			 		i+=1
+		sports_wins[sport] = wins
+		sports_losses[sport] = losses
+		sports_l_10[sport] = l_10
 
-			 	k += stats_row_buffer[sport]
+		fourth = time.time()
 
-			sports_wins[sport] = wins
-			sports_losses[sport] = losses
-			sports_l_10[sport] = l_10
+		#print '2 to 3: %s' %str(third-second)
+		#print '3 to 4: %s' %str(fourth-third)
 
-			fourth = time.time()
+	else:
+		web_page = urllib.urlopen("http://www.msn.com/en-us/sports/nhl/standings").read()
+		soup = BeautifulSoup(web_page, "html.parser")
+		wins = {}
+		losses = {}
+		l_10 = {}
+		teams= soup.find_all('td', class_="teamname")
+		short_names_classes = soup.find_all('tr', class_="rowlink")
+	#	print teams
+		for team in short_names_classes:
+			tds = team.find_all('td')
 
-			#print '2 to 3: %s' %str(third-second)
-			#print '3 to 4: %s' %str(fourth-third)
+			name = tds[1].text.replace(" - x","").replace(" - y","").replace(" - z","")
 
-		else:
-			web_page = urllib.urlopen("http://www.msn.com/en-us/sports/nhl/standings").read()
-			soup = BeautifulSoup(web_page, "html.parser")
-			wins = {}
-			losses = {}
-			l_10 = {}
-			teams= soup.find_all('td', class_="teamname")
-			short_names_classes = soup.find_all('tr', class_="rowlink")
+			wins[name] = tds[4].text
+			losses[name] = tds[5].text
+			l_10[name] = tds[12].text
 
-			for team in short_names_classes:
-				tds = team.find_all('td')
-				name = tds[1].text
-				wins[name] = tds[4].text
-				losses[name] = tds[5].text
-				l_10[name] = tds[12].text
+		sports_wins['nhl'] = wins
+		sports_losses['nhl'] = losses
+		sports_l_10['nhl'] = l_10
 
-			sports_wins['nhl'] = wins
-			sports_losses['nhl'] = losses
-			sports_l_10['nhl'] = l_10
-
-
+	print sports_wins
 	wins = sports_wins[current_sport][full_team_name]
 	losses = sports_losses[current_sport][full_team_name]
 	l_10 = str(sports_l_10[current_sport][full_team_name]).replace("-"," ")
@@ -101,9 +100,9 @@ def get_team_performance(sport, team):
 	return wins, losses, l_10_pct
 
 if __name__ == '__main__':
-#get_team_performance(9370813)
 
-    wins, losses, l_10 = get_team_performance(9371360)
+	#print get_team_performance('mlb','New York Mets')
+    wins, losses, l_10 = get_team_performance('mlb','New York Mets')
     print wins
     print losses
     print l_10
