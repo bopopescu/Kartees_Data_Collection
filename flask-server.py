@@ -556,19 +556,19 @@ def get_event_data():
 		elif data_type == 'inventory':
 			event_data_object = stubhub.get_event_inventory(event)
 		else:
-			response = jsonify({"message":"dataType must be either 'meta' or 'inventory'", "success":False})
+			response = jsonify({"message":"dataType must be either 'meta' or 'inventory'", "success":0})
 			response.status_code = 400
 			return response
 
 		response = event_data_object
 		response['current_timestamp'] = get_timestamp()
 		response['current_date'] = get_date_obj()
-		response['success']=True
+		response['success']=1
 
 		return jsonify(response)
 
 	except:
-		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId, "success":False})
+		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId, "success":0})
 		response.status_code = 400
 		return response
 
