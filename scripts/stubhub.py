@@ -174,9 +174,11 @@ class Stubhub():
                 home_field = max(set(venues), key=venues.count)
 
                 for event in events:
+
                     if event['venue']['name'] == home_field:
                         dates.append(str(event['eventDateUTC']))
                         ids.append(event['id'])
+
 
                 team_object={
                     "Team_Name":team,
@@ -187,6 +189,7 @@ class Stubhub():
                     "Cron_Times_15up":"0%s-%s0" %(cron_hour, cron_minute)
                 }
                 print "0%s-%s0: %s" %(cron_hour, cron_minute, team)
+
 
                 cron_minute+=1
                 if cron_minute==6:
@@ -554,8 +557,8 @@ if __name__ == '__main__':
 
         #event = stubhub.get_event(103043847)
         #print event.text
-        games = stubhub.get_event_inventory(103043847)
-        print games
+        #games = stubhub.get_event_inventory(103043847)
+        #print games
 
         #keys = games['events'][0].keys()
 
@@ -631,9 +634,9 @@ if __name__ == '__main__':
         # dates_list.sort()
 
         # print dates_dict[dates_list[0]]
-        #directory = 'season_schedules'
-        #year=2017
-        #x = stubhub.write_all_events('nfl',year,directory)
+        directory = 'season_schedules'
+        year=2017
+        x = stubhub.write_all_events('mlb',year,directory)
         # team = "Chicago Cubs"
 
         # events = stubhub.get_team_games(team)['events']
