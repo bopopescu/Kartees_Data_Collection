@@ -9,7 +9,7 @@ from num2words import num2words
 sys.dont_write_bytecode = True
 
 stubhub = Stubhub(account='LABO')
-  
+
 
 
 def get_game_tiers():
@@ -59,7 +59,7 @@ def get_game_dates():
 				#pdb.set_trace()
 				#print game
 				data = stubhub.get_event_data(game["Event_Id"], None)
-				
+
 				time.sleep(7)
 
 				game_dates[game["Event_Id"]]=dparser.parse(data['event_date'])
@@ -378,7 +378,7 @@ def input_NA(old_path, new_path, header, row_length):
 def input_future_prices(old_path, header):
 
 	rows = None
-	
+
 	with open(old_path, 'rU') as old_file:
 
 		reader = csv.reader(old_file)
@@ -396,11 +396,11 @@ def input_future_prices(old_path, header):
 	for n in range(0, size):
 		days_list.append(int(raw_input("Number %s: " %(int(n)+1))))
 	#days_list = [1 , 10, 30]
-	
+
 
 	for n in days_list:
 		x = str(num2words(n))
-		header.append('%s_days_ahead_price' %x) 
+		header.append('%s_days_ahead_price' %x)
 
 	# rand_smpl = [ rows[i] for i in sorted(random.sample(xrange(len(rows)), 1000)) ]
 
@@ -409,7 +409,7 @@ def input_future_prices(old_path, header):
 	for n_days in days_list:
 
 		index = days_list.index(n_days)
-		
+
 		if index==0:
 			old_path = old_path
 		else:
@@ -449,7 +449,7 @@ def input_future_prices(old_path, header):
 
 					# Check if this is our zone
 					if rows[current_index+k][2]==current_zone:
-	
+
 						# Check if the difference in days matches
 						if current_time_diff - float(rows[current_index+k][1])  >= n_days:
 
@@ -481,7 +481,7 @@ def input_future_prices(old_path, header):
 def input_past_derivatives(old_path, header):
 
 	rows = None
-	
+
 	with open(old_path, 'rU') as old_file:
 
 		reader = csv.reader(old_file)
@@ -500,19 +500,19 @@ def input_past_derivatives(old_path, header):
 	for n in derivative_list:
 		x = str(num2words(n)).replace(' ','-')
 		header_row.append('%s_past_days_price' %x)
-		header_row.append('%s_past_days_derivative' %x) 
-		header_row.append('%s_past_days_pctchange' %x)  
+		header_row.append('%s_past_days_derivative' %x)
+		header_row.append('%s_past_days_pctchange' %x)
 
 	for n_days in derivative_list:
 
 		index = derivative_list.index(n_days)
-		
+
 		if index==0:
 			old_path = old_path
 		else:
 			old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/sections/%s_days.csv' %derivative_list[index-1]
 			#old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/process_past_derivatives/test_derivative.csv'
-		
+
 
 		with open(old_path, 'rU') as old_file:
 
@@ -529,7 +529,7 @@ def input_past_derivatives(old_path, header):
 				# rows = rand_smpl
 
 			for current_index,row  in reversed(list(enumerate(rows))):
-				
+
 				index_for_pct = len(rows)-current_index
 				percent_complete = (derivative_list.index(n_days))* (100/len(derivative_list)) + (float(index_for_pct)/float(len(rows)) * (100/len(derivative_list)))
 
@@ -560,7 +560,7 @@ def input_past_derivatives(old_path, header):
 							derivative = (current_price-last_price)/(current_time_diff-float(rows[k-1][1]))
 							pct_change = ((current_price-last_price) / last_price)*100
 							#append_value = last_price
-							
+
 							break
 					k-=1
 
@@ -587,7 +587,7 @@ def check_rows():
 	days_list = ['0.25','0.5','0.75',1,2,3,4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30]
 
 	for file in days_list:
-		
+
 		with open('%s/%s_days.csv' %(path, file), 'rU') as data_file:
 
 			reader = csv.reader(data_file)
@@ -615,7 +615,7 @@ def consolidate_days():
 			matrix = np.array(rows)
 
 	for file in days_list:
-		
+
 		with open('%s/%s_days.csv' %(path, file), 'rU') as data_file:
 
 			reader = csv.reader(data_file)
@@ -629,7 +629,7 @@ def consolidate_days():
 
 
 			cols = new_rows[:, range(35,47)]
-			
+
 			#print cols
 
 			matrix= np.hstack((matrix, cols))
@@ -693,7 +693,7 @@ def split_models(path, new_path1, new_path2):
 			# Recalculate average
 			averages[zone] = np.mean(prices[zone])
 
-	
+
 	with open(new_path1, 'wb') as under400_file:
 
 		writer = csv.writer(under400_file)
@@ -723,6 +723,57 @@ def split_models(path, new_path1, new_path2):
 				writer.writerow(row)
 
 
+def create_sample_file(path, new_path1):
+
+    with open(path, 'rU') as old_file:
+
+        reader = csv.reader(old_file)
+
+        header = reader.next()
+
+        x = [row for row in reader]
+
+    import random
+    new_rows = random.sample(x,100)
+
+    with open(new_path1, 'w+') as new_file:
+
+    	writer = csv.writer(new_file)
+
+    	writer.writerow(header)
+    	writer.writerows(new_rows)
+
+def stationarize(old_path, new_path, diff_row):
+
+	with open(old_path, 'rU') as old_file:
+
+		reader = csv.reader(old_file)
+
+		header = reader.next()
+
+		x = [row for row in reader]
+
+	col = len(x[0]) + 1
+
+	with open(new_path, 'w+') as new_file:
+
+		writer = csv.writer(new_file)
+
+		writer.writerow(header+['Stationarized'])
+
+		writer.writerow(x[0])
+
+		first_price = x[0][diff_row]
+
+		x.pop(0)
+		
+		for row in x:
+
+			current_price = 
+
+
+
+
 
 if __name__ == '__main__':
 
@@ -733,12 +784,11 @@ if __name__ == '__main__':
 	header_row = ['Time','Time_Diff','Zone','Zone_Name','Total_Tickets','Average_Price','Zone_Section_Total_Tickets','Zone_Section_Average_Price','Zone_Section_Min_Price','Zone_Section_Max_Price','Zone_Section_Std','Wins','Losses','L_10','Data_Type','Section_Median','Total_Listings','Zone_Section_Num_Listings','Tier','Event_Id','1_days_ahead_price','2_days_ahead_price','3_days_ahead_price','4_days_ahead_price','5_days_ahead_price','6_days_ahead_price','7_days_ahead_price','8_days_ahead_price','9_days_ahead_price','10_days_ahead_price','12_days_ahead_price','15_days_ahead_price','20_days_ahead_price','25_days_ahead_price','30_days_ahead_price','40_days_ahead_price']
 	#write_to_file(all_data, header_row)
 
-	old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days.csv'
+	old_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/samples/sample_sections_future_past_days_under400.csv'
 
-	new_path1 = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days_under400.csv' 
+	new_path = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/stationary/sample_stationary_sections_future_past_days_under400.csv'
 
-	new_path2 = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days_over400.csv' 
-
+	new_path2 = '../2016_data/Mets/consolidated_datasets/2017-03-08_08_47/sections_future_past_days_over400.csv'
 
 
 	#convert_time_dif(old_path, new_path, header_row)
@@ -760,7 +810,8 @@ if __name__ == '__main__':
 
 	#count_NAs(old_path)
 
-	split_models(old_path, new_path1, new_path2)
+	#split_models(old_path, new_path1, new_path2)
 
+	#create_sample_file(old_path, new_path1)
 
-
+	stationarize(old_path,new_path1,3)
