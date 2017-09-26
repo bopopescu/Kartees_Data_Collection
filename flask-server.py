@@ -26,8 +26,8 @@ import threading
 from scripts.cron_functions import *
 from scripts.price_through_time import *
 import time
-from xml import etree
-import xmltodict
+# from xml import etree
+# import xmltodict
 
 logging.basicConfig()
 
@@ -550,9 +550,8 @@ def get_event_data():
 
 	try:
 		if data_type == 'meta':
-			event_data = stubhub.get_event(event).text
-			event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
-
+			event_data_object = stubhub.get_event(event)
+			#event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
 		elif data_type == 'inventory':
 			event_data_object = stubhub.get_event_inventory(event)
 		else:
@@ -561,6 +560,7 @@ def get_event_data():
 			return response
 
 		response = event_data_object
+
 		response['current_timestamp'] = get_timestamp()
 		response['current_date'] = get_date_obj()
 		response['success']=1

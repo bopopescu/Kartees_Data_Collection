@@ -84,7 +84,7 @@ def get_team_performance(sport, team):
 		sports_losses['nhl'] = losses
 		sports_l_10['nhl'] = l_10
 
-	print sports_wins
+	#print sports_wins
 	wins = sports_wins[current_sport][full_team_name]
 	losses = sports_losses[current_sport][full_team_name]
 	l_10 = str(sports_l_10[current_sport][full_team_name]).replace("-"," ")
@@ -103,9 +103,9 @@ if __name__ == '__main__':
 
 	#print get_team_performance('mlb','New York Mets')
     wins, losses, l_10 = get_team_performance('mlb','New York Mets')
-    print wins
-    print losses
-    print l_10
+    # print wins
+    # print losses
+    # print l_10
 
 # Print onto csv file current date, team, wins, losses
 

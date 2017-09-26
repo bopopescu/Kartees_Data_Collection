@@ -128,7 +128,7 @@ class Stubhub():
         return req(full_url=full_url, headers=headers, params=params, req_type=req_type, use_cache=use_cache)
 
     def get_event(self, event_id):
-        return self.send_req('/catalog/events/v2/%s' % (event_id), token_type='APP')
+        return self.send_req('/search/catalog/events/v3?id=%s' % (event_id), token_type='APP').json()
 
     def get_event_inventory(self, event_id, start=0, rows=10000, zonestats=True, sectionstats=True):
         params = {'eventId': event_id, 'start': start, 'rows': rows, 'zonestats' : zonestats, 'sectionstats' : sectionstats}
@@ -188,7 +188,7 @@ class Stubhub():
                     "Sport":sport,
                     "Cron_Times_15up":"0%s-%s0" %(cron_hour, cron_minute)
                 }
-                print "0%s-%s0: %s" %(cron_hour, cron_minute, team)
+                print ("0%s-%s0: %s" %(cron_hour, cron_minute, team))
 
 
                 cron_minute+=1
@@ -204,7 +204,7 @@ class Stubhub():
                 # pdb.set_trace()
             except:
 
-                print "Error with team %s"%team
+                print ("Error with team %s"%team)
 
         text_file = open("%s/%s/%s.txt" %(directory,year,sport), "w")
         text_file.write(json.dumps(team_events))
@@ -244,8 +244,8 @@ class Stubhub():
     def get_event_data(self, event_id, sport, team, new_listings = None):
         # Get XML of event details
 
-        event_details = self.get_event(event_id=event_id).text
-
+        event_details = self.get_event(event_id=event_id)
+       
         #import pdb; pdb.set_trace()
 
         #root = ET.fromstring(event_details)
@@ -333,18 +333,18 @@ class Stubhub():
                 tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
                 counter+=1
 
-            print tickets
+            print (tickets)
             pdb.set_trace()
             price = (float(self.get_cheapest(eventId, section))) * 1.05
 
             params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
 
 
-            print params
+            print (params)
             response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
             pdb.set_trace()
             stubhub_id = response.json()['id']
-            print stubhub_id
+            print (stubhub_id)
 
     def create_listing_with_barcodes(self):
 
@@ -373,8 +373,8 @@ class Stubhub():
                 }
 
         response = self.send_req('/inventory/listings/v1/barcodes', token_type='USER',req_type = 'POST',params=params)
-        print response
-        print response.json()
+        print (response)
+        print (response.json())
 
 
     def update_barcodes(self, csv_name):
@@ -394,7 +394,7 @@ class Stubhub():
 
         row = 4
         for listing in seat_10_codes:
-            print listing
+            print (listing)
 
             barcode_10 = seat_10_codes[listing]
             barcode_11 = seat_11_codes[listing]
@@ -404,12 +404,12 @@ class Stubhub():
 
             params = { "listing": {"tickets": [seat_10_dict, seat_11_dict]} }
 
-            print "Listing: %s, %s" %(listing, params)
+            print ("Listing: %s, %s" %(listing, params))
             response = self.send_req('/inventory/listings/v1/%s/barcodes' %(listing), token_type = 'USER', req_type='POST', params=params)
             pdb.set_trace()
             #print response.header
-            print response
-            print response.text
+            print (response)
+            print (response.text)
 
         return None
 
@@ -459,12 +459,12 @@ class Stubhub():
 
             if counter <10:
                # pdb.set_trace()
-                print "Listing: %s, %s" %(listing, params)
+                print ("Listing: %s, %s" %(listing, params))
                 response = self.send_req('/inventory/listings/v2/%s' %(listing), token_type = 'USER', req_type='PUT', params=params)
 
                # print response.headers
 
-                print "%s - %s" %(listing,response)
+                print ("%s - %s" %(listing,response))
                # print response.text
               #  pdb.set_trace()
                 if response.status_code !=200:
@@ -476,8 +476,8 @@ class Stubhub():
                  time.sleep(61)
                  counter=1
 
-        print error_codes
-        print error_response
+        print (error_codes)
+        print (error_response)
 
 
     def get_all_listings(self):
@@ -529,7 +529,7 @@ if __name__ == '__main__':
 
          #print response.text
 
-        #print stubhub.get_event_data(9710927, 'mlb','New York Mets')
+        print stubhub.get_event(103131011)
         #print stubhub.get_event_inventory(9710927)
 
         # csv_path = '../barcodes/barcodes_2017.csv'
@@ -634,9 +634,16 @@ if __name__ == '__main__':
         # dates_list.sort()
 
         # print dates_dict[dates_list[0]]
-        directory = 'season_schedules'
-        year=2017
-        x = stubhub.write_all_events('mlb',year,directory)
+
+
+
+
+        # ----------------------------------------------------
+        # -------------- Get league games and write ----------
+        # ----------------------------------------------------
+        #directory = 'season_schedules'
+        #year=2017
+        #x = stubhub.write_all_events('nba',year,directory)
         # team = "Chicago Cubs"
 
         # events = stubhub.get_team_games(team)['events']
