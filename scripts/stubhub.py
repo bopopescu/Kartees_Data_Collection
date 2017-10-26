@@ -24,10 +24,6 @@ else:
     URL = os.getenv('URL')
 
 
-
-
-
-
 sys.dont_write_bytecode = True
 
 # try:
@@ -51,13 +47,16 @@ def req(full_url, headers, params, req_type='GET', use_cache=True):
     cache_key = str(full_url) + str(headers) + str(params) + str(req_type)
     if use_cache and (cache_key in cache):
         return cache[cache_key]
-    #print "Request:", full_url, headers, params, req_type
+    # print "Request:", full_url, headers, params, req_type
     response = None
 
     if req_type == 'GET':
         response = requests.get(full_url, headers=headers, params=params)
     elif req_type == 'POST':
-        response = requests.post(full_url, headers=headers, params=params)
+        if 'login' in full_url:
+            response = requests.post(full_url, headers=headers, params=params)
+        else:
+            response = requests.post(full_url, headers=headers, data=json.dumps(params))
     elif req_type == 'PUT':
         #import pdb; pdb.set_trace()
         response = requests.put(full_url, headers=headers, data=json.dumps(params))
@@ -126,6 +125,7 @@ class Stubhub():
         # print full_url, params, headers
 
         return req(full_url=full_url, headers=headers, params=params, req_type=req_type, use_cache=use_cache)
+
 
     def get_event(self, event_id):
         return self.send_req('/search/catalog/events/v3?id=%s' % (event_id), token_type='APP').json()
@@ -210,8 +210,6 @@ class Stubhub():
         text_file.write(json.dumps(team_events))
         text_file.close()
         return team_events
-
-
 
     def get_game_date(self, event_id):
 
@@ -314,37 +312,39 @@ class Stubhub():
         else:
             return metadata
 
-        def create_listing(self, listing_dict):
-
-            eventId = listing_dict['eventId']
-            quantity = listing_dict['quantity']
-            section = listing_dict['section']
-            row = listing_dict['row']
-            splitOption = 'NOSINGLES'
-            deliveryOption = 'BARCODE'
-            quantity = listing_dict['quantity']
-            tickets = ''
-            counter = 0
-            for seat in listing_dict['seats']:
-                addition = ''
-                if counter != 0:
-                    addition = ","
-
-                tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
-                counter+=1
-
-            print (tickets)
-            pdb.set_trace()
-            price = (float(self.get_cheapest(eventId, section))) * 1.05
-
-            params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
+    def create_listing(self, listing_dict):
 
 
-            print (params)
-            response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
-            pdb.set_trace()
-            stubhub_id = response.json()['id']
-            print (stubhub_id)
+        eventId = str(listing_dict['eventId'])
+        quantity = str(listing_dict['quantity'])
+        section = str(listing_dict['section'])
+        row = str(listing_dict['row'])
+        splitOption = 'NOSINGLES'
+        deliveryOption = str(listing_dict['deliveryOption'])
+        tickets = ''
+        counter = 0
+        for seat in listing_dict['seats']:
+            addition = ''
+            if counter != 0:
+                addition = ","
+
+            tickets = tickets + addition + "{\"row\":\"%s\", \"seat\":\"%s\", \"operation\": \"ADD\", \"productType\": \"ticket\"}" %(row, seat)
+            counter+=1
+
+
+        if 'price' in listing_dict.keys() and listing_dict['price'] != None:
+            price=listing_dict['price'] 
+        else:
+            price=(float(self.get_cheapest(eventId, section))) * 1.05 
+
+        params = " {\n\"eventId\": \"%s\",\n \"pricePerProduct\": {\"amount\": \"%s\", \"currency\": \"USD\"},\n\"quantity\": \"%s\",\n\"splitOption\": \"%s\",\n \"deliveryOption\": \"%s\",\n\"section\": \"%s\",\n\"products\":[%s]\n}" %(eventId, price, quantity, splitOption, deliveryOption, section, tickets)
+
+        params=json.loads(params)
+        response = self.send_req('/inventory/listings/v2', token_type='USER', req_type='POST',params = params)
+
+        stubhub_id = response.json()['id']
+
+        return response.json()
 
     def create_listing_with_barcodes(self):
 
@@ -529,7 +529,7 @@ if __name__ == '__main__':
 
          #print response.text
 
-        print stubhub.get_event(103131011)
+        print stubhub.get_event(9718430)
         #print stubhub.get_event_inventory(9710927)
 
         # csv_path = '../barcodes/barcodes_2017.csv'

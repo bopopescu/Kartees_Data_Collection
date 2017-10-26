@@ -156,9 +156,12 @@ def postlisting():
 	#params =  request.form["myvar"]
 
 	data = request.data
-	dataDict = json.loads(data)
 
+	dataDict = json.loads(data)
+	
 	missing_array = []
+
+	response=None
 
 	# First check if something is missing
 	for param in required:
@@ -171,7 +174,6 @@ def postlisting():
 		response = error_1(missing_array)
 
 	else:
-
 		response_dict = json.dumps(stubhub.create_listing(dataDict))
 
 		if 'id' in response_dict:
