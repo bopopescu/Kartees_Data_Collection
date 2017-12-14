@@ -97,6 +97,12 @@ def error_1(param):
 def error_2(param):
 	return construct_error(2, "Unsuccessful call to StubHub - Invalid %s" %param)
 
+def stubhub_session(account):
+
+	stubhub = Stubhub(account=account)
+
+	return stubhub
+
 
 @app.route('/getevent', methods = ['GET'])
 def getevent():
@@ -151,8 +157,8 @@ def geteventinventory():
 @app.route('/postlisting', methods = ['POST'])
 def postlisting():
 
-	required = ['eventId','quantity','section','row', 'price']
-
+	required = ['account', 'eventId','quantity','section','row', 'price']
+	
 	#params =  request.form["myvar"]
 
 	data = request.data
@@ -174,6 +180,8 @@ def postlisting():
 		response = error_1(missing_array)
 
 	else:
+		stubhub = stubhub_session(dataDict['account'])
+
 		response_dict = json.dumps(stubhub.create_listing(dataDict))
 
 		if 'id' in response_dict:
@@ -251,20 +259,38 @@ def getfirstprice():
 @app.route('/reprice', methods = ['GET'])
 def reprice():
 
+	required = ['stubhublistingid', 'new_price']
 
-	if request.args.get('stubhublistingid'):
+	data = request.data
+
+	dataDict = json.loads(data)
+	
+	missing_array = []
+
+	response=None
+
+	# First check if something is missing
+	for param in required:
+		if param not in dataDict:
+			# Missing Param error
+			missing_array.append(param)
 
 
-		if request.args.get('price'):
-
-			x = getfirstprice(310,9445091)
-
-			return x
-		else:
-			response = error_1('price')
+	if missing_array:
+		response = error_1(missing_array)
 
 	else:
-			response = error_1('stubhublistingid')
+		stubhub = stubhub_session(dataDict['account'])
+
+		response_dict = json.dumps(stubhub.change_price(stubhublistingid,new_price))
+
+		if 'id' in response_dict:
+			response = response_dict
+		else:
+			error_2('call')
+
+
+	return response
 
 @app.route('/weekly_consolidate', methods = ['GET'])
 def weekly_consolidate():
@@ -322,7 +348,7 @@ def get_data():
 	try:
 
 		account = request.args.get("account")
-		stubhub = Stubhub(account)
+		stubhub = stubhub_session(account)
 
 	    # Get game to use from second command line arg
 		event_id = request.args.get("event_id")

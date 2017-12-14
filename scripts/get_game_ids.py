@@ -15,9 +15,12 @@
 from stubhub import *
 import sys
 sys.dont_write_bytecode = True
-
+import pdb
 
 if __name__ == '__main__':
+
+
+	sport = sys.argv[1]
 
 	username = USERNAME
 	password = PASSWORD
@@ -25,16 +28,15 @@ if __name__ == '__main__':
 	app_token = APP_TOKEN
 
 	try:
-		app_token = Stubhub.get_app_token(app_token=app_token)
-		user_token = Stubhub.get_user_token(basic_auth=basic_auth, username=username, password=password)
-		user_id = Stubhub.get_user_id(basic_auth=basic_auth, username=username, password=password)
-
-		stubhub = Stubhub(app_token=app_token, user_token=user_token, user_id=user_id)
-
+		stubhub = Stubhub(account="LABO")
 		# Create teams array and id dict
 		teams = []	
 		team_ids = {}
-		team_dates = {}
+		team_dates_utc = {}
+		team_dates_local = {}
+		performer_ids = {}
+		cities = {}
+		names={}
 
 		# Read team_names csv and get names
 
@@ -42,9 +44,14 @@ if __name__ == '__main__':
 
 			reader = csv.reader(team_names)
 
-			for row in reader:
-				teams.append(row[0])
+			reader.next()
 
+			for row in reader:
+				if row[0]==sport:
+					team = row[1]+" "+row[2]
+					teams.append(team)
+					cities[team] = row[1]
+					names[team]=row[2]
 			print "Successfully read all teams from team_names"
 
 		# Loop through each team to get their events
@@ -53,13 +60,17 @@ if __name__ == '__main__':
 			try:
 
 				# Get games from stubhub
-				events = stubhub.get_team_games(team)['events']
+				data = stubhub.get_team_games(team)
+			
+				events = data['events']
 
 				# Logic to filter out non-home games such as away or spring training games
 
 				ids =[]
 				venues = []
-				dates = []
+				dates_utc = []
+				dates_local = []
+				performer_id=[]
 				for event in events:
 					venues.append(event['venue']['name'])
 
@@ -67,12 +78,18 @@ if __name__ == '__main__':
 
 				for event in events:
 					if event['venue']['name'] == home_field:
+						try:
+							performer_id.append(event['performers'][0]['id'])
+						except:
+							print('couldnt find performer')
 						ids.append(event['id'])
-						dates.append(str(dparser.parse(event['eventDateUTC'])))
-
+						dates_utc.append(str(dparser.parse(event['eventDateUTC'])))
+						dates_local.append(str(dparser.parse(event['eventDateLocal'])))
 				team_ids[team] = ids
-				team_dates[team] = dates
-
+				team_dates_utc[team] = dates_utc
+				team_dates_local[team] = dates_local
+				performer_ids[team] = max(set(performer_id), key=performer_id.count)
+				
 				print "Successfully retrieved games for: %s" %team
 
 			except:
@@ -89,21 +106,21 @@ if __name__ == '__main__':
 
 		# Write new file with the ids
 
-		with open('../global_data/game_ids/%s.csv'%timestamp, 'wb') as games_file:
+		# with open('../global_data/game_ids/%s.csv'%timestamp, 'wb') as games_file:
 
-			writer = csv.writer(games_file)
-			writer.writerow(['Team Name', 'Num Ids', 'Id Array','Dates Array'])
+		# 	writer = csv.writer(games_file)
+		# 	writer.writerow(['Sport', 'Team Name', 'Num Ids', 'Id Array','Dates Array'])
 
-			for team in teams:
+		# 	for team in teams:
 
-				writer.writerow([team] + [len(team_ids[team])] + [team_ids[team]]+[team_dates[team]])
+		# 		writer.writerow([sport] + [team] + [len(team_ids[team])] + [team_ids[team]]+[team_dates[team]])
 
 		# Write to game schedules file
-		with open('../global_data/game_schedules/%s.csv' %timestamp, 'wb') as schedule_file:
+		with open('../global_data/game_schedules/%s/%s.csv' %(sport,timestamp), 'wb') as schedule_file:
 
 			writer = csv.writer(schedule_file)
 
-			writer.writerow(['Team', 'Event Id', 'Event Time'])
+			writer.writerow(['TeamId', 'TeamCity','TeamName', 'Event Id', 'Event Date UTC', 'Event Date Local'])
 
 			# Loop through each team
 			for team in teams:
@@ -112,10 +129,10 @@ if __name__ == '__main__':
 				for game_id in team_ids[team]:
 
 					# The date is the corresponding element of id, but in the teamd dates arrar
-					game_date = team_dates[team][team_ids[team].index(game_id)]
-
+					game_date_utc = team_dates_utc[team][team_ids[team].index(game_id)]
+					game_date_local = team_dates_local[team][team_ids[team].index(game_id)]
 					# Write the game date in the csv file
-					writer.writerow([team, game_id, game_date])
+					writer.writerow([performer_ids[team], cities[team], names[team], game_id, game_date_utc,game_date_local ])
 
 	except Exception as e:
 
