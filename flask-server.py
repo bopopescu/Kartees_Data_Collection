@@ -355,34 +355,7 @@ def get_data():
 		team = request.args.get("team")
 		sport = request.args.get("sport")
 
-		#cron_write_delay(account)
 
-		# use_cron = cron[account]
-
-		# difference = time.time()-use_cron['time']
-
-
-
-		# if use_cron['number'] < 10:
-
-		# 	use_cron['number'] +=1
-
-		# 	print cron
-
-
-		# else:
-
-		# 	print "At 10, difference is: %s" % difference
-
-		# 	use_cron['number'] = 1
-
-		# 	if difference < 59:
-
-		# 		print "Waiting - %s seconds" %(float(60)-difference)
-
-		# 		time.sleep(float(60)-difference)
-
-		# 		use_cron['time'] = time.time()
 
 		columns = update_event_data(stubhub,event_id, team, sport)
 
@@ -573,30 +546,35 @@ def get_event_data():
 	data_type = request.args.get('dataType')
 	event = request.args.get('eventId')
 
-	stubhub = Stubhub(account=account)
-	eventId = request.args.get('eventId')
-
 	try:
-		if data_type == 'meta':
-			event_data_object = stubhub.get_event(event)
-			#event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
-		elif data_type == 'inventory':
-			event_data_object = stubhub.get_event_inventory(event)
-		else:
-			response = jsonify({"message":"dataType must be either 'meta' or 'inventory'", "success":0})
+		stubhub = stubhub_session(account)
+		
+
+		try:
+			if data_type == 'meta':
+				event_data_object = stubhub.get_event(event)
+				#event_data_object = eval(json.dumps(xmltodict.parse(event_data)))
+			elif data_type == 'inventory':
+				event_data_object = stubhub.get_event_inventory(event)
+			else:
+				response = jsonify({"message":"dataType must be either 'meta' or 'inventory'", "success":0})
+				response.status_code = 400
+				return response
+
+			response = event_data_object
+
+			response['current_timestamp'] = get_timestamp()
+			response['current_date'] = get_date_obj()
+			response['success']=1
+
+			return jsonify(response)
+
+		except:
+			response = jsonify({"message":"Data Acquisition for %s unsuccesful" %eventId, "success":0})
 			response.status_code = 400
 			return response
-
-		response = event_data_object
-
-		response['current_timestamp'] = get_timestamp()
-		response['current_date'] = get_date_obj()
-		response['success']=1
-
-		return jsonify(response)
-
 	except:
-		response = jsonify({"message":"Data Acquisition for %s Unsuccesful" %eventId, "success":0})
+		response = jsonify({"message":"Account %s unsuccesful login"%account, "success":0})
 		response.status_code = 400
 		return response
 
