@@ -13,7 +13,7 @@ def get_team_performance(sport, team):
 
 	first = time.time()
 	current_sport = sport
-	full_team_name = team
+	full_team_name = team if 'Clippers' not in team else 'LA Clippers'
 
 	sports = ['nba','mlb','nhl','nfl']
 	#sports = ['mlb']

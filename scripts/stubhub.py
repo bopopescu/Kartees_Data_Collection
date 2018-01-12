@@ -513,7 +513,7 @@ if __name__ == '__main__':
 
     try:
 
-        stubhub = Stubhub(account = 'LABO')
+        stubhub = Stubhub(account = 'MOKARTEESREGULAR')
 
 
         # listing = 1232289487
@@ -529,7 +529,7 @@ if __name__ == '__main__':
 
          #print response.text
 
-        print stubhub.get_event(9718430)
+        print stubhub.get_event(103138698)
         #print stubhub.get_event_inventory(9710927)
 
         # csv_path = '../barcodes/barcodes_2017.csv'

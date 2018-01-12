@@ -382,42 +382,6 @@ def worker(schedule_type):
 
 	return
 
-	# resp = False
-
-	# try:
-
- #        # Get account to use from first command line arg
- #        account = request.args.get("account")
- #        stubhub = Stubhub(account)
-
- #        # Get game to use from second command line arg
- #        event_id = request.args.get("event_id")
- #        team = request.args.get("team")
- #        sport = request.args.get("sport")
-
- #        cron_write_delay(account)
-
- #        update_event_data(event_id, team, sport)
-
- #        resp = True
- #        print 'true'
-
- #    except Exception as e:
-
- #        print 'false'
-
- #    #aws_consolidate(client,1,4,schedule_type)
-
-	# return resp
-
-# def collect_data():
-
-# 	threads = []
-# 	for i in range(1):
-# 	    t = threading.Thread(target=worker, args=(i,))
-# 	    threads.append(t)
-# 	    t.start()
-
 
 @app.route('/thread', methods = ['GET'])
 def test_cron():
@@ -549,7 +513,6 @@ def get_event_data():
 	try:
 		stubhub = stubhub_session(account)
 		
-
 		try:
 			if data_type == 'meta':
 				event_data_object = stubhub.get_event(event)
