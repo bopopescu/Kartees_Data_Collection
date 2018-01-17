@@ -11,6 +11,7 @@ import time
 
 def get_team_performance(sport, team):
 
+	sport = sport.lower()
 	first = time.time()
 	current_sport = sport
 	full_team_name = team if 'Clippers' not in team else 'LA Clippers'
@@ -23,44 +24,45 @@ def get_team_performance(sport, team):
 	sports_losses = {}
 	sports_l_10 = {}
 
-	if sport !='nhl':
+	if sport.lower() !='nhl':
 
 		second = time.time()
-		web_page = urllib.urlopen("http://espn.go.com/%s/standings" % sport).read()
+
+		web_page = urllib.urlopen("http://espn.go.com/%s/standings" % sport.lower()).read()
+		
 		third = time.time()
 		soup = BeautifulSoup(web_page, "html.parser")
 
-		teams = soup.find_all("span", class_= "team-names")
-		stats = soup.find_all("td")
+		#teams = soup.find_all("span", class_= "team-names")
+		rows = soup.find_all(class_="standings-row")
 
 		#pdb.set_trace()
 		wins = {}
 		losses = {}
 		l_10 = {}
 
-		k = 1
-		i=0
-		for team in teams:
+		#i=0
+		for row in rows:
+			
+			team_name = row.find(class_="team").find(class_="team-names").text
 
-		 	wins[team.text] = stats[k-i].text
-		 	losses[team.text] = stats[k-i+1].text
+		 	wins[team_name] = row.find_all("td")[1].text
+		 	losses[team_name] = row.find_all("td")[2].text
 
-		 	if sport =='nba':
-		 		l_10[team.text] = stats[k+12].text
-		 	elif sport == 'mlb':
-		 		l_10[team.text] = stats[k+10-i].text
-		 		i+=1
+		 	if sport.lower() =='nba':
+		 		l_10[team_name] = row.find_all("td")[13].text
+		 	elif sport.lower() == 'mlb':
+		 		l_10[team_name] = row.find_all("td")[11].text
+		 		
 
-		 	k += stats_row_buffer[sport]
+		 	#k += stats_row_buffer[sport]
+
 
 		sports_wins[sport] = wins
 		sports_losses[sport] = losses
 		sports_l_10[sport] = l_10
 
-		fourth = time.time()
-
-		#print '2 to 3: %s' %str(third-second)
-		#print '3 to 4: %s' %str(fourth-third)
+		
 
 	else:
 		web_page = urllib.urlopen("http://www.msn.com/en-us/sports/nhl/standings").read()
@@ -84,17 +86,20 @@ def get_team_performance(sport, team):
 		sports_losses['nhl'] = losses
 		sports_l_10['nhl'] = l_10
 
+		
+
 	#print sports_wins
+	
 	wins = sports_wins[current_sport][full_team_name]
 	losses = sports_losses[current_sport][full_team_name]
-	l_10 = str(sports_l_10[current_sport][full_team_name]).replace("-"," ")
+	l_10 = str(sports_l_10[current_sport][full_team_name]).replace("-"," ")[0:3]
 
 	denom = (float(l_10[0])+ float(l_10[-1]))
 
 	l_10_pct = 'NA'
-
+	
 	if denom !=0:
-		l_10_pct = float(l_10[0])/denom
+		l_10_pct = float("%.2f" %(float((l_10[0]))/denom))
 
 
 	return wins, losses, l_10_pct
