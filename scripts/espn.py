@@ -2,8 +2,8 @@
 import urllib
 from bs4 import BeautifulSoup
 import csv
-import stubhub
-import static_dictionaries
+import scripts.stubhub
+import scripts.static_dictionaries
 import datetime
 import pdb
 import time
@@ -43,17 +43,15 @@ def get_team_performance(sport, team):
 
 		#i=0
 		for row in rows:
-			
 			team_name = row.find(class_="team").find(class_="team-names").text
+			wins[team_name] = row.find_all("td")[1].text
+			losses[team_name] = row.find_all("td")[2].text
 
-		 	wins[team_name] = row.find_all("td")[1].text
-		 	losses[team_name] = row.find_all("td")[2].text
-
-		 	if sport.lower() =='nba':
-		 		l_10[team_name] = row.find_all("td")[13].text
-		 	elif sport.lower() == 'mlb':
-		 		l_10[team_name] = row.find_all("td")[11].text
-		 		
+			if sport.lower() =='nba':
+				l_10[team_name] = row.find_all("td")[13].text
+			elif sport.lower() == 'mlb':
+				l_10[team_name] = row.find_all("td")[11].text
+				
 
 		 	#k += stats_row_buffer[sport]
 

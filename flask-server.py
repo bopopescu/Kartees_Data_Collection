@@ -35,12 +35,12 @@ logging.basicConfig()
 from flask_apscheduler import APScheduler
 
 if 'VCAP_SERVICES' not in os.environ:
-	print 'Running on Local'
+	print('Running on Local')
 	from scripts.credentials import *
 	aws_id = AWS_ACCESS_KEY_ID
 	aws_key=AWS_SECRET_ACCESS_KEY
 else:
-	print 'Running on Bluemix'
+	print ('Running on Bluemix')
 	aws_id = os.getenv('AWS_ACCESS_KEY_ID')
 	aws_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 
@@ -333,7 +333,7 @@ def get_data():
 		requests.get('https://stubhub-services-node-red-dev.mybluemix.net/flask-cron-running-status')
 
 	except:
-		print 'node red down'
+		print ('node red down')
 
 	use_cron = ""
 
@@ -366,9 +366,9 @@ def get_data():
 
 	except Exception as e:
 
-		 print 'problem'
+		 print ('problem')
 
-	print use_cron
+	print(use_cron)
 
 	return jsonify(resp)
 
@@ -482,7 +482,7 @@ def get_account(request):
 			else:
 				new_timestamp = int(datetime.datetime.utcnow().strftime("%s")) * 1000
 				sleep_time = 60 - (new_timestamp-accounts[request][account][0])/1000
-				print sleep_time
+				print(sleep_time)
 				# time.sleep(sleep_time)
 
 

@@ -3,12 +3,12 @@ import csv
 import json
 import datetime
 import time
-from static_dictionaries import get_market_cap, get_sport, get_team, get_performer_id, get_all_teams
+from scripts.static_dictionaries import get_market_cap, get_sport, get_team, get_performer_id, get_all_teams
 import xml.etree.ElementTree as ET
 import numpy as np
 #from scipy.stats import norm, mode
 from datetime import timedelta
-import espn
+import scripts.espn
 import traceback
 import logging
 import os.path
@@ -18,7 +18,7 @@ import pdb
 import sys
 
 if 'VCAP_SERVICES' not in os.environ:
-    from credentials import *
+    from scripts.credentials import *
 else:
     CREDS = eval(os.getenv('CREDS'))
     URL = os.getenv('URL')
@@ -529,7 +529,7 @@ if __name__ == '__main__':
 
          #print response.text
 
-        print stubhub.get_event(103138698)
+        print(stubhub.get_event(103138698))
         #print stubhub.get_event_inventory(9710927)
 
         # csv_path = '../barcodes/barcodes_2017.csv'
