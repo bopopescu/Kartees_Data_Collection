@@ -68,7 +68,7 @@ def consolidate_dailys(s3_resource,day, use_team):
 
 		key = obj.key
 
-		print "Observing key %s"%key
+		print("Observing key %s"%key)
 
 		if 'daily' in key and 'csv' in key and day in key and use_team in key:
 
@@ -81,7 +81,7 @@ def consolidate_dailys(s3_resource,day, use_team):
 			#if file_day == day and use_team==team :
 
 			lines = []
-			print "Getting lines for %s, %s" %(team, day)
+			print("Getting lines for %s, %s" %(team, day))
 			first_line = True
 			for line in smart_open.smart_open('s3://2017pricedata/daily/%s/%s/%s' %(day,team,event_csv)):
 
@@ -90,10 +90,10 @@ def consolidate_dailys(s3_resource,day, use_team):
 				else:
 					first_line= False
 
-			print lines[0]
+			print(lines[0])
 
 			total_size += append_to_total(s3_resource,event_csv, lines, team)
-			print '--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size)
+			print ('--------------%s - %s, SIZE: %s--------------' %(day,event_csv, total_size))
 
 	return total_size
 
@@ -156,7 +156,7 @@ def append_to_total(s3_resource, event_csv, lines, team):
 
 	s3_client = boto3.client('s3')
 
-	print 'Uploading file: %s - %s' %(team, event_csv)
+	print ('Uploading file: %s - %s' %(team, event_csv))
 	s3_client.upload_file(tmp_file_name, '2017pricedata','total/%s/%s' %(team,event_csv))
 
 	shutil.rmtree(directory)
@@ -177,19 +177,19 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 	hour = datetime.datetime.utcnow().hour
 	minute = datetime.datetime.utcnow().minute
 
-	print hour
-	print minute
+	print (hour)
+	print (minute)
 
 	schedule = schedules[schedule_type]
 
-	print schedule
+	print (schedule)
 
 	for team in schedule:
 
 		if int(schedule[team].split(":")[0])==hour and int(schedule[team].split(":")[1])==minute:
 
 
-			print team
+			print (team)
 			use_team = team
 
 			db = client['data_collection']
@@ -227,7 +227,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 
 
-			print "Days to collect: %s" %days_to_collect
+			print ("Days to collect: %s" %days_to_collect)
 
 			sizes = {}
 			total_size = 0
@@ -245,7 +245,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 			for day in reversed(days_to_collect):
 
-				print "Consolidating day: %s " %day
+				print ("Consolidating day: %s " %day)
 
 				size = consolidate_dailys(s3_resource,day, use_team)
 
@@ -253,7 +253,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 				sizes[day] = size
 
-				print sizes[day]
+				print (sizes[day])
 
 
 			elapsed = "%.2f" %float(float((datetime.datetime.utcnow() - now).seconds) /60)
@@ -270,7 +270,7 @@ def aws_consolidate(client, first_day, last_day, schedule_type):
 
 def remove_spaces():
 
-	print 'here'
+	print ('here')
 	s3_resource = boto3.resource('s3')
 
 	bucket = s3_resource.Bucket('2017pricedata')
@@ -288,24 +288,24 @@ def remove_spaces():
 
 			key_list = key.split('/')
 
-			print key_list
+			print (key_list)
 
 			#file_day = key_list[1]
 			team = key_list[1]
 			event_csv = key_list[2]
 
-			print key_list
+			print (key_list)
 
 			directory = '../price_data/tmp_spaces/%s' %(team)
 
-			print directory
+			print (directory)
 			tmp_file_name = "%s/%s" %(directory,event_csv)
 
 
         	# if not os.path.exists(directory):
 			os.makedirs(directory)
 
-			print 's3://2017pricedata/total/%s/%s' %(team,event_csv)
+			print ('s3://2017pricedata/total/%s/%s' %(team,event_csv))
 			s3_client = boto3.client('s3')
 
 			s3_client.download_file('2017pricedata', 'total/%s/%s'%(team,event_csv),tmp_file_name)

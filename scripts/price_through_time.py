@@ -2,8 +2,8 @@
 
 
 
-from stubhub import *
-from cron_functions import *
+from scripts.stubhub import *
+from scripts.cron_functions import *
 import sys
 import time
 
@@ -115,9 +115,9 @@ def update_event_data(stubhub,event_id, team, sport):
 
     for zone in zones_dict:
         zone_average, zone_std, zone_count, zone_median = 'NA','NA','NA','NA'
-        print type(zones_stats[zone])
+       # print type(zones_stats[zone])
         if zones_stats[zone]!='':
-            print 'here'
+         
             zone_average, zone_std, zone_count, zone_median = zones_stats[zone][0],  zones_stats[zone][1],  zones_stats[zone][2], zones_stats[zone][3]
 
 
@@ -165,10 +165,10 @@ if __name__ == '__main__':
         update_event_data(event_id, team, sport)
         second = time.time()
 
-        print 'true'
+        print ('true')
 
     except Exception as e:
 
-        print 'false'
+        print ('false')
 
         #logging.error(traceback.format_exc())
